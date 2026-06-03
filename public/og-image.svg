@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#0b1220"/>
+  <rect width="1200" height="8" y="622" fill="#12b76a"/>
+  <g transform="translate(90,210)">
+    <path d="M60 0 L108 18 V54 C108 84 86 104 60 112 C34 104 12 84 12 54 V18 Z" fill="#12b76a"/>
+    <path d="M60 28 c8 10 14 16 14 26 a14 14 0 0 1-28 0 c0-6 4-10 6-14 c2 4 4 6 8 6 c-4-8-4-16 0-24 Z" fill="#fff"/>
+  </g>
+  <text x="230" y="270" fill="#ffffff" font-family="Inter, sans-serif" font-size="64" font-weight="800">Balochistan Standard Services</text>
+  <text x="230" y="340" fill="#9fb0c0" font-family="Inter, sans-serif" font-size="34">Protecting Lives. Securing Assets. Building Trust.</text>
+  <text x="230" y="410" fill="#12b76a" font-family="Inter, sans-serif" font-size="28" font-weight="600">Fire Safety • CCTV • Security Systems</text>
+</svg>

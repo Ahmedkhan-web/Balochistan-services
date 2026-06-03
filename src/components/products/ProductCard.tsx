@@ -1,0 +1,99 @@
+import { Link } from "react-router-dom";
+import { Heart, ShoppingCart } from "lucide-react";
+import { toast } from "sonner";
+import type { Product } from "@/types";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { StarRating } from "@/components/common/StarRating";
+import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
+import { Icon } from "@/components/common/Icon";
+import { PRODUCT_CATEGORIES } from "@/data/products";
+import { useCartStore } from "@/store/cartStore";
+import { cn, discountPercent, formatCurrency } from "@/lib/utils";
+
+export function ProductCard({ product }: { product: Product }) {
+  const { addItem, toggleWishlist, isWishlisted } = useCartStore();
+  const wished = isWishlisted(product.id);
+  const category = PRODUCT_CATEGORIES.find((c) => c.id === product.category);
+  const discount = discountPercent(product.price, product.discount_price);
+
+  return (
+    <Card className="group flex flex-col overflow-hidden transition-shadow hover:shadow-lg">
+      <Link to={`/products/${product.slug}`} className="relative block">
+        <ImagePlaceholder
+          icon={category?.icon ?? "shield"}
+          label={product.subcategory}
+          className="aspect-[4/3] w-full"
+        />
+        {discount > 0 && (
+          <Badge className="absolute left-3 top-3" variant="destructive">
+            -{discount}%
+          </Badge>
+        )}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            toggleWishlist(product);
+            toast.success(wished ? "Removed from wishlist" : "Added to wishlist");
+          }}
+          className="absolute right-3 top-3 rounded-full bg-background/90 p-2 shadow-sm transition hover:scale-110"
+          aria-label="Toggle wishlist"
+        >
+          <Heart
+            className={cn(
+              "size-4",
+              wished ? "fill-destructive text-destructive" : "text-foreground",
+            )}
+          />
+        </button>
+      </Link>
+      <CardContent className="flex flex-1 flex-col gap-2 p-4">
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <Icon name={category?.icon ?? "shield"} className="size-3.5" />
+          {category?.name}
+        </div>
+        <Link
+          to={`/products/${product.slug}`}
+          className="line-clamp-2 font-semibold leading-snug hover:text-primary"
+        >
+          {product.name}
+        </Link>
+        <StarRating value={product.rating} count={product.reviews_count} />
+        <div className="mt-auto flex items-end justify-between pt-2">
+          <div>
+            {product.discount_price ? (
+              <div className="flex flex-col">
+                <span className="text-lg font-bold text-primary">
+                  {formatCurrency(product.discount_price)}
+                </span>
+                <span className="text-xs text-muted-foreground line-through">
+                  {formatCurrency(product.price)}
+                </span>
+              </div>
+            ) : (
+              <span className="text-lg font-bold text-primary">
+                {formatCurrency(product.price)}
+              </span>
+            )}
+          </div>
+          <Badge variant={product.stock > 0 ? "success" : "destructive"}>
+            {product.stock > 0 ? "In Stock" : "Out of Stock"}
+          </Badge>
+        </div>
+        <Button
+          className="mt-2 w-full"
+          size="sm"
+          disabled={product.stock === 0}
+          onClick={() => {
+            addItem(product);
+            toast.success(`${product.name} added to cart`);
+          }}
+        >
+          <ShoppingCart className="size-4" /> Add to Cart
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}

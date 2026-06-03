@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 215 25% 17%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 17%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 17%;
+
+    /* Brand green primary */
+    --primary: 152 95% 30%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 16% 93%;
+    --secondary-foreground: 215 25% 17%;
+
+    --muted: 210 16% 96%;
+    --muted-foreground: 215 14% 42%;
+
+    --accent: 152 60% 94%;
+    --accent-foreground: 152 80% 22%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 18% 88%;
+    --input: 214 18% 88%;
+    --ring: 152 95% 30%;
+
+    --radius: 0.6rem;
+  }
+
+  .dark {
+    --background: 215 28% 9%;
+    --foreground: 210 20% 96%;
+
+    --card: 215 26% 12%;
+    --card-foreground: 210 20% 96%;
+
+    --popover: 215 26% 12%;
+    --popover-foreground: 210 20% 96%;
+
+    --primary: 152 70% 42%;
+    --primary-foreground: 215 30% 8%;
+
+    --secondary: 215 20% 18%;
+    --secondary-foreground: 210 20% 96%;
+
+    --muted: 215 20% 16%;
+    --muted-foreground: 215 14% 65%;
+
+    --accent: 152 40% 20%;
+    --accent-foreground: 152 80% 85%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 215 18% 22%;
+    --input: 215 18% 22%;
+    --ring: 152 70% 42%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  [dir="rtl"] {
+    font-family: "Noto Nastaliq Urdu", "Inter", sans-serif;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .hero-gradient {
+    background-image: radial-gradient(
+        ellipse 80% 80% at 50% -20%,
+        hsl(var(--accent)),
+        transparent
+      ),
+      linear-gradient(180deg, hsl(var(--background)), hsl(var(--background)));
+  }
+  .section-y {
+    @apply py-16 md:py-24;
+  }
+}
