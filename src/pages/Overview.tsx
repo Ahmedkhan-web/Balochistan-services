@@ -1,6 +1,16 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Check, PhoneCall, Search, ShieldCheck } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  PhoneCall,
+  Search,
+  ShieldCheck,
+  BadgeCheck,
+  Camera,
+  Flame,
+  Siren,
+} from "lucide-react";
 import { Seo } from "@/components/common/Seo";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { Icon } from "@/components/common/Icon";
@@ -43,6 +53,7 @@ const stats = [
 export default function Overview() {
   const [query, setQuery] = useState("");
   const services = getFeaturedServices(6);
+  const featuredCategories = PRODUCT_CATEGORIES.slice(0, 4);
 
   const productGroups = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -82,35 +93,61 @@ export default function Overview() {
     <>
       <Seo title="Overview" path="/" description={PAGE_HEADER} jsonLd={jsonLd} />
 
-      <section className="relative overflow-hidden border-b bg-slate-950 text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(249,115,22,0.28),transparent_34%),linear-gradient(135deg,rgba(15,23,42,0),rgba(20,83,45,0.45))]" />
-        <div className="container relative grid min-h-[calc(100vh-4rem)] items-center gap-12 py-16 lg:grid-cols-[1.05fr_0.95fr]">
+      <section className="border-b bg-[#f5f7f4]">
+        <div className="border-b bg-[#0f3d2f] text-white">
+          <div className="container flex flex-wrap items-center justify-between gap-3 py-2 text-xs font-medium">
+            <div className="flex flex-wrap items-center gap-4 text-white/90">
+              <span>Fire Safety</span>
+              <span>• CCTV Solutions</span>
+              <span>• Quality Products</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-4 text-white/90">
+              <span>24/7 Support</span>
+              <span>{SITE.phone}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="container grid items-center gap-12 py-14 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[1.05fr_0.95fr] lg:py-18">
           <div>
-            <Badge className="border-white/20 bg-white/10 text-white hover:bg-white/10">
+            <Badge className="border-[#116b45]/20 bg-[#e6f4ec] text-[#116b45] hover:bg-[#e6f4ec]">
               Enterprise Fire Safety & Security
             </Badge>
-            <h1 className="mt-5 max-w-4xl text-4xl font-extrabold leading-tight tracking-tight md:text-6xl">
+            <h1 className="mt-5 max-w-4xl text-4xl font-extrabold leading-tight tracking-tight text-[#10231d] md:text-6xl">
               Balochistan Standard Services
             </h1>
-            <p className="mt-5 max-w-2xl text-lg text-slate-200">
+            <p className="mt-5 max-w-2xl text-lg text-slate-600">
               {PAGE_HEADER}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/products" className={buttonVariants({ size: "lg" })}>
+              <Link
+                to="/products"
+                className={buttonVariants({
+                  size: "lg",
+                  className: "bg-[#116b45] text-white hover:bg-[#0e5537]",
+                })}
+              >
                 Shop Products <ArrowRight className="size-4" />
               </Link>
               <Link
                 to="/contact"
-                className={buttonVariants({ size: "lg", variant: "secondary" })}
+                className={buttonVariants({
+                  size: "lg",
+                  variant: "outline",
+                  className: "border-[#116b45]/20 text-[#116b45] hover:bg-[#e6f4ec]",
+                })}
               >
                 <PhoneCall className="size-4" /> Get a Quote
               </Link>
             </div>
             <dl className="mt-12 grid grid-cols-2 gap-5 sm:grid-cols-4">
               {stats.map((stat) => (
-                <div key={stat.label} className="rounded-xl border border-white/10 bg-white/5 p-4">
-                  <dt className="text-2xl font-bold text-orange-300">{stat.value}</dt>
-                  <dd className="mt-1 text-xs text-slate-300">{stat.label}</dd>
+                <div
+                  key={stat.label}
+                  className="rounded-xl border border-[#d7e7df] bg-white p-4 shadow-sm"
+                >
+                  <dt className="text-2xl font-bold text-[#116b45]">{stat.value}</dt>
+                  <dd className="mt-1 text-xs text-slate-500">{stat.label}</dd>
                 </div>
               ))}
             </dl>
@@ -120,42 +157,33 @@ export default function Overview() {
         </div>
       </section>
 
-      <section className="section-y">
-        <div className="container grid gap-8 lg:grid-cols-3">
+      <section className="border-b bg-[#10231d] py-8 text-white">
+        <div className="container grid gap-4 md:grid-cols-4">
           {[
-            {
-              title: "Company Profile",
-              icon: "building-2",
-              text: "For over 15 years BSS has delivered enterprise fire safety and security solutions to banks, industries, hospitals and government organizations across Balochistan and beyond.",
-            },
-            {
-              title: "Our Mission",
-              icon: "award",
-              text: "To protect lives and assets by delivering reliable, standards-compliant fire safety and security systems backed by exceptional service.",
-            },
-            {
-              title: "Our Vision",
-              icon: "shield-check",
-              text: "To be the most trusted security and fire-safety partner in the region, setting the standard for safety excellence.",
-            },
+            { icon: Flame, title: "Fire Safety", text: "Complete range of fire equipment and systems." },
+            { icon: Camera, title: "CCTV Solutions", text: "Advanced surveillance for round-the-clock protection." },
+            { icon: BadgeCheck, title: "Premium Quality", text: "Certified products from trusted manufacturers." },
+            { icon: Siren, title: "24/7 Support", text: "Fast response and professional installation." },
           ].map((item) => (
-            <Card key={item.title} className="border-slate-200 shadow-sm">
-              <CardContent className="p-6">
-                <Icon name={item.icon} className="mb-4 size-8 text-primary" />
-                <h2 className="text-xl font-semibold">{item.title}</h2>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">{item.text}</p>
-              </CardContent>
-            </Card>
+            <div key={item.title} className="flex items-start gap-4 border-white/10 md:border-l md:pl-4 first:border-l-0 first:pl-0">
+              <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-[#116b45]">
+                <item.icon className="size-6" />
+              </div>
+              <div>
+                <p className="font-semibold">{item.title}</p>
+                <p className="mt-1 text-sm text-white/70">{item.text}</p>
+              </div>
+            </div>
           ))}
         </div>
       </section>
 
-      <section className="section-y bg-muted/40">
+      <section className="section-y bg-[#111111] text-white">
         <div className="container">
           <SectionHeading
-            eyebrow="Product Catalogue"
-            title="Searchable products by category"
-            description="Every category shows up to 20 products on the overview page, with live search across names, subcategories and category labels."
+            eyebrow="Our Products"
+            title="Featured product categories"
+            description="A cleaner first look with category cards, then the full searchable catalog below."
           />
 
           <div className="mx-auto mb-10 max-w-2xl">
@@ -165,12 +193,53 @@ export default function Overview() {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search fire extinguishers, cameras, alarms..."
-                className="h-12 rounded-full pl-12 shadow-sm"
+                className="h-12 rounded-full border-white/10 bg-white pl-12 text-slate-900 shadow-sm"
               />
             </div>
           </div>
 
-          <div className="space-y-14">
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+            {featuredCategories.map((category) => {
+              const products = PRODUCTS.filter((product) => product.category === category.id).slice(0, 4);
+              const cover = products[0];
+
+              return (
+                <Card key={category.id} className="overflow-hidden border-white/10 bg-[#1a1a1a] text-white">
+                  <div className="aspect-[4/3] bg-[#f2f4f1] p-4">
+                    {cover?.images[0] ? (
+                      <img
+                        src={cover.images[0]}
+                        alt={cover.name}
+                        className="h-full w-full rounded-xl object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center rounded-xl bg-[#d7e7df]">
+                        <Icon name={category.icon} className="size-14 text-[#116b45]" />
+                      </div>
+                    )}
+                  </div>
+                  <CardContent className="p-5">
+                    <h3 className="text-lg font-semibold">{category.name}</h3>
+                    <p className="mt-1 text-sm text-white/65">
+                      {products.length} products shown in this category.
+                    </p>
+                    <Link
+                      to={`/products?category=${category.id}`}
+                      className={buttonVariants({
+                        variant: "outline",
+                        size: "sm",
+                        className: "mt-4 w-full border-white/15 text-white hover:bg-white/10",
+                      })}
+                    >
+                      View Products <ArrowRight className="size-4" />
+                    </Link>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+          <div className="mt-14 space-y-14">
             {productGroups.map(({ category, products }) => (
               <div key={category.id}>
                 <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
@@ -178,19 +247,23 @@ export default function Overview() {
                     <Badge variant="secondary" className="mb-2">
                       {products.length} shown
                     </Badge>
-                    <h2 className="flex items-center gap-2 text-2xl font-bold">
-                      <Icon name={category.icon} className="size-6 text-primary" />
+                    <h2 className="flex items-center gap-2 text-2xl font-bold text-white">
+                      <Icon name={category.icon} className="size-6 text-[#8ed0af]" />
                       {category.name}
                     </h2>
                   </div>
                   <Link
                     to={`/products?category=${category.id}`}
-                    className={buttonVariants({ variant: "outline", size: "sm" })}
+                    className={buttonVariants({
+                      variant: "outline",
+                      size: "sm",
+                      className: "border-white/15 text-white hover:bg-white/10",
+                    })}
                   >
                     View category <ArrowRight className="size-4" />
                   </Link>
                 </div>
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
                   {products.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
@@ -199,7 +272,7 @@ export default function Overview() {
             ))}
 
             {productGroups.length === 0 && (
-              <div className="rounded-2xl border border-dashed bg-background py-16 text-center text-muted-foreground">
+              <div className="rounded-2xl border border-dashed border-white/20 py-16 text-center text-white/70">
                 No overview products match your search.
               </div>
             )}
@@ -207,7 +280,7 @@ export default function Overview() {
         </div>
       </section>
 
-      <section className="section-y">
+      <section className="section-y bg-[#f4f7f5]">
         <div className="container grid items-start gap-12 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
             <SectionHeading
@@ -225,7 +298,7 @@ export default function Overview() {
                 "Detailed documentation and compliance certification",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3">
-                  <Check className="mt-0.5 size-5 shrink-0 text-primary" />
+                  <Check className="mt-0.5 size-5 shrink-0 text-[#116b45]" />
                   <span className="text-sm">{item}</span>
                 </li>
               ))}
@@ -235,7 +308,7 @@ export default function Overview() {
             {WHY_CHOOSE_US.map((item) => (
               <Card key={item.title}>
                 <CardContent className="flex gap-4 p-5">
-                  <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+                  <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-[#e6f4ec] text-[#116b45]">
                     <Icon name={item.icon} className="size-5" />
                   </div>
                   <div>

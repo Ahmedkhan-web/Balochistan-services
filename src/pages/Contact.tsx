@@ -25,34 +25,58 @@ export default function Contact() {
         description="Contact Balochistan Standard Services for fire safety and security solutions, quotes and emergency support."
       />
 
-      <section className="border-b bg-slate-950 text-white">
-        <div className="container grid gap-10 py-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+      <section className="border-b bg-[#f4f7f5]">
+        <div className="container grid gap-10 py-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
-            <Badge className="border-white/15 bg-white/10 text-white hover:bg-white/10">
+            <Badge className="border-[#116b45]/20 bg-[#e6f4ec] text-[#116b45] hover:bg-[#e6f4ec]">
               Contact Desk
             </Badge>
-            <h1 className="mt-4 text-3xl font-bold tracking-tight md:text-5xl">
+            <h1 className="mt-4 text-3xl font-bold tracking-tight text-[#10231d] md:text-5xl">
               Contact Us
             </h1>
-            <p className="mt-4 max-w-2xl text-slate-300">
+            <p className="mt-4 max-w-2xl text-slate-600">
               Reach out for quotes, service requests or emergency support. We
               respond within one business day.
             </p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {[
-              { label: "Phone", value: SITE.phone },
-              { label: "Email", value: SITE.email },
-              { label: "Emergency", value: "24/7 support" },
-              { label: "Location", value: "Balochistan" },
-            ].map((item) => (
-              <Card key={item.label} className="border-white/10 bg-white/5 text-white">
-                <CardContent className="p-5">
-                  <p className="text-xs uppercase tracking-wide text-slate-300">{item.label}</p>
-                  <p className="mt-2 text-base font-semibold">{item.value}</p>
-                </CardContent>
-              </Card>
-            ))}
+
+          <div className="overflow-hidden rounded-[28px] border border-[#d7e7df] bg-white shadow-sm">
+            <div className="bg-[#116b45] px-6 py-5 text-white">
+              <p className="text-sm uppercase tracking-[0.2em] text-white/80">
+                Balochistan Standard Services
+              </p>
+              <p className="mt-1 text-2xl font-bold">Contact Information</p>
+            </div>
+
+            <div className="grid gap-0 p-6">
+              {[
+                { label: "Company Name", value: SITE.name },
+                { label: "Phone No.", value: SITE.phone },
+                { label: "Email", value: SITE.email },
+                { label: "Address", value: SITE.address },
+              ].map((item, index) => (
+                <div
+                  key={item.label}
+                  className={[
+                    "grid gap-2 py-4",
+                    index !== 3 ? "border-b border-dashed border-[#d7e7df]" : "",
+                  ].join(" ")}
+                >
+                  <p className="text-sm font-semibold uppercase tracking-wide text-[#116b45]">
+                    {item.label}
+                  </p>
+                  <p className="text-base text-slate-700">{item.value}</p>
+                </div>
+              ))}
+              <div className="mt-4 rounded-2xl bg-[#f4f7f5] p-4">
+                <p className="text-sm font-semibold uppercase tracking-wide text-[#116b45]">
+                  Support
+                </p>
+                <p className="mt-1 text-sm text-slate-600">
+                  24/7 emergency support and service response across Balochistan.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
