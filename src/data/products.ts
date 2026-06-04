@@ -13,44 +13,16 @@ export const PRODUCT_CATEGORIES = [
 type CategoryId = (typeof PRODUCT_CATEGORIES)[number]["id"];
 
 const CATEGORY_IMAGES: Record<CategoryId, string> = {
-  "fire-extinguishers": productImage("Fire extinguisher", "#dc2626", "#f97316", "FE"),
-  "cctv-cameras": productImage("CCTV camera", "#111827", "#64748b", "IP"),
-  recorders: productImage("DVR / NVR recorder", "#0f172a", "#2563eb", "4K"),
-  "fire-alarm": productImage("Fire alarm system", "#b91c1c", "#facc15", "AL"),
-  "access-control": productImage("Access control", "#0f766e", "#22c55e", "ID"),
-  accessories: productImage("Safety accessory", "#334155", "#06b6d4", "SA"),
+  "fire-extinguishers": commonsImage("Fire Extinguisher.JPG"),
+  "cctv-cameras": commonsImage("CCTV Security cameras.jpg"),
+  recorders: commonsImage("Annke PoE Network Video Recorder (NVR) 2.jpg"),
+  "fire-alarm": commonsImage("Smoke detector (1).JPG"),
+  "access-control": commonsImage("Turnstile and MagLock Gate.jpg"),
+  accessories: commonsImage("Couverture-anti-feu-p1010028.jpg"),
 };
 
-function productImage(title: string, color: string, accent: string, mark: string) {
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 650">
-      <defs>
-        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-          <stop stop-color="#f8fafc"/>
-          <stop offset="1" stop-color="#e2e8f0"/>
-        </linearGradient>
-        <linearGradient id="item" x1="0" y1="0" x2="1" y2="1">
-          <stop stop-color="${color}"/>
-          <stop offset="1" stop-color="${accent}"/>
-        </linearGradient>
-        <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
-          <feDropShadow dx="0" dy="24" stdDeviation="22" flood-color="#0f172a" flood-opacity=".24"/>
-        </filter>
-      </defs>
-      <rect width="900" height="650" fill="url(#bg)"/>
-      <circle cx="710" cy="118" r="148" fill="${accent}" opacity=".16"/>
-      <circle cx="160" cy="540" r="180" fill="${color}" opacity=".10"/>
-      <g filter="url(#shadow)">
-        <rect x="240" y="175" width="420" height="290" rx="38" fill="white"/>
-        <rect x="285" y="220" width="330" height="200" rx="30" fill="url(#item)"/>
-        <circle cx="450" cy="320" r="68" fill="white" opacity=".18"/>
-        <text x="450" y="340" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="66" font-weight="800" fill="white">${mark}</text>
-      </g>
-      <text x="450" y="536" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="34" font-weight="800" fill="#0f172a">${title}</text>
-      <text x="450" y="574" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="600" fill="#64748b">Balochistan Standard Services</text>
-    </svg>`;
-
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+function commonsImage(fileName: string) {
+  return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(fileName)}?width=900`;
 }
 
 const FIRE_TYPES = [
