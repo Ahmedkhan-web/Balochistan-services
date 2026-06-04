@@ -23,7 +23,6 @@ import { getFeaturedServices } from "@/data/services";
 import { PRODUCT_CATEGORIES, PRODUCTS } from "@/data/products";
 import type { Product } from "@/types";
 import {
-  CERTIFICATIONS,
   CORE_VALUES,
   INDUSTRIES,
   PARTNERS,
@@ -442,32 +441,24 @@ export default function Overview() {
       </section>
 
       <section className="section-y border-t border-white/10 bg-[#0f1b18] text-white">
-        <div className="container grid gap-10 lg:grid-cols-2">
-          <div>
-            <SectionHeading align="left" eyebrow="Accredited" title="Certifications" />
-            <div className="mt-6 space-y-3">
-              {CERTIFICATIONS.map((certification) => (
-                <Card key={certification} className="border-white/10 bg-[#10231d] text-white">
-                  <CardContent className="flex items-center gap-3 p-4">
-                    <Icon name="badge-check" className="size-5 text-[#8ed0af]" />
-                    <span className="text-sm font-medium">{certification}</span>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-          <div>
-            <SectionHeading align="left" eyebrow="Sectors" title="Industries We Serve" />
-            <div className="mt-6 grid grid-cols-2 gap-4">
-              {INDUSTRIES.map((industry) => (
-                <Card key={industry.id} className="border-white/10 bg-[#10231d] text-white">
-                  <CardContent className="flex items-center gap-3 p-4">
-                    <Icon name={industry.icon} className="size-6 text-[#8ed0af]" />
-                    <span className="text-sm font-semibold">{industry.name}</span>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+        <div className="container">
+          <SectionHeading
+            eyebrow="Sectors"
+            title="Industries We Serve"
+            description="Fire safety, surveillance and access control for facilities where reliability, records and response time matter."
+            className="[&>p:last-child]:text-white/65"
+          />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {INDUSTRIES.map((industry) => (
+              <Card key={industry.id} className="border-white/10 bg-[#10231d] text-white">
+                <CardContent className="flex items-center gap-3 p-4">
+                  <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-[#c91616] text-white">
+                    <Icon name={industry.icon} className="size-5" />
+                  </div>
+                  <span className="text-sm font-semibold">{industry.name}</span>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
