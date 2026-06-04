@@ -7,7 +7,7 @@ import { formatCurrency } from "@/lib/utils";
 
 export function ServiceCard({ service }: { service: Service }) {
   return (
-    <Card className="group flex h-full flex-col transition-all hover:-translate-y-1 hover:shadow-lg">
+    <Card className="group flex h-full flex-col transition-shadow hover:shadow-lg">
       <CardContent className="flex flex-1 flex-col p-6">
         <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-accent text-accent-foreground">
           <Icon name={service.icon} className="size-6" />

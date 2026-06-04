@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { SITE } from "@/lib/constants";
+
+const LOGO_SRC = "/assets/images/bss-logo.png";
 
 export function Logo({
   className,
@@ -11,34 +14,21 @@ export function Logo({
   to?: string;
 }) {
   return (
-    <Link to={to} className={cn("flex items-center gap-2.5", className)}>
-      <svg
-        viewBox="0 0 64 64"
-        className="size-9 shrink-0"
-        aria-hidden="true"
-      >
-        <defs>
-          <linearGradient id="bss-logo" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#12b76a" />
-            <stop offset="1" stopColor="#027a48" />
-          </linearGradient>
-        </defs>
-        <path
-          d="M32 4 L56 13 V31 C56 46 45 56 32 60 C19 56 8 46 8 31 V13 Z"
-          fill="url(#bss-logo)"
+    <Link to={to} className={cn("flex min-w-0 items-center gap-3", className)}>
+      <span className="flex size-11 shrink-0 items-center justify-center">
+        <img
+          src={LOGO_SRC}
+          alt={`${SITE.name} logo`}
+          className="h-full w-full object-contain"
         />
-        <path
-          d="M32 18 c4 5 7 8 7 13 a7 7 0 0 1-14 0 c0-3 2-5 3-7 c1 2 2 3 4 3 c-2-4-2-8 0-12 Z"
-          fill="#fff"
-        />
-      </svg>
+      </span>
       {showText && (
-        <span className="flex flex-col leading-none">
-          <span className="text-lg font-extrabold tracking-tight">
-            BSS
+        <span className="flex min-w-0 flex-col leading-none">
+          <span className="truncate text-sm font-extrabold tracking-tight sm:text-base lg:text-lg">
+            {SITE.name}
           </span>
-          <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-            Standard Services
+          <span className="mt-1 hidden text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground sm:block">
+            Fire Safety and Security
           </span>
         </span>
       )}

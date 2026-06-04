@@ -28,9 +28,9 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-[4.5rem] items-center justify-between gap-4">
-        <Logo />
+        <Logo className="max-w-[230px] sm:max-w-[320px]" />
 
-        <nav className="hidden items-center gap-1 lg:flex">
+        <nav className="hidden items-center gap-1 xl:flex">
           {NAV.map((item) => (
             <NavLink
               key={item.to}
@@ -96,7 +96,7 @@ export function Navbar() {
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden"
+            className="xl:hidden"
             onClick={() => setOpen((o) => !o)}
             aria-label="Menu"
           >
@@ -106,7 +106,7 @@ export function Navbar() {
       </div>
 
       {open && (
-        <div className="border-t lg:hidden">
+        <div className="border-t xl:hidden">
           <nav className="container flex flex-col py-3">
             {NAV.map((item) => (
               <NavLink

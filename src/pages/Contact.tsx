@@ -25,23 +25,23 @@ export default function Contact() {
         description="Contact Balochistan Standard Services for fire safety and security solutions, quotes and emergency support."
       />
 
-      <section className="border-b bg-[#f4f7f5]">
+      <section className="border-b border-white/10 bg-[#07130f] text-white">
         <div className="container grid gap-10 py-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
-            <Badge className="border-[#116b45]/20 bg-[#e6f4ec] text-[#116b45] hover:bg-[#e6f4ec]">
+            <Badge className="border-white/15 bg-white/10 text-white hover:bg-white/10">
               Contact Desk
             </Badge>
-            <h1 className="mt-4 text-3xl font-bold tracking-tight text-[#10231d] md:text-5xl">
+            <h1 className="mt-4 text-3xl font-bold tracking-tight md:text-5xl">
               Contact Us
             </h1>
-            <p className="mt-4 max-w-2xl text-slate-600">
+            <p className="mt-4 max-w-2xl text-white/65">
               Reach out for quotes, service requests or emergency support. We
               respond within one business day.
             </p>
           </div>
 
-          <div className="overflow-hidden rounded-[28px] border border-[#d7e7df] bg-white shadow-sm">
-            <div className="bg-[#116b45] px-6 py-5 text-white">
+          <div className="overflow-hidden rounded-lg border border-white/10 bg-[#10231d] shadow-xl shadow-black/20">
+            <div className="bg-[#c91616] px-6 py-5 text-white">
               <p className="text-sm uppercase tracking-[0.2em] text-white/80">
                 Balochistan Standard Services
               </p>
@@ -59,20 +59,20 @@ export default function Contact() {
                   key={item.label}
                   className={[
                     "grid gap-2 py-4",
-                    index !== 3 ? "border-b border-dashed border-[#d7e7df]" : "",
+                    index !== 3 ? "border-b border-dashed border-white/10" : "",
                   ].join(" ")}
                 >
-                  <p className="text-sm font-semibold uppercase tracking-wide text-[#116b45]">
+                  <p className="text-sm font-semibold uppercase tracking-wide text-[#8ed0af]">
                     {item.label}
                   </p>
-                  <p className="text-base text-slate-700">{item.value}</p>
+                  <p className="text-base text-white/75">{item.value}</p>
                 </div>
               ))}
-              <div className="mt-4 rounded-2xl bg-[#f4f7f5] p-4">
-                <p className="text-sm font-semibold uppercase tracking-wide text-[#116b45]">
+              <div className="mt-4 rounded-lg bg-[#07130f] p-4">
+                <p className="text-sm font-semibold uppercase tracking-wide text-[#8ed0af]">
                   Support
                 </p>
-                <p className="mt-1 text-sm text-slate-600">
+                <p className="mt-1 text-sm text-white/60">
                   24/7 emergency support and service response across Balochistan.
                 </p>
               </div>
@@ -81,7 +81,7 @@ export default function Contact() {
         </div>
       </section>
 
-      <section className="section-y">
+      <section className="section-y bg-[#0f1b18] text-white">
         <div className="container grid gap-10 lg:grid-cols-[1fr_420px]">
           {/* Info + map */}
           <div className="space-y-6">

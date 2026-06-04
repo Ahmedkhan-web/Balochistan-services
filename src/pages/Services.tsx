@@ -24,7 +24,7 @@ export default function Services() {
         description="Fire extinguisher refilling, CCTV & fire alarm installation, bank security solutions, AMC, audits and inspections."
       />
 
-      <section className="border-b bg-slate-950 text-white">
+      <section className="border-b border-white/10 bg-[#07130f] text-white">
         <div className="container grid gap-10 py-14 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div>
             <Badge className="border-white/15 bg-white/10 text-white hover:bg-white/10">
@@ -33,7 +33,7 @@ export default function Services() {
             <h1 className="mt-4 text-3xl font-bold tracking-tight md:text-5xl">
               Security Services
             </h1>
-            <p className="mt-4 max-w-2xl text-slate-300">
+            <p className="mt-4 max-w-2xl text-white/65">
               End-to-end fire safety and security services with online booking,
               instant quotes, service tracking and maintenance scheduling.
             </p>
@@ -45,9 +45,9 @@ export default function Services() {
               { label: "Installations", value: "Certified team" },
               { label: "Compliance", value: "Documented" },
             ].map((item) => (
-              <Card key={item.label} className="border-white/10 bg-white/5 text-white">
+              <Card key={item.label} className="border-white/10 bg-[#10231d] text-white">
                 <CardContent className="p-5">
-                  <p className="text-xs uppercase tracking-wide text-slate-300">{item.label}</p>
+                  <p className="text-xs uppercase tracking-wide text-white/60">{item.label}</p>
                   <p className="mt-2 text-2xl font-bold">{item.value}</p>
                 </CardContent>
               </Card>
