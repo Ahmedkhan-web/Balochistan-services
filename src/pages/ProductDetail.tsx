@@ -24,7 +24,7 @@ export default function ProductDetail() {
   const { slug } = useParams();
   const product = slug ? getProductBySlug(slug) : undefined;
   const [qty, setQty] = useState(1);
-  const { addItem, toggleWishlist, isWishlisted } = useCartStore();
+  const { addItem, toggleWishlist, isWishlisted, items } = useCartStore();
 
   if (!product) {
     return (
@@ -43,6 +43,7 @@ export default function ProductDetail() {
     (p) => p.category === product.category && p.id !== product.id,
   ).slice(0, 4);
   const wished = isWishlisted(product.id);
+  const cartItem = items.find((item) => item.product.id === product.id);
 
   return (
     <>
@@ -137,24 +138,34 @@ export default function ProductDetail() {
                   <Minus className="size-4" />
                 </Button>
                 <span className="w-10 text-center font-medium">{qty}</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setQty((q) => q + 1)}
-                >
-                  <Plus className="size-4" />
-                </Button>
-              </div>
               <Button
-                className="flex-1"
-                disabled={product.stock === 0}
-                onClick={() => {
-                  addItem(product, qty);
-                  toast.success(`${product.name} added to cart`);
-                }}
+                variant="ghost"
+                size="icon"
+                disabled={qty >= 10}
+                onClick={() => setQty((q) => q + 1)}
               >
-                <ShoppingCart className="size-4" /> Add to Cart
+                <Plus className="size-4" />
               </Button>
+              </div>
+              {cartItem ? (
+                <Link
+                  to="/cart"
+                  className="inline-flex h-10 flex-1 items-center justify-center rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+                >
+                  In Cart · Qty {cartItem.quantity}/10
+                </Link>
+              ) : (
+                <Button
+                  className="flex-1"
+                  disabled={product.stock === 0}
+                  onClick={() => {
+                    addItem(product, qty);
+                    toast.success(`${product.name} added to cart`);
+                  }}
+                >
+                  <ShoppingCart className="size-4" /> Add to Cart
+                </Button>
+              )}
               <Button
                 variant="outline"
                 size="icon"

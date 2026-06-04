@@ -3,6 +3,7 @@ import { SectionHeading } from "@/components/common/SectionHeading";
 import { ServiceCard } from "@/components/services/ServiceCard";
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Icon } from "@/components/common/Icon";
 import { SERVICES } from "@/data/services";
 import { FAQS } from "@/data/content";
@@ -23,15 +24,35 @@ export default function Services() {
         description="Fire extinguisher refilling, CCTV & fire alarm installation, bank security solutions, AMC, audits and inspections."
       />
 
-      <section className="border-b bg-muted/40">
-        <div className="container py-12">
-          <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
-            Security Services
-          </h1>
-          <p className="mt-2 max-w-2xl text-muted-foreground">
-            End-to-end fire safety and security services with online booking,
-            instant quotes, service tracking and maintenance scheduling.
-          </p>
+      <section className="border-b bg-slate-950 text-white">
+        <div className="container grid gap-10 py-14 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          <div>
+            <Badge className="border-white/15 bg-white/10 text-white hover:bg-white/10">
+              Service Center
+            </Badge>
+            <h1 className="mt-4 text-3xl font-bold tracking-tight md:text-5xl">
+              Security Services
+            </h1>
+            <p className="mt-4 max-w-2xl text-slate-300">
+              End-to-end fire safety and security services with online booking,
+              instant quotes, service tracking and maintenance scheduling.
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {[
+              { label: "Free survey", value: "On-site" },
+              { label: "Support", value: "24/7" },
+              { label: "Installations", value: "Certified team" },
+              { label: "Compliance", value: "Documented" },
+            ].map((item) => (
+              <Card key={item.label} className="border-white/10 bg-white/5 text-white">
+                <CardContent className="p-5">
+                  <p className="text-xs uppercase tracking-wide text-slate-300">{item.label}</p>
+                  <p className="mt-2 text-2xl font-bold">{item.value}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
 

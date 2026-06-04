@@ -10,11 +10,13 @@ import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
 import { Icon } from "@/components/common/Icon";
 import { PRODUCT_CATEGORIES } from "@/data/products";
 import { useCartStore } from "@/store/cartStore";
+import { buttonVariants } from "@/components/ui/button";
 import { cn, discountPercent, formatCurrency } from "@/lib/utils";
 
 export function ProductCard({ product }: { product: Product }) {
-  const { addItem, toggleWishlist, isWishlisted } = useCartStore();
+  const { addItem, toggleWishlist, isWishlisted, items } = useCartStore();
   const wished = isWishlisted(product.id);
+  const cartItem = items.find((item) => item.product.id === product.id);
   const category = PRODUCT_CATEGORIES.find((c) => c.id === product.category);
   const discount = discountPercent(product.price, product.discount_price);
 
@@ -91,17 +93,30 @@ export function ProductCard({ product }: { product: Product }) {
             {product.stock > 0 ? "In Stock" : "Out of Stock"}
           </Badge>
         </div>
-        <Button
-          className="mt-2 w-full"
-          size="sm"
-          disabled={product.stock === 0}
-          onClick={() => {
-            addItem(product);
-            toast.success(`${product.name} added to cart`);
-          }}
-        >
-          <ShoppingCart className="size-4" /> Add to Cart
-        </Button>
+        {cartItem ? (
+          <Link
+            to="/cart"
+            className={buttonVariants({
+              variant: "outline",
+              size: "sm",
+              className: "mt-2 w-full",
+            })}
+          >
+            In Cart · Qty {cartItem.quantity}/10
+          </Link>
+        ) : (
+          <Button
+            className="mt-2 w-full"
+            size="sm"
+            disabled={product.stock === 0}
+            onClick={() => {
+              addItem(product, 1);
+              toast.success(`${product.name} added to cart`);
+            }}
+          >
+            <ShoppingCart className="size-4" /> Add to Cart
+          </Button>
+        )}
       </CardContent>
     </Card>
   );

@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Seo } from "@/components/common/Seo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -70,9 +71,18 @@ export default function Checkout() {
   return (
     <>
       <Seo title="Checkout" path="/checkout" />
-      <div className="container py-10">
-        <h1 className="text-3xl font-bold tracking-tight">Checkout</h1>
+      <section className="border-b bg-muted/40">
+        <div className="container py-12">
+          <Badge variant="secondary" className="mb-3">
+            Secure checkout
+          </Badge>
+          <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
+            Checkout
+          </h1>
+        </div>
+      </section>
 
+      <div className="container py-10">
         <form
           className="mt-8 grid gap-8 lg:grid-cols-[1fr_380px]"
           onSubmit={(e) => {

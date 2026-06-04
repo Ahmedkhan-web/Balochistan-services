@@ -125,11 +125,11 @@ export default function Products() {
                 No products match your filters.
               </div>
             ) : (
-              <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                {filtered.map((p) => (
-                  <ProductCard key={p.id} product={p} />
-                ))}
-              </div>
+                <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+                  {filtered.map((p) => (
+                    <ProductCard key={p.id} product={p} />
+                  ))}
+                </div>
             )}
           </div>
         </div>

@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Product } from "@/types";
 
+const MAX_QUANTITY_PER_ITEM = 10;
+
 interface CartState {
   items: { product: Product; quantity: number }[];
   wishlist: Product[];
@@ -29,12 +31,23 @@ export const useCartStore = create<CartState>()(
             return {
               items: state.items.map((i) =>
                 i.product.id === product.id
-                  ? { ...i, quantity: i.quantity + quantity }
+                  ? {
+                      ...i,
+                      quantity: Math.min(
+                        MAX_QUANTITY_PER_ITEM,
+                        i.quantity + quantity,
+                      ),
+                    }
                   : i,
               ),
             };
           }
-          return { items: [...state.items, { product, quantity }] };
+          return {
+            items: [
+              ...state.items,
+              { product, quantity: Math.min(MAX_QUANTITY_PER_ITEM, quantity) },
+            ],
+          };
         }),
       removeItem: (productId) =>
         set((state) => ({
@@ -45,7 +58,13 @@ export const useCartStore = create<CartState>()(
           items: state.items
             .map((i) =>
               i.product.id === productId
-                ? { ...i, quantity: Math.max(1, quantity) }
+                ? {
+                    ...i,
+                    quantity: Math.min(
+                      MAX_QUANTITY_PER_ITEM,
+                      Math.max(1, quantity),
+                    ),
+                  }
                 : i,
             )
             .filter((i) => i.quantity > 0),

@@ -3,6 +3,7 @@ import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { toast } from "sonner";
 import { Seo } from "@/components/common/Seo";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,15 +25,35 @@ export default function Contact() {
         description="Contact Balochistan Standard Services for fire safety and security solutions, quotes and emergency support."
       />
 
-      <section className="border-b bg-muted/40">
-        <div className="container py-12">
-          <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
-            Contact Us
-          </h1>
-          <p className="mt-2 max-w-2xl text-muted-foreground">
-            Reach out for quotes, service requests or emergency support. We
-            respond within one business day.
-          </p>
+      <section className="border-b bg-slate-950 text-white">
+        <div className="container grid gap-10 py-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+          <div>
+            <Badge className="border-white/15 bg-white/10 text-white hover:bg-white/10">
+              Contact Desk
+            </Badge>
+            <h1 className="mt-4 text-3xl font-bold tracking-tight md:text-5xl">
+              Contact Us
+            </h1>
+            <p className="mt-4 max-w-2xl text-slate-300">
+              Reach out for quotes, service requests or emergency support. We
+              respond within one business day.
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {[
+              { label: "Phone", value: SITE.phone },
+              { label: "Email", value: SITE.email },
+              { label: "Emergency", value: "24/7 support" },
+              { label: "Location", value: "Balochistan" },
+            ].map((item) => (
+              <Card key={item.label} className="border-white/10 bg-white/5 text-white">
+                <CardContent className="p-5">
+                  <p className="text-xs uppercase tracking-wide text-slate-300">{item.label}</p>
+                  <p className="mt-2 text-base font-semibold">{item.value}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
 

@@ -27,7 +27,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between gap-4">
+      <div className="container flex h-[4.5rem] items-center justify-between gap-4">
         <Logo />
 
         <nav className="hidden items-center gap-1 lg:flex">
@@ -38,8 +38,10 @@ export function Navbar() {
               end={item.to === "/"}
               className={({ isActive }) =>
                 cn(
-                  "rounded-md px-3 py-2 text-sm font-medium transition-colors hover:text-primary",
-                  isActive ? "text-primary" : "text-foreground/80",
+                  "rounded-full px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-primary",
+                  isActive
+                    ? "bg-accent text-primary shadow-sm"
+                    : "text-foreground/70",
                 )
               }
             >
@@ -114,10 +116,10 @@ export function Navbar() {
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
                   cn(
-                    "rounded-md px-3 py-2.5 text-sm font-medium",
+                    "rounded-xl px-3 py-2.5 text-sm font-medium",
                     isActive
                       ? "bg-accent text-primary"
-                      : "text-foreground/80",
+                      : "text-foreground/80 hover:bg-muted",
                   )
                 }
               >
