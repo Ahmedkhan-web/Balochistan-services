@@ -3,7 +3,6 @@ import { PublicLayout } from "@/components/layout/PublicLayout";
 import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
 import { ADMIN_ROLES } from "@/store/authStore";
 
-import Home from "@/pages/Home";
 import Overview from "@/pages/Overview";
 import Products from "@/pages/Products";
 import ProductDetail from "@/pages/ProductDetail";
@@ -43,7 +42,7 @@ export const router = createBrowserRouter([
   {
     element: <PublicLayout />,
     children: [
-      { path: "/", element: <Home /> },
+      { path: "/", element: <Overview /> },
       { path: "/overview", element: <Overview /> },
       { path: "/products", element: <Products /> },
       { path: "/products/:slug", element: <ProductDetail /> },

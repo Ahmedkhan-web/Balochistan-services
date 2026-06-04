@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { Seo } from "@/components/common/Seo";
 import { ProductCard } from "@/components/products/ProductCard";
@@ -11,8 +12,9 @@ import { PRODUCTS, PRODUCT_CATEGORIES } from "@/data/products";
 type SortKey = "featured" | "price-asc" | "price-desc" | "rating";
 
 export default function Products() {
+  const [searchParams] = useSearchParams();
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("all");
+  const [category, setCategory] = useState(searchParams.get("category") ?? "all");
   const [sort, setSort] = useState<SortKey>("featured");
 
   const filtered = useMemo(() => {
@@ -63,28 +65,38 @@ export default function Products() {
       </section>
 
       <section className="section-y">
-        <div className="container grid gap-8 lg:grid-cols-[260px_1fr]">
-          {/* Filters */}
-          <aside className="space-y-6">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder="Search products..."
-                className="pl-9"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
+        <div className="container">
+          <div className="mb-8 rounded-2xl border bg-card p-4 shadow-sm">
+            <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Search products, cameras, alarms..."
+                  className="h-11 pl-9"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+              </div>
+              <Select
+                className="h-11 w-full lg:w-52"
+                value={sort}
+                onChange={(e) => setSort(e.target.value as SortKey)}
+              >
+                <option value="featured">Sort: Featured</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="rating">Top Rated</option>
+              </Select>
             </div>
 
-            <div>
+            <div className="mt-4">
               <p className="mb-3 flex items-center gap-2 text-sm font-semibold">
                 <SlidersHorizontal className="size-4" /> Categories
               </p>
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-wrap gap-2">
                 <Button
                   variant={category === "all" ? "default" : "ghost"}
                   size="sm"
-                  className="justify-start"
                   onClick={() => setCategory("all")}
                 >
                   All Products
@@ -94,7 +106,6 @@ export default function Products() {
                     key={c.id}
                     variant={category === c.id ? "default" : "ghost"}
                     size="sm"
-                    className="justify-start"
                     onClick={() => setCategory(c.id)}
                   >
                     {c.name}
@@ -102,22 +113,11 @@ export default function Products() {
                 ))}
               </div>
             </div>
-          </aside>
+          </div>
 
-          {/* Grid */}
           <div>
             <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
               <Badge variant="secondary">{filtered.length} products</Badge>
-              <Select
-                className="w-48"
-                value={sort}
-                onChange={(e) => setSort(e.target.value as SortKey)}
-              >
-                <option value="featured">Sort: Featured</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
-                <option value="rating">Top Rated</option>
-              </Select>
             </div>
 
             {filtered.length === 0 ? (

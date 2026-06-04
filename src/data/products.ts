@@ -10,8 +10,51 @@ export const PRODUCT_CATEGORIES = [
   { id: "accessories", name: "Security Accessories", icon: "shield" },
 ] as const;
 
+type CategoryId = (typeof PRODUCT_CATEGORIES)[number]["id"];
+
+const CATEGORY_IMAGES: Record<CategoryId, string> = {
+  "fire-extinguishers": productImage("Fire extinguisher", "#dc2626", "#f97316", "FE"),
+  "cctv-cameras": productImage("CCTV camera", "#111827", "#64748b", "IP"),
+  recorders: productImage("DVR / NVR recorder", "#0f172a", "#2563eb", "4K"),
+  "fire-alarm": productImage("Fire alarm system", "#b91c1c", "#facc15", "AL"),
+  "access-control": productImage("Access control", "#0f766e", "#22c55e", "ID"),
+  accessories: productImage("Safety accessory", "#334155", "#06b6d4", "SA"),
+};
+
+function productImage(title: string, color: string, accent: string, mark: string) {
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 650">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop stop-color="#f8fafc"/>
+          <stop offset="1" stop-color="#e2e8f0"/>
+        </linearGradient>
+        <linearGradient id="item" x1="0" y1="0" x2="1" y2="1">
+          <stop stop-color="${color}"/>
+          <stop offset="1" stop-color="${accent}"/>
+        </linearGradient>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+          <feDropShadow dx="0" dy="24" stdDeviation="22" flood-color="#0f172a" flood-opacity=".24"/>
+        </filter>
+      </defs>
+      <rect width="900" height="650" fill="url(#bg)"/>
+      <circle cx="710" cy="118" r="148" fill="${accent}" opacity=".16"/>
+      <circle cx="160" cy="540" r="180" fill="${color}" opacity=".10"/>
+      <g filter="url(#shadow)">
+        <rect x="240" y="175" width="420" height="290" rx="38" fill="white"/>
+        <rect x="285" y="220" width="330" height="200" rx="30" fill="url(#item)"/>
+        <circle cx="450" cy="320" r="68" fill="white" opacity=".18"/>
+        <text x="450" y="340" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="66" font-weight="800" fill="white">${mark}</text>
+      </g>
+      <text x="450" y="536" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="34" font-weight="800" fill="#0f172a">${title}</text>
+      <text x="450" y="574" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="600" fill="#64748b">Balochistan Standard Services</text>
+    </svg>`;
+
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
 const FIRE_TYPES = [
-  { code: "co2", label: "CO₂", basePrice: 6500 },
+  { code: "co2", label: "CO2", basePrice: 6500 },
   { code: "dcp", label: "DCP", basePrice: 4500 },
   { code: "foam", label: "Foam", basePrice: 5200 },
   { code: "water", label: "Water", basePrice: 3800 },
@@ -21,10 +64,10 @@ const FIRE_SIZES = ["2 KG", "4 KG", "6 KG", "8 KG", "10 KG", "25 KG", "50 KG"];
 function buildFireExtinguishers(): Product[] {
   const products: Product[] = [];
   FIRE_TYPES.forEach((type) => {
-    FIRE_SIZES.forEach((size, sizeIdx) => {
-      const sizeMultiplier = 1 + sizeIdx * 0.55;
+    FIRE_SIZES.forEach((size, sizeIndex) => {
+      const sizeMultiplier = 1 + sizeIndex * 0.55;
       const price = Math.round((type.basePrice * sizeMultiplier) / 100) * 100;
-      const name = `${type.label} Fire Extinguisher — ${size}`;
+      const name = `${type.label} Fire Extinguisher - ${size}`;
       const featured = type.code === "dcp" && size === "6 KG";
       products.push({
         id: `fe-${type.code}-${slugify(size)}`,
@@ -32,21 +75,21 @@ function buildFireExtinguishers(): Product[] {
         slug: slugify(name),
         category: "fire-extinguishers",
         subcategory: type.label,
-        description: `Certified ${type.label} fire extinguisher (${size}) suitable for commercial, industrial and institutional fire safety compliance. Refillable with pressure gauge and wall bracket included.`,
+        description: `Certified ${type.label} fire extinguisher (${size}) for commercial, industrial and institutional fire safety compliance.`,
         specifications: {
           Type: type.label,
           Capacity: size,
           Standard: "BS EN 3 / PS Certified",
-          "Operating Temp": "-20°C to +60°C",
+          "Operating Temp": "-20C to +60C",
           Warranty: "1 Year",
           Refillable: "Yes",
         },
-        images: [],
+        images: [CATEGORY_IMAGES["fire-extinguishers"]],
         price,
         discount_price: featured ? Math.round(price * 0.88) : null,
-        rating: 4.5 + (sizeIdx % 3) * 0.1,
-        reviews_count: 8 + sizeIdx * 3,
-        stock: 25 + sizeIdx,
+        rating: 4.5 + (sizeIndex % 3) * 0.1,
+        reviews_count: 8 + sizeIndex * 3,
+        stock: 25 + sizeIndex,
         featured,
       });
     });
@@ -54,287 +97,103 @@ function buildFireExtinguishers(): Product[] {
   return products;
 }
 
-const OTHER_PRODUCTS: Product[] = [
-  {
-    id: "cam-dome-4mp",
-    name: "4MP Dome IP Camera",
-    slug: "4mp-dome-ip-camera",
-    category: "cctv-cameras",
-    subcategory: "Dome Camera",
-    description:
-      "Indoor 4MP dome IP camera with IR night vision up to 30m, H.265+ compression and PoE support. Ideal for banks, offices and retail.",
-    specifications: {
-      Resolution: "4MP (2560×1440)",
-      "Night Vision": "30m IR",
-      Lens: "2.8mm Fixed",
-      Power: "PoE / 12V DC",
-      Protection: "IP67",
-    },
-    images: [],
-    price: 12500,
-    discount_price: 10999,
-    rating: 4.7,
-    reviews_count: 42,
-    stock: 60,
-    featured: true,
-  },
-  {
-    id: "cam-bullet-5mp",
-    name: "5MP Bullet IP Camera",
-    slug: "5mp-bullet-ip-camera",
-    category: "cctv-cameras",
-    subcategory: "Bullet Camera",
-    description:
-      "Weatherproof 5MP bullet camera with colour night vision, motion detection and 40m IR range for outdoor perimeter security.",
-    specifications: {
-      Resolution: "5MP",
-      "Night Vision": "40m IR / ColorVu",
-      Lens: "3.6mm",
-      Power: "PoE",
-      Protection: "IP67",
-    },
-    images: [],
-    price: 15800,
-    discount_price: null,
-    rating: 4.6,
-    reviews_count: 31,
-    stock: 45,
-    featured: true,
-  },
-  {
-    id: "cam-ptz-2mp",
-    name: "2MP PTZ Speed Dome Camera",
-    slug: "2mp-ptz-speed-dome",
-    category: "cctv-cameras",
-    subcategory: "PTZ Camera",
-    description:
-      "25× optical zoom PTZ camera with 360° pan, auto-tracking and 150m IR. Built for large facilities and parking areas.",
-    specifications: {
-      Resolution: "2MP",
-      Zoom: "25× Optical",
-      Pan: "360° Endless",
-      "Night Vision": "150m IR",
-      Protection: "IP66",
-    },
-    images: [],
-    price: 78500,
-    discount_price: 71999,
-    rating: 4.8,
-    reviews_count: 17,
-    stock: 12,
-    featured: false,
-  },
-  {
-    id: "nvr-16ch",
-    name: "16-Channel 4K NVR",
-    slug: "16-channel-4k-nvr",
-    category: "recorders",
-    subcategory: "NVR System",
-    description:
-      "16-channel 4K network video recorder with 2 SATA bays, smart H.265+ and AI event search. Records up to 8MP per channel.",
-    specifications: {
-      Channels: "16",
-      Resolution: "Up to 8MP",
-      Storage: "2× SATA (up to 20TB)",
-      Compression: "H.265+",
-      Network: "Gigabit",
-    },
-    images: [],
-    price: 42500,
-    discount_price: null,
-    rating: 4.7,
-    reviews_count: 22,
-    stock: 18,
-    featured: false,
-  },
-  {
-    id: "dvr-8ch",
-    name: "8-Channel 5MP DVR",
-    slug: "8-channel-5mp-dvr",
-    category: "recorders",
-    subcategory: "DVR System",
-    description:
-      "Penta-brid 8-channel DVR supporting HDCVI/AHD/TVI/CVBS/IP cameras with 5MP recording and mobile remote view.",
-    specifications: {
-      Channels: "8",
-      Resolution: "5MP Lite",
-      Inputs: "Penta-brid",
-      Storage: "1× SATA",
-      "Mobile App": "Yes",
-    },
-    images: [],
-    price: 18900,
-    discount_price: 16900,
-    rating: 4.5,
-    reviews_count: 28,
-    stock: 30,
-    featured: false,
-  },
-  {
-    id: "smoke-detector",
-    name: "Photoelectric Smoke Detector",
-    slug: "photoelectric-smoke-detector",
-    category: "fire-alarm",
-    subcategory: "Smoke Detector",
-    description:
-      "Addressable photoelectric smoke detector with low-profile design, LED status indicator and self-diagnostics.",
-    specifications: {
-      Type: "Photoelectric Addressable",
-      Voltage: "15–30V DC",
-      Coverage: "Up to 60 m²",
-      Certification: "UL / EN54",
-    },
-    images: [],
-    price: 3200,
-    discount_price: null,
-    rating: 4.6,
-    reviews_count: 51,
-    stock: 120,
-    featured: true,
-  },
-  {
-    id: "fire-alarm-panel",
-    name: "8-Zone Fire Alarm Control Panel",
-    slug: "8-zone-fire-alarm-panel",
-    category: "fire-alarm",
-    subcategory: "Fire Alarm Panel",
-    description:
-      "Conventional 8-zone fire alarm control panel with battery backup, fault monitoring and sounder circuits for commercial buildings.",
-    specifications: {
-      Zones: "8",
-      Backup: "24V Battery",
-      Outputs: "2 Sounder Circuits",
-      Certification: "EN54-2 / EN54-4",
-    },
-    images: [],
-    price: 34500,
-    discount_price: 31000,
-    rating: 4.7,
-    reviews_count: 14,
-    stock: 16,
-    featured: false,
-  },
-  {
-    id: "emergency-light",
-    name: "LED Emergency Exit Light",
-    slug: "led-emergency-exit-light",
-    category: "fire-alarm",
-    subcategory: "Emergency Light",
-    description:
-      "Maintained LED emergency exit light with 3-hour battery backup and IP65 rating for corridors and stairwells.",
-    specifications: {
-      Backup: "3 Hours",
-      Battery: "Ni-Cd Rechargeable",
-      Rating: "IP65",
-      Mounting: "Wall / Ceiling",
-    },
-    images: [],
-    price: 2800,
-    discount_price: null,
-    rating: 4.4,
-    reviews_count: 37,
-    stock: 90,
-    featured: false,
-  },
-  {
-    id: "biometric-machine",
-    name: "Biometric Attendance Machine",
-    slug: "biometric-attendance-machine",
-    category: "access-control",
-    subcategory: "Biometric Attendance",
-    description:
-      "Fingerprint + RFID + face recognition attendance terminal with TCP/IP, cloud sync and payroll-ready reports.",
-    specifications: {
-      Identification: "Face / Finger / RFID",
-      Capacity: "3000 Users",
-      Connectivity: "TCP/IP, USB",
-      Display: "2.8\" Color",
-    },
-    images: [],
-    price: 21500,
-    discount_price: 18999,
-    rating: 4.6,
-    reviews_count: 26,
-    stock: 22,
-    featured: true,
-  },
-  {
-    id: "access-control-device",
-    name: "Standalone Access Control Reader",
-    slug: "standalone-access-control-reader",
-    category: "access-control",
-    subcategory: "Access Control Device",
-    description:
-      "Weatherproof access control reader supporting card + PIN + fingerprint, Wiegand output and door lock relay.",
-    specifications: {
-      Methods: "Card / PIN / Finger",
-      Output: "Wiegand 26/34",
-      Rating: "IP66",
-      Relay: "Built-in",
-    },
-    images: [],
-    price: 9800,
-    discount_price: null,
-    rating: 4.5,
-    reviews_count: 19,
-    stock: 34,
-    featured: false,
-  },
-  {
-    id: "turnstile",
-    name: "Tripod Turnstile Gate",
-    slug: "tripod-turnstile-gate",
-    category: "access-control",
-    subcategory: "Turnstile System",
-    description:
-      "Bi-directional tripod turnstile with stainless steel housing, access control integration and anti-panic drop arm.",
-    specifications: {
-      Material: "SS304",
-      Throughput: "30 persons/min",
-      Integration: "Access Control / RFID",
-      Mode: "Bi-directional",
-    },
-    images: [],
-    price: 145000,
-    discount_price: 132000,
-    rating: 4.7,
-    reviews_count: 8,
-    stock: 6,
-    featured: false,
-  },
-  {
-    id: "fire-blanket",
-    name: "Fire Safety Blanket (1.2m × 1.2m)",
-    slug: "fire-safety-blanket",
-    category: "accessories",
-    subcategory: "Security Accessory",
-    description:
-      "Fiberglass fire blanket for kitchens and labs, smothers small fires and meets EN 1869 standard.",
-    specifications: {
-      Size: "1.2m × 1.2m",
-      Material: "Fiberglass",
-      Standard: "EN 1869",
-      Mounting: "Quick-release pouch",
-    },
-    images: [],
-    price: 1500,
-    discount_price: null,
-    rating: 4.3,
-    reviews_count: 44,
-    stock: 150,
-    featured: false,
-  },
-];
+const CATEGORY_PRODUCT_SEEDS: Record<
+  Exclude<CategoryId, "fire-extinguishers">,
+  Array<{
+    name: string;
+    subcategory: string;
+    price: number;
+    specs: Record<string, string>;
+  }>
+> = {
+  "cctv-cameras": [
+    { name: "4MP Dome IP Camera", subcategory: "Dome Camera", price: 12500, specs: { Resolution: "4MP", Lens: "2.8mm", Protection: "IP67" } },
+    { name: "5MP Bullet IP Camera", subcategory: "Bullet Camera", price: 15800, specs: { Resolution: "5MP", Lens: "3.6mm", Protection: "IP67" } },
+    { name: "2MP PTZ Speed Dome Camera", subcategory: "PTZ Camera", price: 78500, specs: { Resolution: "2MP", Zoom: "25x Optical", Protection: "IP66" } },
+    { name: "8MP Varifocal Bullet Camera", subcategory: "Bullet Camera", price: 28500, specs: { Resolution: "8MP", Lens: "2.8-12mm", "Night Vision": "60m IR" } },
+    { name: "Color Night Vision Turret Camera", subcategory: "Turret Camera", price: 18200, specs: { Resolution: "5MP", "Night Vision": "Full Color", Audio: "Built-in Mic" } },
+  ],
+  recorders: [
+    { name: "16-Channel 4K NVR", subcategory: "NVR System", price: 42500, specs: { Channels: "16", Resolution: "Up to 8MP", Storage: "2 SATA" } },
+    { name: "8-Channel 5MP DVR", subcategory: "DVR System", price: 18900, specs: { Channels: "8", Resolution: "5MP Lite", Storage: "1 SATA" } },
+    { name: "32-Channel Enterprise NVR", subcategory: "NVR System", price: 96500, specs: { Channels: "32", Resolution: "4K", Storage: "4 SATA" } },
+    { name: "4-Channel Compact DVR", subcategory: "DVR System", price: 12500, specs: { Channels: "4", Resolution: "1080p", "Mobile App": "Yes" } },
+    { name: "PoE NVR with 8 Ports", subcategory: "PoE NVR", price: 38500, specs: { Channels: "8", PoE: "Built-in", Compression: "H.265+" } },
+  ],
+  "fire-alarm": [
+    { name: "Photoelectric Smoke Detector", subcategory: "Smoke Detector", price: 3200, specs: { Type: "Photoelectric", Voltage: "15-30V DC", Certification: "UL / EN54" } },
+    { name: "8-Zone Fire Alarm Control Panel", subcategory: "Fire Alarm Panel", price: 34500, specs: { Zones: "8", Backup: "24V Battery", Certification: "EN54" } },
+    { name: "LED Emergency Exit Light", subcategory: "Emergency Light", price: 2800, specs: { Backup: "3 Hours", Rating: "IP65", Mounting: "Wall / Ceiling" } },
+    { name: "Manual Call Point Break Glass", subcategory: "Manual Call Point", price: 1800, specs: { Type: "Conventional", Reset: "Key", Certification: "EN54" } },
+    { name: "Addressable Heat Detector", subcategory: "Heat Detector", price: 4200, specs: { Type: "Rate of Rise", Voltage: "Loop Powered", Certification: "EN54" } },
+  ],
+  "access-control": [
+    { name: "Biometric Attendance Machine", subcategory: "Biometric Attendance", price: 21500, specs: { Methods: "Face / Finger / RFID", Capacity: "3000 Users", Connectivity: "TCP/IP" } },
+    { name: "Standalone Access Control Reader", subcategory: "Access Control Device", price: 9800, specs: { Methods: "Card / PIN / Finger", Output: "Wiegand", Rating: "IP66" } },
+    { name: "Tripod Turnstile Gate", subcategory: "Turnstile System", price: 145000, specs: { Material: "SS304", Throughput: "30 persons/min", Mode: "Bi-directional" } },
+    { name: "Magnetic Door Lock 600lbs", subcategory: "Door Lock", price: 6800, specs: { Holding: "600lbs", Voltage: "12/24V", Mounting: "Surface" } },
+    { name: "RFID Smart Card Reader", subcategory: "RFID Reader", price: 5600, specs: { Frequency: "125KHz", Output: "Wiegand", Rating: "IP65" } },
+  ],
+  accessories: [
+    { name: "Fire Safety Blanket 1.2m", subcategory: "Fire Safety", price: 1500, specs: { Size: "1.2m x 1.2m", Material: "Fiberglass", Standard: "EN 1869" } },
+    { name: "CCTV Junction Box", subcategory: "Camera Accessory", price: 950, specs: { Material: "Aluminum", Rating: "IP66", Mounting: "Wall / Pole" } },
+    { name: "Panic Alarm Button", subcategory: "Emergency Accessory", price: 2200, specs: { Type: "Momentary", Output: "NO/NC", Mounting: "Desk / Wall" } },
+    { name: "Warning Siren with Strobe", subcategory: "Alarm Accessory", price: 3900, specs: { Output: "110dB", Light: "LED Strobe", Voltage: "12V DC" } },
+    { name: "Fire Hose Reel Cabinet", subcategory: "Fire Safety", price: 28500, specs: { Material: "MS Powder Coated", Hose: "30m", Mounting: "Wall" } },
+  ],
+};
+
+function buildCategoryProducts(category: Exclude<CategoryId, "fire-extinguishers">): Product[] {
+  const variants = ["Standard", "Pro", "Plus", "Elite"];
+  const seeds = CATEGORY_PRODUCT_SEEDS[category];
+
+  return Array.from({ length: 20 }, (_, index) => {
+    const seed = seeds[index % seeds.length];
+    const variant = variants[Math.floor(index / seeds.length)];
+    const name = `${variant} ${seed.name}`;
+    const price = Math.round((seed.price * (1 + index * 0.035)) / 100) * 100;
+    const featured = index < 2;
+
+    return {
+      id: `${category}-${index + 1}`,
+      name,
+      slug: slugify(name),
+      category,
+      subcategory: seed.subcategory,
+      description: `${name} supplied by BSS for reliable fire safety, surveillance and security deployments across commercial and industrial sites.`,
+      specifications: {
+        ...seed.specs,
+        Warranty: "1 Year",
+        Installation: "Available",
+      },
+      images: [CATEGORY_IMAGES[category]],
+      price,
+      discount_price: featured ? Math.round(price * 0.9) : null,
+      rating: 4.4 + (index % 5) * 0.1,
+      reviews_count: 12 + index * 4,
+      stock: 10 + index * 3,
+      featured,
+    };
+  });
+}
 
 export const PRODUCTS: Product[] = [
   ...buildFireExtinguishers(),
-  ...OTHER_PRODUCTS,
+  ...buildCategoryProducts("cctv-cameras"),
+  ...buildCategoryProducts("recorders"),
+  ...buildCategoryProducts("fire-alarm"),
+  ...buildCategoryProducts("access-control"),
+  ...buildCategoryProducts("accessories"),
 ];
 
 export function getProductBySlug(slug: string): Product | undefined {
-  return PRODUCTS.find((p) => p.slug === slug);
+  return PRODUCTS.find((product) => product.slug === slug);
 }
 
 export function getFeaturedProducts(limit = 8): Product[] {
-  return PRODUCTS.filter((p) => p.featured).slice(0, limit);
+  return PRODUCTS.filter((product) => product.featured).slice(0, limit);
+}
+
+export function getProductsByCategory(category: string, limit = 20): Product[] {
+  return PRODUCTS.filter((product) => product.category === category).slice(0, limit);
 }

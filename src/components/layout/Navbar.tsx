@@ -3,8 +3,6 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Menu, ShoppingCart, User, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Logo } from "@/components/common/Logo";
-import { ThemeToggle } from "@/components/common/ThemeToggle";
-import { LanguageToggle } from "@/components/common/LanguageToggle";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/store/cartStore";
@@ -12,8 +10,7 @@ import { useAuthStore, ADMIN_ROLES } from "@/store/authStore";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { to: "/", key: "home" },
-  { to: "/overview", key: "overview" },
+  { to: "/", key: "overview" },
   { to: "/products", key: "products" },
   { to: "/services", key: "services" },
   { to: "/contact", key: "contact" },
@@ -52,8 +49,6 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-1">
-          <LanguageToggle />
-          <ThemeToggle />
           <Link to="/cart" className="relative">
             <Button variant="ghost" size="icon" aria-label="Cart">
               <ShoppingCart className="size-5" />

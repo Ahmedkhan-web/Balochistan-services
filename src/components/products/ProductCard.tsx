@@ -21,11 +21,20 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <Card className="group flex flex-col overflow-hidden transition-shadow hover:shadow-lg">
       <Link to={`/products/${product.slug}`} className="relative block">
-        <ImagePlaceholder
-          icon={category?.icon ?? "shield"}
-          label={product.subcategory}
-          className="aspect-[4/3] w-full"
-        />
+        {product.images[0] ? (
+          <img
+            src={product.images[0]}
+            alt={product.name}
+            className="aspect-[4/3] w-full bg-muted object-cover transition duration-300 group-hover:scale-105"
+            loading="lazy"
+          />
+        ) : (
+          <ImagePlaceholder
+            icon={category?.icon ?? "shield"}
+            label={product.subcategory}
+            className="aspect-[4/3] w-full"
+          />
+        )}
         {discount > 0 && (
           <Badge className="absolute left-3 top-3" variant="destructive">
             -{discount}%

@@ -62,18 +62,35 @@ export default function ProductDetail() {
 
         <div className="grid gap-10 lg:grid-cols-2">
           <div className="space-y-4">
-            <ImagePlaceholder
-              icon={category?.icon ?? "shield"}
-              label={product.subcategory}
-              className="aspect-square w-full rounded-2xl"
-            />
+            {product.images[0] ? (
+              <img
+                src={product.images[0]}
+                alt={product.name}
+                className="aspect-square w-full rounded-2xl bg-muted object-cover"
+              />
+            ) : (
+              <ImagePlaceholder
+                icon={category?.icon ?? "shield"}
+                label={product.subcategory}
+                className="aspect-square w-full rounded-2xl"
+              />
+            )}
             <div className="grid grid-cols-4 gap-3">
               {Array.from({ length: 4 }).map((_, i) => (
-                <ImagePlaceholder
-                  key={i}
-                  icon={category?.icon ?? "shield"}
-                  className="aspect-square rounded-lg opacity-80"
-                />
+                product.images[0] ? (
+                  <img
+                    key={i}
+                    src={product.images[0]}
+                    alt={`${product.name} view ${i + 1}`}
+                    className="aspect-square rounded-lg bg-muted object-cover opacity-80"
+                  />
+                ) : (
+                  <ImagePlaceholder
+                    key={i}
+                    icon={category?.icon ?? "shield"}
+                    className="aspect-square rounded-lg opacity-80"
+                  />
+                )
               ))}
             </div>
           </div>
