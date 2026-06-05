@@ -27,7 +27,7 @@ export function Logo({
           <span className="text-[12px] font-extrabold tracking-tight sm:text-base lg:text-lg">
             {SITE.name}
           </span>
-          <span className="mt-1 hidden text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground sm:block">
+          <span className="mt-0.5 text-[7px] font-semibold uppercase tracking-[0.08em] text-muted-foreground sm:mt-1 sm:text-[10px] sm:tracking-[0.18em]">
             Fire Safety and Security
           </span>
         </span>

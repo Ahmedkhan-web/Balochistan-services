@@ -1,8 +1,10 @@
 import { PRODUCTS } from "@/data/products";
 
+export const HERO_OVERVIEW_IMAGE = "/assets/images/hero-overview.png";
+
 const STATIC_IMAGE_ASSETS = [
   "/assets/images/bss-logo.png",
-  "/assets/images/hero-overview.png",
+  HERO_OVERVIEW_IMAGE,
   "/assets/images/feature-fire.jpg",
   "/assets/images/category-access-control.jpg",
   "/assets/images/category-accessories.jpg",

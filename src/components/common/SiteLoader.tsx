@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { SITE_PRELOAD_IMAGES } from "@/lib/siteAssets";
+import { HERO_OVERVIEW_IMAGE, SITE_PRELOAD_IMAGES } from "@/lib/siteAssets";
 import { SITE } from "@/lib/constants";
 
 const MAX_LOADING_MS = 4800;
@@ -70,6 +70,10 @@ async function waitForSiteReadiness() {
   ]);
 }
 
+async function waitForCriticalHeroImage() {
+  await preloadImage(HERO_OVERVIEW_IMAGE);
+}
+
 export function useInitialSiteLoader() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -78,6 +82,7 @@ export function useInitialSiteLoader() {
 
     const finish = async () => {
       await Promise.all([
+        waitForCriticalHeroImage(),
         Promise.race([waitForSiteReadiness(), delay(MAX_LOADING_MS)]),
         delay(MIN_LOADING_MS),
       ]);

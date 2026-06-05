@@ -118,6 +118,7 @@ export default function Overview() {
           aria-hidden="true"
         />
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(5,31,23,0.96)_0%,rgba(8,55,38,0.83)_34%,rgba(52,135,77,0.48)_56%,rgba(5,12,13,0.2)_100%)]" />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(135deg,rgba(5,31,23,0.72)_0%,rgba(5,96,58,0.4)_36%,rgba(7,19,15,0.52)_72%,rgba(0,0,0,0.38)_100%)] md:hidden" />
         <div className="absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-t from-[#07130f] to-transparent" />
 
         <div className="border-b border-white/10 bg-black/25 backdrop-blur-sm">
@@ -131,7 +132,7 @@ export default function Overview() {
             </div>
             <div className="hidden flex-wrap items-center justify-center gap-2 sm:flex sm:gap-3">
               <span>24/7 Support</span>
-              <span className="text-[#bde8c0]">{SITE.phone}</span>
+              <span className="text-[#bde8c0]">{SITE.phoneDisplay}</span>
             </div>
           </div>
         </div>
@@ -533,13 +534,13 @@ export default function Overview() {
               </p>
             </div>
             <a
-              href={`tel:${SITE.phone.replace(/\s/g, "")}`}
+              href={`tel:${SITE.phone.replace(/\D/g, "")}`}
               className={buttonVariants({
                 size: "lg",
                 className: "w-full bg-[#c91616] text-white hover:bg-[#a90f0f] md:w-auto",
               })}
             >
-              <PhoneCall className="size-5" /> {SITE.phone}
+              <PhoneCall className="size-5" /> {SITE.phoneDisplay}
             </a>
           </div>
         </div>

@@ -51,7 +51,7 @@ export default function Contact() {
             <div className="grid gap-0 p-5 sm:p-6">
               {[
                 { label: "Company Name", value: SITE.name },
-                { label: "Phone No.", value: SITE.phone },
+                { label: "Phone No.", value: SITE.phoneDisplay },
                 { label: "Email", value: SITE.email },
                 { label: "Address", value: SITE.address },
               ].map((item, index) => (
@@ -91,7 +91,7 @@ export default function Contact() {
                   <Phone className="size-5 shrink-0 text-primary" />
                   <div>
                     <p className="font-semibold">Phone</p>
-                    <p className="break-words text-sm text-muted-foreground">{SITE.phone}</p>
+                    <p className="break-words text-sm text-muted-foreground">{SITE.phoneDisplay}</p>
                   </div>
                 </CardContent>
               </Card>

@@ -23,7 +23,7 @@ export function Footer() {
               <MapPin className="mt-0.5 size-4 shrink-0 text-primary" /> {SITE.address}
             </p>
             <p className="flex items-start gap-2">
-              <Phone className="mt-0.5 size-4 shrink-0 text-primary" /> {SITE.phone}
+              <Phone className="mt-0.5 size-4 shrink-0 text-primary" /> {SITE.phoneDisplay}
             </p>
             <p className="flex items-start gap-2 break-all">
               <Mail className="mt-0.5 size-4 shrink-0 text-primary" /> {SITE.email}

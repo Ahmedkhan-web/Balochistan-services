@@ -44,7 +44,7 @@ export default function ContentManagement() {
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="cphone">Phone</Label>
-                  <Input id="cphone" defaultValue={SITE.phone} />
+                  <Input id="cphone" defaultValue={SITE.phoneDisplay} />
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="cwa">WhatsApp Number</Label>

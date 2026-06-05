@@ -263,10 +263,10 @@ export default function Home() {
               </p>
             </div>
             <a
-              href={`tel:${SITE.phone.replace(/\s/g, "")}`}
+              href={`tel:${SITE.phone.replace(/\D/g, "")}`}
               className={buttonVariants({ size: "lg", variant: "secondary" })}
             >
-              <PhoneCall className="size-5" /> {SITE.phone}
+              <PhoneCall className="size-5" /> {SITE.phoneDisplay}
             </a>
           </div>
         </div>
