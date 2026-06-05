@@ -39,19 +39,19 @@ export default function ServiceDetail() {
       />
 
       <section className="border-b bg-muted/40">
-        <div className="container py-12">
+        <div className="container py-9 text-center sm:py-12 md:text-left">
           <nav className="mb-4 text-sm text-muted-foreground">
             <Link to="/services" className="hover:text-primary">
               Services
             </Link>{" "}
             / <span className="text-foreground">{service.name}</span>
           </nav>
-          <div className="flex items-start gap-4">
-            <div className="flex size-14 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <Icon name={service.icon} className="size-7" />
+          <div className="flex flex-col items-center gap-3 sm:gap-4 md:flex-row md:items-start">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground sm:size-14 sm:rounded-xl">
+              <Icon name={service.icon} className="size-6 sm:size-7" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">
+              <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
                 {service.name}
               </h1>
               {service.starting_price && (
@@ -68,9 +68,9 @@ export default function ServiceDetail() {
       </section>
 
       <section className="section-y">
-        <div className="container grid gap-10 lg:grid-cols-[1fr_400px]">
+        <div className="container grid gap-8 lg:grid-cols-[1fr_400px] lg:gap-10">
           <div>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-base leading-7 text-muted-foreground sm:text-lg">
               {service.description}
             </p>
             <h2 className="mt-8 text-xl font-semibold">What's included</h2>
@@ -78,9 +78,9 @@ export default function ServiceDetail() {
               {service.features.map((f) => (
                 <li
                   key={f}
-                  className="flex items-center gap-2 rounded-lg border p-3 text-sm"
+                  className="flex items-start gap-2 rounded-lg border p-3 text-sm leading-6"
                 >
-                  <Check className="size-4 text-primary" /> {f}
+                  <Check className="mt-1 size-4 shrink-0 text-primary" /> {f}
                 </li>
               ))}
             </ul>
@@ -93,7 +93,7 @@ export default function ServiceDetail() {
                   to={`/services/${s.slug}`}
                   className="flex items-center gap-3 rounded-lg border p-4 hover:border-primary"
                 >
-                  <Icon name={s.icon} className="size-5 text-primary" />
+                  <Icon name={s.icon} className="size-5 shrink-0 text-primary" />
                   <span className="text-sm font-medium">{s.name}</span>
                 </Link>
               ))}
@@ -102,7 +102,7 @@ export default function ServiceDetail() {
 
           {/* Booking form */}
           <Card className="h-fit lg:sticky lg:top-24">
-            <CardContent className="p-6">
+            <CardContent className="p-5 sm:p-6">
               <h3 className="text-lg font-semibold">Request this service</h3>
               <p className="mt-1 text-sm text-muted-foreground">
                 Get an instant quote and book a visit.
@@ -137,7 +137,7 @@ export default function ServiceDetail() {
                     <Label htmlFor="notes">Notes</Label>
                     <Textarea id="notes" placeholder="Tell us about your requirements" />
                   </div>
-                  <Button type="submit" className="w-full">
+                  <Button type="submit" className="h-11 w-full">
                     Request Quote
                   </Button>
                 </form>

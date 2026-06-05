@@ -3,6 +3,7 @@ import { RouterProvider } from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "sonner";
+import { SiteLoader, useInitialSiteLoader } from "@/components/common/SiteLoader";
 import { router } from "@/router";
 import { queryClient } from "@/lib/queryClient";
 import { useUIStore } from "@/store/uiStore";
@@ -12,6 +13,7 @@ import "@/i18n";
 export default function App() {
   const applyTheme = useUIStore((s) => s.applyTheme);
   const initialize = useAuthStore((s) => s.initialize);
+  const isSiteLoading = useInitialSiteLoader();
 
   useEffect(() => {
     applyTheme();
@@ -21,7 +23,10 @@ export default function App() {
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <div aria-hidden={isSiteLoading}>
+          <RouterProvider router={router} />
+        </div>
+        <SiteLoader visible={isSiteLoading} />
         <Toaster position="top-right" richColors closeButton />
       </QueryClientProvider>
     </HelmetProvider>

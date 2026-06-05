@@ -25,20 +25,20 @@ export default function Services() {
       />
 
       <section className="border-b border-white/10 bg-[#07130f] text-white">
-        <div className="container grid gap-10 py-14 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+        <div className="container grid gap-7 py-9 text-center sm:py-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:py-14 lg:text-left">
           <div>
             <Badge className="border-white/15 bg-white/10 text-white hover:bg-white/10">
               Service Center
             </Badge>
-            <h1 className="mt-4 text-3xl font-bold tracking-tight md:text-5xl">
+            <h1 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl md:text-5xl">
               Security Services
             </h1>
-            <p className="mt-4 max-w-2xl text-white/65">
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-white/65 sm:mt-4 sm:text-base">
               End-to-end fire safety and security services with online booking,
               instant quotes, service tracking and maintenance scheduling.
             </p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-3 text-left min-[380px]:grid-cols-2 sm:gap-4">
             {[
               { label: "Free survey", value: "On-site" },
               { label: "Support", value: "24/7" },
@@ -46,9 +46,9 @@ export default function Services() {
               { label: "Compliance", value: "Documented" },
             ].map((item) => (
               <Card key={item.label} className="border-white/10 bg-[#10231d] text-white">
-                <CardContent className="p-5">
+                <CardContent className="p-4 sm:p-5">
                   <p className="text-xs uppercase tracking-wide text-white/60">{item.label}</p>
-                  <p className="mt-2 text-2xl font-bold">{item.value}</p>
+                  <p className="mt-2 text-xl font-bold sm:text-2xl">{item.value}</p>
                 </CardContent>
               </Card>
             ))}
@@ -58,7 +58,7 @@ export default function Services() {
 
       <section className="section-y">
         <div className="container">
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
             {SERVICES.map((s) => (
               <ServiceCard key={s.id} service={s} />
             ))}
@@ -70,11 +70,11 @@ export default function Services() {
       <section className="section-y bg-muted/40">
         <div className="container">
           <SectionHeading eyebrow="How it works" title="Our Process" />
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
             {PROCESS.map((p) => (
               <Card key={p.step} className="relative overflow-hidden">
-                <CardContent className="p-6">
-                  <span className="absolute right-4 top-2 text-5xl font-extrabold text-muted/40">
+                <CardContent className="p-5 sm:p-6">
+                  <span className="absolute right-4 top-2 text-4xl font-extrabold text-muted/40 sm:text-5xl">
                     {p.step}
                   </span>
                   <Icon name={p.icon} className="mb-3 size-8 text-primary" />

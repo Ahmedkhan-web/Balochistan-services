@@ -21,7 +21,7 @@ export function ProductCard({ product }: { product: Product }) {
   const discount = discountPercent(product.price, product.discount_price);
 
   return (
-    <Card className="group flex flex-col overflow-hidden transition-shadow hover:shadow-lg">
+    <Card className="group flex h-full flex-col overflow-hidden transition-shadow hover:shadow-lg">
       <Link to={`/products/${product.slug}`} className="relative block">
         {product.images[0] ? (
           <img
@@ -60,20 +60,20 @@ export function ProductCard({ product }: { product: Product }) {
           />
         </button>
       </Link>
-      <CardContent className="flex flex-1 flex-col gap-2 p-4">
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Icon name={category?.icon ?? "shield"} className="size-3.5" />
-          {category?.name}
+      <CardContent className="flex flex-1 flex-col gap-2.5 p-4 sm:p-5">
+        <div className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
+          <Icon name={category?.icon ?? "shield"} className="size-3.5 shrink-0" />
+          <span className="min-w-0 truncate">{category?.name}</span>
         </div>
         <Link
           to={`/products/${product.slug}`}
-          className="line-clamp-2 font-semibold leading-snug hover:text-primary"
+          className="line-clamp-2 text-base font-semibold leading-snug hover:text-primary"
         >
           {product.name}
         </Link>
         <StarRating value={product.rating} count={product.reviews_count} />
-        <div className="mt-auto flex items-end justify-between pt-2">
-          <div>
+        <div className="mt-auto flex min-w-0 items-end justify-between gap-2 pt-2">
+          <div className="min-w-0 flex-1">
             {product.discount_price ? (
               <div className="flex flex-col">
                 <span className="text-lg font-bold text-primary">
@@ -89,7 +89,7 @@ export function ProductCard({ product }: { product: Product }) {
               </span>
             )}
           </div>
-          <Badge variant={product.stock > 0 ? "success" : "destructive"}>
+          <Badge className="shrink-0" variant={product.stock > 0 ? "success" : "destructive"}>
             {product.stock > 0 ? "In Stock" : "Out of Stock"}
           </Badge>
         </div>
@@ -98,16 +98,14 @@ export function ProductCard({ product }: { product: Product }) {
             to="/cart"
             className={buttonVariants({
               variant: "outline",
-              size: "sm",
-              className: "mt-2 w-full",
+              className: "mt-2 h-11 w-full",
             })}
           >
             In Cart · Qty {cartItem.quantity}/10
           </Link>
         ) : (
           <Button
-            className="mt-2 w-full"
-            size="sm"
+            className="mt-2 h-11 w-full"
             disabled={product.stock === 0}
             onClick={() => {
               addItem(product, 1);

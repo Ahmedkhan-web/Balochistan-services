@@ -7,10 +7,10 @@ export function FloatingActions() {
     WHATSAPP_DEFAULT_MESSAGE,
   )}`;
   return (
-    <div className="fixed bottom-5 right-5 z-40 flex flex-col gap-3">
+    <div className="fixed bottom-4 right-4 z-40 flex flex-col gap-2.5 sm:bottom-5 sm:right-5 sm:gap-3">
       <a
         href={`tel:${SITE.phone.replace(/\s/g, "")}`}
-        className="group flex items-center gap-2 rounded-full bg-destructive px-4 py-3 text-sm font-semibold text-destructive-foreground shadow-lg transition hover:scale-105"
+        className="group flex size-12 items-center justify-center rounded-full bg-destructive text-sm font-semibold text-destructive-foreground shadow-lg transition hover:scale-105 sm:size-auto sm:gap-2 sm:px-4 sm:py-3"
         aria-label="Emergency call"
       >
         <Phone className="size-5 animate-pulse" />
@@ -20,7 +20,7 @@ export function FloatingActions() {
         href={waLink}
         target="_blank"
         rel="noreferrer"
-        className="group flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:scale-105"
+        className="group flex size-12 items-center justify-center rounded-full bg-[#25D366] text-sm font-semibold text-white shadow-lg transition hover:scale-105 sm:size-auto sm:gap-2 sm:px-4 sm:py-3"
         aria-label="WhatsApp quick contact"
       >
         <MessageCircle className="size-5" />

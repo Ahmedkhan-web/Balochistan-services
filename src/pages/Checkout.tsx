@@ -35,20 +35,20 @@ export default function Checkout() {
 
   if (placed) {
     return (
-      <div className="container flex flex-col items-center py-24 text-center">
+      <div className="container flex min-h-[70vh] flex-col items-center justify-center py-16 text-center sm:py-24">
         <CheckCircle2 className="size-16 text-primary" />
-        <h1 className="mt-4 text-3xl font-bold">Order Placed!</h1>
-        <p className="mt-2 max-w-md text-muted-foreground">
+        <h1 className="mt-4 text-2xl font-bold sm:text-3xl">Order Placed!</h1>
+        <p className="mt-2 max-w-md text-sm leading-7 text-muted-foreground sm:text-base">
           Thank you for your order. A confirmation and invoice have been sent to
           your email. You can track it from your dashboard.
         </p>
-        <div className="mt-6 flex gap-3">
-          <Button onClick={() => navigate("/dashboard/orders")}>
+        <div className="mt-6 grid w-full max-w-sm gap-3 sm:flex sm:w-auto">
+          <Button className="h-11" onClick={() => navigate("/dashboard/orders")}>
             View Orders
           </Button>
           <Link
             to="/products"
-            className="inline-flex h-10 items-center rounded-md border px-4 text-sm font-semibold hover:bg-accent"
+            className="inline-flex h-11 items-center justify-center rounded-md border px-4 text-sm font-semibold hover:bg-accent"
           >
             Continue Shopping
           </Link>
@@ -59,7 +59,7 @@ export default function Checkout() {
 
   if (items.length === 0) {
     return (
-      <div className="container py-24 text-center">
+      <div className="container py-16 text-center sm:py-24">
         <h1 className="text-2xl font-bold">Your cart is empty</h1>
         <Link to="/products" className="mt-4 inline-block text-primary">
           ← Browse products
@@ -72,19 +72,19 @@ export default function Checkout() {
     <>
       <Seo title="Checkout" path="/checkout" />
       <section className="border-b bg-muted/40">
-        <div className="container py-12">
+        <div className="container py-9 text-center sm:py-12 md:text-left">
           <Badge variant="secondary" className="mb-3">
             Secure checkout
           </Badge>
-          <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
             Checkout
           </h1>
         </div>
       </section>
 
-      <div className="container py-10">
+      <div className="container py-8 sm:py-10">
         <form
-          className="mt-8 grid gap-8 lg:grid-cols-[1fr_380px]"
+          className="grid gap-6 lg:grid-cols-[1fr_380px] lg:gap-8"
           onSubmit={(e) => {
             e.preventDefault();
             clear();
@@ -94,7 +94,7 @@ export default function Checkout() {
         >
           <div className="space-y-6">
             <Card>
-              <CardContent className="space-y-4 p-6">
+              <CardContent className="space-y-4 p-5 sm:p-6">
                 <h2 className="font-semibold">Billing Details</h2>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
@@ -127,7 +127,7 @@ export default function Checkout() {
                       key={m.id}
                       onClick={() => setMethod(m.id)}
                       className={cn(
-                        "flex items-center gap-2 rounded-lg border p-3 text-sm font-medium transition",
+                        "flex min-h-12 items-center gap-2 rounded-lg border p-3 text-left text-sm font-medium transition",
                         method === m.id
                           ? "border-primary bg-accent"
                           : "hover:border-primary/50",
@@ -143,15 +143,15 @@ export default function Checkout() {
           </div>
 
           <Card className="h-fit">
-            <CardContent className="space-y-3 p-6">
+            <CardContent className="space-y-3 p-5 sm:p-6">
               <h2 className="text-lg font-semibold">Order Summary</h2>
               <div className="space-y-2">
                 {items.map(({ product, quantity }) => (
                   <div
                     key={product.id}
-                    className="flex justify-between text-sm"
+                    className="grid gap-1 text-sm min-[420px]:flex min-[420px]:justify-between"
                   >
-                    <span className="text-muted-foreground">
+                    <span className="line-clamp-2 text-muted-foreground">
                       {product.name} × {quantity}
                     </span>
                     <span>
@@ -176,7 +176,7 @@ export default function Checkout() {
                 <span>Total</span>
                 <span className="text-primary">{formatCurrency(total)}</span>
               </div>
-              <Button type="submit" className="mt-2 w-full">
+              <Button type="submit" className="mt-2 h-11 w-full">
                 Place Order
               </Button>
             </CardContent>

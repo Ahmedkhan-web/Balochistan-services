@@ -13,20 +13,20 @@ export function Footer() {
   const [email, setEmail] = useState("");
 
   return (
-    <footer className="border-t bg-muted/40">
-      <div className="container grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-4">
+    <footer className="border-t bg-muted/40 pb-20 sm:pb-0">
+      <div className="container grid gap-9 py-10 sm:py-12 md:grid-cols-2 lg:grid-cols-4">
         <div className="space-y-4">
           <Logo />
-          <p className="text-sm text-muted-foreground">{SITE.description}</p>
+          <p className="max-w-sm text-sm leading-6 text-muted-foreground">{SITE.description}</p>
           <div className="space-y-2 text-sm">
-            <p className="flex items-center gap-2">
-              <MapPin className="size-4 text-primary" /> {SITE.address}
+            <p className="flex items-start gap-2">
+              <MapPin className="mt-0.5 size-4 shrink-0 text-primary" /> {SITE.address}
             </p>
-            <p className="flex items-center gap-2">
-              <Phone className="size-4 text-primary" /> {SITE.phone}
+            <p className="flex items-start gap-2">
+              <Phone className="mt-0.5 size-4 shrink-0 text-primary" /> {SITE.phone}
             </p>
-            <p className="flex items-center gap-2">
-              <Mail className="size-4 text-primary" /> {SITE.email}
+            <p className="flex items-start gap-2 break-all">
+              <Mail className="mt-0.5 size-4 shrink-0 text-primary" /> {SITE.email}
             </p>
           </div>
         </div>
@@ -54,7 +54,7 @@ export function Footer() {
         <div>
           <h4 className="mb-4 font-semibold">{t("footer.newsletter")}</h4>
           <form
-            className="flex gap-2"
+            className="grid gap-2 sm:flex"
             onSubmit={(e) => {
               e.preventDefault();
               if (!email) return;
@@ -69,7 +69,7 @@ export function Footer() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <Button type="submit" size="icon" aria-label="Subscribe">
+            <Button type="submit" size="icon" className="w-full sm:w-10" aria-label="Subscribe">
               <Send className="size-4" />
             </Button>
           </form>
@@ -80,8 +80,8 @@ export function Footer() {
       </div>
 
       <div className="border-t">
-        <div className="container flex flex-col items-center justify-between gap-2 py-5 text-sm text-muted-foreground md:flex-row">
-          <p>
+        <div className="container flex flex-col items-center justify-between gap-3 py-5 text-center text-sm text-muted-foreground md:flex-row md:text-left">
+          <p className="leading-6">
             © {new Date().getFullYear()} {SITE.name}. {t("footer.rights")}
           </p>
           <div className="flex gap-4">

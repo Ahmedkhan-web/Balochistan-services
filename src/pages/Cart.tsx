@@ -32,21 +32,21 @@ export default function Cart() {
       <Seo title="Cart" path="/cart" />
 
       <section className="border-b bg-muted/40">
-        <div className="container py-12">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div className="container py-9 sm:py-12">
+          <div className="flex flex-col gap-5 text-center lg:flex-row lg:items-end lg:justify-between lg:text-left">
             <div>
               <Badge variant="secondary" className="mb-3">
                 Order Review
               </Badge>
-              <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
+              <h1 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
                 Your Cart
               </h1>
-              <p className="mt-2 max-w-2xl text-muted-foreground">
+              <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
                 Review product details, quantities and totals before checkout.
                 Each product can be added once and kept up to 10 units.
               </p>
             </div>
-            <div className="grid grid-cols-3 gap-3 text-sm">
+            <div className="grid grid-cols-3 gap-2 text-left text-sm sm:gap-3">
               <Stat label="Unique items" value={uniqueItems} />
               <Stat label="Total units" value={totalUnits} />
               <Stat label="Max / item" value="10" />
@@ -58,7 +58,7 @@ export default function Cart() {
       <section className="section-y">
         <div className="container">
           {items.length === 0 ? (
-            <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed py-24 text-center">
+            <div className="flex flex-col items-center gap-4 rounded-lg border border-dashed px-5 py-16 text-center sm:py-24">
               <ShoppingBag className="size-12 text-muted-foreground" />
               <div>
                 <p className="text-lg font-semibold">Your cart is empty</p>
@@ -71,7 +71,7 @@ export default function Cart() {
               </Link>
             </div>
           ) : (
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-8">
               <div className="space-y-4">
                 {items.map(({ product, quantity }) => {
                   const category = PRODUCT_CATEGORIES.find(
@@ -81,7 +81,7 @@ export default function Cart() {
 
                   return (
                     <Card key={product.id} className="overflow-hidden">
-                      <CardContent className="grid gap-5 p-5 md:grid-cols-[140px_minmax(0,1fr)]">
+                      <CardContent className="grid gap-4 p-4 sm:p-5 md:grid-cols-[140px_minmax(0,1fr)]">
                         {product.images[0] ? (
                           <img
                             src={product.images[0]}
@@ -116,7 +116,7 @@ export default function Cart() {
                                 {product.subcategory}
                               </p>
                             </div>
-                            <div className="text-right">
+                            <div className="w-full text-left sm:w-auto sm:text-right">
                               <p className="text-lg font-bold text-primary">
                                 {formatCurrency(
                                   (product.discount_price ?? product.price) *
@@ -131,7 +131,7 @@ export default function Cart() {
                             </div>
                           </div>
 
-                          <div className="grid gap-2 sm:grid-cols-3">
+                          <div className="grid gap-2 min-[420px]:grid-cols-3">
                             {specs.map(([label, value]) => (
                               <div
                                 key={label}
@@ -145,7 +145,7 @@ export default function Cart() {
                             ))}
                           </div>
 
-                          <div className="flex flex-wrap items-center justify-between gap-3">
+                          <div className="grid gap-3 sm:flex sm:flex-wrap sm:items-center sm:justify-between">
                             <div className="flex items-center rounded-md border">
                               <Button
                                 variant="ghost"
@@ -174,13 +174,14 @@ export default function Cart() {
                               </Button>
                             </div>
 
-                            <div className="flex items-center gap-2">
+                            <div className="grid gap-2 min-[420px]:flex min-[420px]:items-center">
                               <Link
                                 to={`/products/${product.slug}`}
                                 className={cn(
                                   buttonVariants({
                                     variant: "outline",
-                                    size: "sm",
+                                  size: "sm",
+                                  className: "w-full min-[420px]:w-auto",
                                   }),
                                   "gap-2",
                                 )}
@@ -204,8 +205,8 @@ export default function Cart() {
                 })}
               </div>
 
-              <Card className="h-fit border-slate-200 shadow-sm">
-                <CardContent className="space-y-4 p-6">
+              <Card className="h-fit border-slate-200 shadow-sm lg:sticky lg:top-24">
+                <CardContent className="space-y-4 p-5 sm:p-6">
                   <div>
                     <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                       Order Summary
@@ -265,9 +266,9 @@ export default function Cart() {
 
 function Stat({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-xl border bg-card px-4 py-3">
-      <p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p>
-      <p className="mt-1 text-2xl font-bold">{value}</p>
+    <div className="rounded-lg border bg-card px-3 py-3 sm:px-4">
+      <p className="text-[10px] uppercase tracking-wide text-muted-foreground sm:text-xs">{label}</p>
+      <p className="mt-1 text-xl font-bold sm:text-2xl">{value}</p>
     </div>
   );
 }

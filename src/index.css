@@ -77,12 +77,33 @@
   html {
     scroll-behavior: smooth;
   }
+  body {
+    overflow-x: hidden;
+  }
+  img,
+  video,
+  canvas,
+  svg {
+    max-width: 100%;
+  }
   [dir="rtl"] {
     font-family: "Noto Nastaliq Urdu", "Inter", sans-serif;
   }
 }
 
 @layer utilities {
+  @keyframes loader-progress {
+    0% {
+      transform: translateX(-110%);
+    }
+    50% {
+      transform: translateX(70%);
+    }
+    100% {
+      transform: translateX(230%);
+    }
+  }
+
   .text-balance {
     text-wrap: balance;
   }
@@ -95,6 +116,6 @@
       linear-gradient(180deg, hsl(var(--background)), hsl(var(--background)));
   }
   .section-y {
-    @apply py-16 md:py-24;
+    @apply py-12 md:py-20 lg:py-24;
   }
 }

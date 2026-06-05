@@ -26,11 +26,11 @@ export function Navbar() {
   const dashboardPath = hasRole(...ADMIN_ROLES) ? "/admin" : "/dashboard";
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-[4.5rem] items-center justify-between gap-4">
-        <Logo className="max-w-[230px] sm:max-w-[320px]" />
+    <header className="sticky top-0 z-40 w-full border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/70">
+      <div className="container relative flex min-h-16 items-center justify-between gap-2 py-2 md:min-h-[4.5rem] md:gap-3 md:py-0">
+        <Logo className="flex-1 xl:flex-none" />
 
-        <nav className="hidden items-center gap-1 xl:flex">
+        <nav className="absolute left-[52%] hidden -translate-x-1/2 items-center gap-1 xl:flex">
           {NAV.map((item) => (
             <NavLink
               key={item.to}
@@ -50,7 +50,7 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-1">
+        <div className="flex shrink-0 items-center gap-1">
           <Link to="/cart" className="relative">
             <Button variant="ghost" size="icon" aria-label="Cart">
               <ShoppingCart className="size-5" />
@@ -106,8 +106,8 @@ export function Navbar() {
       </div>
 
       {open && (
-        <div className="border-t xl:hidden">
-          <nav className="container flex flex-col py-3">
+        <div className="border-t bg-background/95 shadow-lg xl:hidden">
+          <nav className="container flex max-h-[calc(100vh-4rem)] flex-col overflow-y-auto py-3">
             {NAV.map((item) => (
               <NavLink
                 key={item.to}
@@ -116,7 +116,7 @@ export function Navbar() {
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
                   cn(
-                    "rounded-xl px-3 py-2.5 text-sm font-medium",
+                    "rounded-lg px-3 py-3 text-center text-sm font-medium",
                     isActive
                       ? "bg-[#c91616] text-white"
                       : "text-foreground/80 hover:bg-[#c91616]/15 hover:text-[#ff6b5f]",
@@ -126,7 +126,7 @@ export function Navbar() {
                 {t(`nav.${item.key}`)}
               </NavLink>
             ))}
-            <div className="mt-2 flex gap-2 border-t pt-3">
+            <div className="mt-2 grid gap-2 border-t pt-3 sm:flex">
               {profile ? (
                 <>
                   <Button

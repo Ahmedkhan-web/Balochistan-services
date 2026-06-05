@@ -53,21 +53,21 @@ export default function ProductDetail() {
         description={product.description}
       />
 
-      <div className="container py-8">
-        <nav className="mb-6 text-sm text-muted-foreground">
+      <div className="container py-6 sm:py-8">
+        <nav className="mb-6 text-center text-sm text-muted-foreground md:text-left">
           <Link to="/products" className="hover:text-primary">
             Products
           </Link>{" "}
           / <span className="text-foreground">{product.name}</span>
         </nav>
 
-        <div className="grid gap-10 lg:grid-cols-2">
+        <div className="grid gap-8 lg:grid-cols-2 lg:gap-10">
           <div className="space-y-4">
             {product.images[0] ? (
               <img
                 src={product.images[0]}
                 alt={product.name}
-                className="aspect-square w-full rounded-2xl bg-muted object-cover"
+                className="aspect-square w-full rounded-lg bg-muted object-cover sm:rounded-xl lg:rounded-2xl"
               />
             ) : (
               <ImagePlaceholder
@@ -96,22 +96,22 @@ export default function ProductDetail() {
             </div>
           </div>
 
-          <div>
-            <div className="flex items-center gap-3">
+          <div className="text-center lg:text-left">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 lg:justify-start">
               <Badge variant="secondary">{category?.name}</Badge>
               <Badge variant={product.stock > 0 ? "success" : "destructive"}>
                 {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
               </Badge>
             </div>
-            <h1 className="mt-3 text-3xl font-bold tracking-tight">
+            <h1 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
               {product.name}
             </h1>
-            <div className="mt-3">
+            <div className="mt-3 flex justify-center lg:block">
               <StarRating value={product.rating} count={product.reviews_count} />
             </div>
 
-            <div className="mt-5 flex items-end gap-3">
-              <span className="text-3xl font-bold text-primary">
+            <div className="mt-5 flex flex-wrap items-end justify-center gap-3 lg:justify-start">
+              <span className="text-2xl font-bold text-primary sm:text-3xl">
                 {formatCurrency(product.discount_price ?? product.price)}
               </span>
               {product.discount_price && (
@@ -124,11 +124,11 @@ export default function ProductDetail() {
               )}
             </div>
 
-            <p className="mt-5 text-muted-foreground">{product.description}</p>
+            <p className="mt-5 text-sm leading-7 text-muted-foreground sm:text-base">{product.description}</p>
 
             <Separator className="my-6" />
 
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="grid gap-3 sm:flex sm:flex-wrap sm:items-center sm:gap-4">
               <div className="flex items-center rounded-md border">
                 <Button
                   variant="ghost"
@@ -150,13 +150,13 @@ export default function ProductDetail() {
               {cartItem ? (
                 <Link
                   to="/cart"
-                  className="inline-flex h-10 flex-1 items-center justify-center rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+                  className="inline-flex h-11 flex-1 items-center justify-center rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
                 >
                   In Cart · Qty {cartItem.quantity}/10
                 </Link>
               ) : (
                 <Button
-                  className="flex-1"
+                  className="h-11 flex-1"
                   disabled={product.stock === 0}
                   onClick={() => {
                     addItem(product, qty);
@@ -169,6 +169,7 @@ export default function ProductDetail() {
               <Button
                 variant="outline"
                 size="icon"
+                className="h-11 w-full sm:w-11"
                 aria-label="Wishlist"
                 onClick={() => toggleWishlist(product)}
               >
@@ -181,17 +182,17 @@ export default function ProductDetail() {
               </Button>
             </div>
 
-            <div className="mt-3 grid grid-cols-2 gap-3">
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <Link
                 to="/checkout"
-                className="inline-flex h-10 items-center justify-center rounded-md bg-secondary px-4 text-sm font-semibold text-secondary-foreground hover:bg-secondary/80"
+                className="inline-flex h-11 items-center justify-center rounded-md bg-secondary px-4 text-sm font-semibold text-secondary-foreground hover:bg-secondary/80"
                 onClick={() => addItem(product, qty)}
               >
                 Buy Now
               </Link>
               <Link
                 to="/contact"
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-md border px-4 text-sm font-semibold hover:bg-accent"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-md border px-4 text-sm font-semibold hover:bg-accent"
               >
                 <Wrench className="size-4" /> Request Installation
               </Link>
@@ -215,7 +216,7 @@ export default function ProductDetail() {
                     {Object.entries(product.specifications).map(([k, v]) => (
                       <div
                         key={k}
-                        className="grid grid-cols-2 gap-4 px-6 py-3 text-sm"
+                    className="grid gap-1 px-4 py-3 text-sm sm:grid-cols-2 sm:gap-4 sm:px-6"
                       >
                         <dt className="font-medium text-muted-foreground">
                           {k}
@@ -254,7 +255,7 @@ export default function ProductDetail() {
         {related.length > 0 && (
           <div className="mt-16">
             <h2 className="mb-6 text-2xl font-bold">Related Products</h2>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
               {related.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}

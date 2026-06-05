@@ -35,12 +35,12 @@ export function AuthShell({
       </div>
 
       {/* Form panel */}
-      <div className="flex flex-col items-center justify-center p-6 sm:p-12">
+      <div className="flex flex-col items-center justify-center px-4 py-8 sm:p-12">
         <div className="w-full max-w-md">
-          <div className="mb-8 lg:hidden">
+          <div className="mb-7 lg:hidden">
             <Logo to="/" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{title}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
 
           {!isSupabaseConfigured && (

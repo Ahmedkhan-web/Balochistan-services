@@ -53,11 +53,11 @@ export default function Products() {
       />
 
       <section className="border-b bg-muted/40">
-        <div className="container py-12">
-          <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
+        <div className="container py-9 text-center sm:py-12 md:text-left">
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
             Security Products
           </h1>
-          <p className="mt-2 max-w-2xl text-muted-foreground">
+          <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
             Certified fire safety equipment, surveillance and access control
             systems for every environment.
           </p>
@@ -66,19 +66,19 @@ export default function Products() {
 
       <section className="section-y">
         <div className="container">
-          <div className="mb-8 rounded-2xl border bg-card p-4 shadow-sm">
+          <div className="mb-8 rounded-lg border bg-card p-4 shadow-sm sm:p-5">
             <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   placeholder="Search products, cameras, alarms..."
-                  className="h-11 pl-9"
+                  className="h-12 pl-9"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                 />
               </div>
               <Select
-                className="h-11 w-full lg:w-52"
+                className="h-12 w-full lg:w-52"
                 value={sort}
                 onChange={(e) => setSort(e.target.value as SortKey)}
               >
@@ -93,8 +93,9 @@ export default function Products() {
               <p className="mb-3 flex items-center gap-2 text-sm font-semibold">
                 <SlidersHorizontal className="size-4" /> Categories
               </p>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
                 <Button
+                  className="w-full sm:w-auto"
                   variant={category === "all" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setCategory("all")}
@@ -104,6 +105,7 @@ export default function Products() {
                 {PRODUCT_CATEGORIES.map((c) => (
                   <Button
                     key={c.id}
+                    className="w-full sm:w-auto"
                     variant={category === c.id ? "default" : "ghost"}
                     size="sm"
                     onClick={() => setCategory(c.id)}
@@ -125,7 +127,7 @@ export default function Products() {
                 No products match your filters.
               </div>
             ) : (
-                <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+                <div className="grid gap-5 sm:grid-cols-2 lg:gap-6 xl:grid-cols-4">
                   {filtered.map((p) => (
                     <ProductCard key={p.id} product={p} />
                   ))}
