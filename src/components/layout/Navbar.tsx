@@ -26,7 +26,7 @@ export function Navbar() {
   const dashboardPath = hasRole(...ADMIN_ROLES) ? "/admin" : "/dashboard";
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/70">
+    <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-black/85 backdrop-blur supports-[backdrop-filter]:bg-black/70">
       <div className="container relative flex min-h-16 items-center justify-between gap-2 py-2 md:min-h-[4.5rem] md:gap-3 md:py-0">
         <Logo className="flex-1 xl:flex-none" />
 
@@ -106,7 +106,7 @@ export function Navbar() {
       </div>
 
       {open && (
-        <div className="border-t bg-background/95 shadow-lg xl:hidden">
+        <div className="border-t border-white/10 bg-black/95 shadow-lg xl:hidden">
           <nav className="container flex max-h-[calc(100vh-4rem)] flex-col overflow-y-auto py-3">
             {NAV.map((item) => (
               <NavLink
