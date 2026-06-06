@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { ProductCard } from "@/components/products/ProductCard";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/buttonVariants";
 import { useCartStore } from "@/store/cartStore";
 
 export default function Wishlist() {

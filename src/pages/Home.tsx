@@ -9,7 +9,7 @@ import { ServiceCard } from "@/components/services/ServiceCard";
 import { Icon } from "@/components/common/Icon";
 import { StarRating } from "@/components/common/StarRating";
 import { Card, CardContent } from "@/components/ui/card";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/buttonVariants";
 import { getFeaturedProducts } from "@/data/products";
 import { getFeaturedServices } from "@/data/services";
 import {

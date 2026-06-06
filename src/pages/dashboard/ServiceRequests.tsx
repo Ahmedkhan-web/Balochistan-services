@@ -1,7 +1,7 @@
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { StatusBadge } from "@/components/dashboard/StatusBadge";
 import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/buttonVariants";
 import { Link } from "react-router-dom";
 import { MOCK_SERVICE_REQUESTS } from "@/data/dashboard";
 import { formatDate } from "@/lib/utils";

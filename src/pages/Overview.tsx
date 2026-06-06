@@ -14,7 +14,7 @@ import { Seo } from "@/components/common/Seo";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { Icon } from "@/components/common/Icon";
 import { StarRating } from "@/components/common/StarRating";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/buttonVariants";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -184,7 +184,7 @@ export default function Overview() {
                 Shop Products <ArrowRight className="size-4" />
               </Link>
               <Link
-                to="/contact"
+                to="/services"
                 className={buttonVariants({
                   size: "lg",
                   variant: "outline",
@@ -192,7 +192,7 @@ export default function Overview() {
                     "w-full border-white/30 bg-white/10 text-white backdrop-blur hover:border-[#bde8c0]/60 hover:bg-[#1f3b31] hover:text-white min-[420px]:w-auto",
                 })}
               >
-                <PhoneCall className="size-4" /> Get a Quote
+                <Siren className="size-4" /> Need Service
               </Link>
             </div>
 
@@ -964,10 +964,10 @@ function OverviewProductCard({ product }: { product: Product }) {
             )}
           </div>
           <Link
-            to={`/products/${product.slug}`}
+            to={`/products/category/${product.category}`}
             className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-[#c91616] px-4 text-sm font-semibold text-white transition-colors duration-300 hover:bg-[#a90f0f] group-hover:bg-[#b81212]"
           >
-            View Details <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+            View More Varieties <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
         </div>
       </CardContent>

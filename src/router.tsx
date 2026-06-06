@@ -1,82 +1,91 @@
+import { lazy, Suspense, type ComponentType } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
 import { ADMIN_ROLES } from "@/store/authStore";
 
-import Overview from "@/pages/Overview";
-import Products from "@/pages/Products";
-import ProductCategory from "@/pages/ProductCategory";
-import ProductDetail from "@/pages/ProductDetail";
-import Services from "@/pages/Services";
-import ServiceDetail from "@/pages/ServiceDetail";
-import Contact from "@/pages/Contact";
-import Cart from "@/pages/Cart";
-import Checkout from "@/pages/Checkout";
-import NotFound from "@/pages/NotFound";
+const Overview = lazy(() => import("@/pages/Overview"));
+const Products = lazy(() => import("@/pages/Products"));
+const ProductCategory = lazy(() => import("@/pages/ProductCategory"));
+const ProductDetail = lazy(() => import("@/pages/ProductDetail"));
+const Services = lazy(() => import("@/pages/Services"));
+const ServiceDetail = lazy(() => import("@/pages/ServiceDetail"));
+const Contact = lazy(() => import("@/pages/Contact"));
+const Cart = lazy(() => import("@/pages/Cart"));
+const Checkout = lazy(() => import("@/pages/Checkout"));
+const NotFound = lazy(() => import("@/pages/NotFound"));
 
-import SignIn from "@/pages/auth/SignIn";
-import SignUp from "@/pages/auth/SignUp";
-import ForgotPassword from "@/pages/auth/ForgotPassword";
-import ResetPassword from "@/pages/auth/ResetPassword";
+const SignIn = lazy(() => import("@/pages/auth/SignIn"));
+const SignUp = lazy(() => import("@/pages/auth/SignUp"));
+const ForgotPassword = lazy(() => import("@/pages/auth/ForgotPassword"));
+const ResetPassword = lazy(() => import("@/pages/auth/ResetPassword"));
 
-import CustomerDashboard from "@/pages/dashboard/CustomerDashboard";
-import CustomerOverview from "@/pages/dashboard/CustomerOverview";
-import Orders from "@/pages/dashboard/Orders";
-import ServiceRequests from "@/pages/dashboard/ServiceRequests";
-import Invoices from "@/pages/dashboard/Invoices";
-import Wishlist from "@/pages/dashboard/Wishlist";
-import Notifications from "@/pages/dashboard/Notifications";
-import Tickets from "@/pages/dashboard/Tickets";
-import Profile from "@/pages/dashboard/Profile";
+const CustomerDashboard = lazy(() => import("@/pages/dashboard/CustomerDashboard"));
+const CustomerOverview = lazy(() => import("@/pages/dashboard/CustomerOverview"));
+const Orders = lazy(() => import("@/pages/dashboard/Orders"));
+const ServiceRequests = lazy(() => import("@/pages/dashboard/ServiceRequests"));
+const Invoices = lazy(() => import("@/pages/dashboard/Invoices"));
+const Wishlist = lazy(() => import("@/pages/dashboard/Wishlist"));
+const Notifications = lazy(() => import("@/pages/dashboard/Notifications"));
+const Tickets = lazy(() => import("@/pages/dashboard/Tickets"));
+const Profile = lazy(() => import("@/pages/dashboard/Profile"));
 
-import AdminDashboard from "@/pages/admin/AdminDashboard";
-import AdminOverview from "@/pages/admin/AdminOverview";
-import ProductManagement from "@/pages/admin/ProductManagement";
-import OrderManagement from "@/pages/admin/OrderManagement";
-import ServiceManagement from "@/pages/admin/ServiceManagement";
-import UserManagement from "@/pages/admin/UserManagement";
-import ReviewManagement from "@/pages/admin/ReviewManagement";
-import ContentManagement from "@/pages/admin/ContentManagement";
-import AuditLogs from "@/pages/admin/AuditLogs";
+const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
+const AdminOverview = lazy(() => import("@/pages/admin/AdminOverview"));
+const ProductManagement = lazy(() => import("@/pages/admin/ProductManagement"));
+const OrderManagement = lazy(() => import("@/pages/admin/OrderManagement"));
+const ServiceManagement = lazy(() => import("@/pages/admin/ServiceManagement"));
+const UserManagement = lazy(() => import("@/pages/admin/UserManagement"));
+const ReviewManagement = lazy(() => import("@/pages/admin/ReviewManagement"));
+const ContentManagement = lazy(() => import("@/pages/admin/ContentManagement"));
+const AuditLogs = lazy(() => import("@/pages/admin/AuditLogs"));
+
+function page(Component: ComponentType) {
+  return (
+    <Suspense fallback={<div className="min-h-[60vh] bg-[#0f1b18]" />}>
+      <Component />
+    </Suspense>
+  );
+}
 
 export const router = createBrowserRouter([
   {
     element: <PublicLayout />,
     children: [
-      { path: "/", element: <Overview /> },
-      { path: "/overview", element: <Overview /> },
-      { path: "/products", element: <Products /> },
-      { path: "/products/category/:categoryId", element: <ProductCategory /> },
-      { path: "/products/:slug", element: <ProductDetail /> },
-      { path: "/services", element: <Services /> },
-      { path: "/services/:slug", element: <ServiceDetail /> },
-      { path: "/contact", element: <Contact /> },
-      { path: "/cart", element: <Cart /> },
-      { path: "/checkout", element: <Checkout /> },
+      { path: "/", element: page(Overview) },
+      { path: "/overview", element: page(Overview) },
+      { path: "/products", element: page(Products) },
+      { path: "/products/category/:categoryId", element: page(ProductCategory) },
+      { path: "/products/:slug", element: page(ProductDetail) },
+      { path: "/services", element: page(Services) },
+      { path: "/services/:slug", element: page(ServiceDetail) },
+      { path: "/contact", element: page(Contact) },
+      { path: "/cart", element: page(Cart) },
+      { path: "/checkout", element: page(Checkout) },
     ],
   },
 
-  { path: "/signin", element: <SignIn /> },
-  { path: "/signup", element: <SignUp /> },
-  { path: "/forgot-password", element: <ForgotPassword /> },
-  { path: "/reset-password", element: <ResetPassword /> },
+  { path: "/signin", element: page(SignIn) },
+  { path: "/signup", element: page(SignUp) },
+  { path: "/forgot-password", element: page(ForgotPassword) },
+  { path: "/reset-password", element: page(ResetPassword) },
 
   {
     path: "/dashboard",
     element: (
       <ProtectedRoute>
-        <CustomerDashboard />
+        {page(CustomerDashboard)}
       </ProtectedRoute>
     ),
     children: [
-      { index: true, element: <CustomerOverview /> },
-      { path: "orders", element: <Orders /> },
-      { path: "requests", element: <ServiceRequests /> },
-      { path: "invoices", element: <Invoices /> },
-      { path: "wishlist", element: <Wishlist /> },
-      { path: "notifications", element: <Notifications /> },
-      { path: "tickets", element: <Tickets /> },
-      { path: "profile", element: <Profile /> },
+      { index: true, element: page(CustomerOverview) },
+      { path: "orders", element: page(Orders) },
+      { path: "requests", element: page(ServiceRequests) },
+      { path: "invoices", element: page(Invoices) },
+      { path: "wishlist", element: page(Wishlist) },
+      { path: "notifications", element: page(Notifications) },
+      { path: "tickets", element: page(Tickets) },
+      { path: "profile", element: page(Profile) },
     ],
   },
 
@@ -84,20 +93,20 @@ export const router = createBrowserRouter([
     path: "/admin",
     element: (
       <ProtectedRoute roles={[...ADMIN_ROLES]}>
-        <AdminDashboard />
+        {page(AdminDashboard)}
       </ProtectedRoute>
     ),
     children: [
-      { index: true, element: <AdminOverview /> },
-      { path: "products", element: <ProductManagement /> },
-      { path: "orders", element: <OrderManagement /> },
-      { path: "services", element: <ServiceManagement /> },
-      { path: "users", element: <UserManagement /> },
-      { path: "reviews", element: <ReviewManagement /> },
-      { path: "cms", element: <ContentManagement /> },
-      { path: "audit", element: <AuditLogs /> },
+      { index: true, element: page(AdminOverview) },
+      { path: "products", element: page(ProductManagement) },
+      { path: "orders", element: page(OrderManagement) },
+      { path: "services", element: page(ServiceManagement) },
+      { path: "users", element: page(UserManagement) },
+      { path: "reviews", element: page(ReviewManagement) },
+      { path: "cms", element: page(ContentManagement) },
+      { path: "audit", element: page(AuditLogs) },
     ],
   },
 
-  { path: "*", element: <NotFound /> },
+  { path: "*", element: page(NotFound) },
 ]);

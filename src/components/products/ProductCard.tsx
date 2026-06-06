@@ -10,7 +10,7 @@ import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
 import { Icon } from "@/components/common/Icon";
 import { PRODUCT_CATEGORIES } from "@/data/products";
 import { useCartStore } from "@/store/cartStore";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/buttonVariants";
 import { cn, discountPercent, formatCurrency } from "@/lib/utils";
 
 export function ProductCard({ product }: { product: Product }) {
@@ -29,6 +29,8 @@ export function ProductCard({ product }: { product: Product }) {
             alt={product.name}
             className="aspect-[4/3] w-full bg-muted object-cover transition duration-300 group-hover:scale-105"
             loading="lazy"
+            decoding="async"
+            sizes="(min-width: 1280px) 25vw, (min-width: 640px) 50vw, 100vw"
           />
         ) : (
           <ImagePlaceholder

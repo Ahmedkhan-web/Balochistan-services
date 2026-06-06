@@ -7,24 +7,18 @@ import { ProductCard } from "@/components/products/ProductCard";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/buttonVariants";
 import { PRODUCT_CATEGORIES, PRODUCTS } from "@/data/products";
 
 type SortKey = "featured" | "price-asc" | "price-desc" | "rating";
 
 const categoryImages: Record<string, string> = {
-  "fire-extinguishers":
-    "https://images.pexels.com/photos/8978625/pexels-photo-8978625.jpeg?auto=compress&cs=tinysrgb&w=1400",
-  "cctv-cameras":
-    "https://images.pexels.com/photos/27765780/pexels-photo-27765780.jpeg?auto=compress&cs=tinysrgb&w=1400",
-  recorders:
-    "https://images.pexels.com/photos/30481728/pexels-photo-30481728.jpeg?auto=compress&cs=tinysrgb&w=1400",
-  "fire-alarm":
-    "https://images.pexels.com/photos/8978625/pexels-photo-8978625.jpeg?auto=compress&cs=tinysrgb&w=1400",
-  "access-control":
-    "https://images.pexels.com/photos/27765780/pexels-photo-27765780.jpeg?auto=compress&cs=tinysrgb&w=1400",
-  accessories:
-    "https://images.pexels.com/photos/30481728/pexels-photo-30481728.jpeg?auto=compress&cs=tinysrgb&w=1400",
+  "fire-extinguishers": "/assets/images/category-fire-extinguishers-new.jpg",
+  "cctv-cameras": "/assets/images/category-accessories-new.jpg",
+  recorders: "/assets/images/category-recorders-new.jpg",
+  "fire-alarm": "/assets/images/category-fire-alarm-new.jpg",
+  "access-control": "/assets/images/category-access-control-new.jpg",
+  accessories: "/assets/images/category-cctv-cameras-new.jpg",
 };
 
 export default function ProductCategory() {
@@ -93,6 +87,8 @@ export default function ProductCategory() {
           src={categoryImages[category.id]}
           alt={category.name}
           className="absolute inset-0 -z-20 h-full w-full object-cover"
+          decoding="async"
+          sizes="100vw"
         />
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#07130f] via-[#07130f]/88 to-[#07130f]/40" />
         <div className="container py-10 sm:py-14">

@@ -1,214 +1,172 @@
-import { useState } from "react";
-import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
-import { toast } from "sonner";
+import {
+  ArrowRight,
+  Clock,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Navigation,
+  Phone,
+  ShieldCheck,
+} from "lucide-react";
 import { Seo } from "@/components/common/Seo";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { SITE, WHATSAPP_DEFAULT_MESSAGE } from "@/lib/constants";
+import { createWhatsAppLink, SITE, WHATSAPP_DEFAULT_MESSAGE } from "@/lib/constants";
+
+const contactMethods = [
+  {
+    label: "Call",
+    value: SITE.phoneDisplay,
+    href: `tel:${SITE.phone.replace(/\D/g, "")}`,
+    icon: Phone,
+  },
+  {
+    label: "Email",
+    value: SITE.email,
+    href: `mailto:${SITE.email}`,
+    icon: Mail,
+  },
+  {
+    label: "Visit",
+    value: SITE.address,
+    href: SITE.mapsEmbed,
+    icon: MapPin,
+  },
+] as const;
+
+const serviceIntents = [
+  "Fire safety inspection",
+  "CCTV installation",
+  "Extinguisher refilling",
+  "Access control",
+] as const;
 
 export default function Contact() {
-  const [submitted, setSubmitted] = useState(false);
-  const waLink = `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(
-    WHATSAPP_DEFAULT_MESSAGE,
-  )}`;
+  const waLink = createWhatsAppLink(WHATSAPP_DEFAULT_MESSAGE);
 
   return (
     <>
       <Seo
         title="Contact"
         path="/contact"
-        description="Contact Balochistan Standard Services for fire safety and security solutions, quotes and emergency support."
+        description="Contact Balochistan Standard Services for fire safety, CCTV, access control, inspections and emergency support."
       />
 
-      <section className="border-b border-white/10 bg-[#07130f] text-white">
-        <div className="container grid gap-7 py-9 text-center sm:py-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:py-14 lg:text-left">
-          <div>
+      <section className="relative isolate overflow-hidden bg-[linear-gradient(135deg,#07130f_0%,#10231d_58%,#07130f_100%)] text-white">
+        <div className="container grid gap-8 py-12 md:py-16 lg:grid-cols-[1fr_420px] lg:items-center lg:py-20">
+          <div className="max-w-3xl">
             <Badge className="border-white/15 bg-white/10 text-white hover:bg-white/10">
-              Contact Desk
+              BSS Contact Desk
             </Badge>
-            <h1 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl md:text-5xl">
-              Contact Us
+            <h1 className="mt-5 text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl md:text-6xl">
+              Get the right safety team on site.
             </h1>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-white/65 sm:mt-4 sm:text-base">
-              Reach out for quotes, service requests or emergency support. We
-              respond within one business day.
+            <p className="mt-5 max-w-2xl text-sm leading-7 text-white/68 sm:text-base">
+              For fire safety, CCTV, access control, refilling, inspections and
+              urgent support, contact BSS directly. Share the site details and
+              our team will guide the next step.
             </p>
-          </div>
 
-          <div className="overflow-hidden rounded-lg border border-white/10 bg-[#10231d] text-left shadow-xl shadow-black/20">
-            <div className="bg-[#c91616] px-5 py-4 text-white sm:px-6 sm:py-5">
-              <p className="text-xs uppercase tracking-[0.18em] text-white/80 sm:text-sm">
-                Balochistan Standard Services
-              </p>
-              <p className="mt-1 text-xl font-bold sm:text-2xl">Contact Information</p>
+            <div className="mt-7 grid gap-3 min-[440px]:flex min-[440px]:flex-wrap">
+              <a
+                href={waLink}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-[#25D366] px-5 text-sm font-bold text-white shadow-xl shadow-black/25 transition hover:bg-[#20bd5a]"
+              >
+                <MessageCircle className="size-5" /> Chat on WhatsApp
+              </a>
+              <a
+                href={`tel:${SITE.phone.replace(/\D/g, "")}`}
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-md border border-white/20 bg-white/[0.08] px-5 text-sm font-bold text-white backdrop-blur transition hover:border-[#bde8c0]/60 hover:bg-[#1f3b31]"
+              >
+                <Phone className="size-5" /> Call Now
+              </a>
             </div>
 
-            <div className="grid gap-0 p-5 sm:p-6">
-              {[
-                { label: "Company Name", value: SITE.name },
-                { label: "Phone No.", value: SITE.phoneDisplay },
-                { label: "Email", value: SITE.email },
-                { label: "Address", value: SITE.address },
-              ].map((item, index) => (
-                <div
-                  key={item.label}
-                  className={[
-                    "grid gap-2 py-4",
-                    index !== 3 ? "border-b border-dashed border-white/10" : "",
-                  ].join(" ")}
+            <div className="mt-8 flex flex-wrap gap-2">
+              {serviceIntents.map((item) => (
+                <span
+                  key={item}
+                  className="rounded-full border border-white/12 bg-white/[0.08] px-3 py-1.5 text-xs font-semibold text-white/72"
                 >
-                  <p className="text-sm font-semibold uppercase tracking-wide text-[#8ed0af]">
-                    {item.label}
-                  </p>
-                  <p className="break-words text-sm leading-6 text-white/75 sm:text-base">{item.value}</p>
-                </div>
+                  {item}
+                </span>
               ))}
-              <div className="mt-4 rounded-lg bg-[#07130f] p-4">
-                <p className="text-sm font-semibold uppercase tracking-wide text-[#8ed0af]">
-                  Support
-                </p>
-                <p className="mt-1 text-sm text-white/60">
-                  24/7 emergency support and service response across Balochistan.
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-white/10 bg-[#10231d]/92 p-5 shadow-2xl shadow-black/30 backdrop-blur sm:p-6">
+            <div className="flex items-start gap-4">
+              <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-[#c91616] text-white">
+                <ShieldCheck className="size-6" />
+              </div>
+              <div>
+                <p className="text-lg font-bold">Fast response channels</p>
+                <p className="mt-1 text-sm leading-6 text-white/58">
+                  Use WhatsApp for the quickest service request. Calls are best
+                  for urgent site support.
                 </p>
               </div>
+            </div>
+
+            <div className="mt-6 grid gap-3">
+              {contactMethods.map((method) => (
+                <a
+                  key={method.label}
+                  href={method.href}
+                  target={method.label === "Visit" ? "_blank" : undefined}
+                  rel={method.label === "Visit" ? "noreferrer" : undefined}
+                  className="group flex items-start gap-3 rounded-lg border border-white/10 bg-[#07130f] p-4 transition hover:border-[#bde8c0]/40 hover:bg-[#142a23]"
+                >
+                  <method.icon className="mt-1 size-5 shrink-0 text-[#8ed0af]" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/42">
+                      {method.label}
+                    </p>
+                    <p className="mt-1 break-words text-sm font-semibold leading-6 text-white/78">
+                      {method.value}
+                    </p>
+                  </div>
+                  <ArrowRight className="mt-1 size-4 shrink-0 text-white/30 transition group-hover:translate-x-1 group-hover:text-[#8ed0af]" />
+                </a>
+              ))}
+            </div>
+
+            <div className="mt-4 flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.06] p-4">
+              <Clock className="size-5 shrink-0 text-[#8ed0af]" />
+              <p className="text-sm leading-6 text-white/66">
+                Mon-Sat, 9am-8pm. Emergency service support available 24/7.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
       <section className="section-y bg-[#0f1b18] text-white">
-        <div className="container grid gap-8 lg:grid-cols-[1fr_420px] lg:gap-10">
-          {/* Info + map */}
-          <div className="space-y-6">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Card>
-                <CardContent className="flex items-start gap-3 p-5">
-                  <Phone className="size-5 shrink-0 text-primary" />
-                  <div>
-                    <p className="font-semibold">Phone</p>
-                    <p className="break-words text-sm text-muted-foreground">{SITE.phoneDisplay}</p>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="flex items-start gap-3 p-5">
-                  <Mail className="size-5 shrink-0 text-primary" />
-                  <div>
-                    <p className="font-semibold">Email</p>
-                    <p className="break-all text-sm text-muted-foreground">{SITE.email}</p>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="flex items-start gap-3 p-5">
-                  <MapPin className="size-5 shrink-0 text-primary" />
-                  <div>
-                    <p className="font-semibold">Address</p>
-                    <p className="text-sm text-muted-foreground">
-                      {SITE.address}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="flex items-start gap-3 p-5">
-                  <Clock className="size-5 shrink-0 text-primary" />
-                  <div>
-                    <p className="font-semibold">Hours</p>
-                    <p className="text-sm text-muted-foreground">
-                      Mon–Sat, 9am–8pm • 24/7 Emergency
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
+        <div className="container grid gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-stretch">
+          <div className="rounded-lg border border-white/10 bg-[#10231d] p-5 shadow-xl shadow-black/20 sm:p-6">
+            <Navigation className="size-8 text-[#8ed0af]" />
+            <h2 className="mt-4 text-2xl font-bold">Office location</h2>
+            <p className="mt-3 text-sm leading-7 text-white/62">{SITE.address}</p>
             <a
-              href={waLink}
+              href={SITE.mapsEmbed}
               target="_blank"
               rel="noreferrer"
-              className="flex min-h-12 items-center justify-center gap-2 rounded-lg bg-[#25D366] px-4 py-3 font-semibold text-white transition hover:opacity-90"
+              className="mt-5 inline-flex h-11 items-center justify-center gap-2 rounded-md bg-[#c91616] px-4 text-sm font-semibold text-white transition hover:bg-[#a90f0f]"
             >
-              <MessageCircle className="size-5" /> Chat on WhatsApp
+              Open Map <ArrowRight className="size-4" />
             </a>
-
-            <div className="overflow-hidden rounded-xl border">
-              <iframe
-                title="BSS location"
-                src={SITE.mapsEmbed}
-                className="h-72 w-full"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
           </div>
 
-          {/* Form */}
-          <Card className="h-fit">
-              <CardContent className="p-5 sm:p-6">
-              <h2 className="text-xl font-semibold">Send us a message</h2>
-              {submitted ? (
-                <div className="mt-6 rounded-lg bg-accent p-6 text-center text-accent-foreground">
-                  <p className="font-semibold">Thank you!</p>
-                  <p className="mt-1 text-sm">
-                    Your message has been sent. We'll be in touch soon.
-                  </p>
-                </div>
-              ) : (
-                <form
-                  className="mt-5 space-y-4"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    setSubmitted(true);
-                    toast.success("Message sent successfully");
-                  }}
-                >
-                  <div className="space-y-1.5">
-                    <Label htmlFor="cname">Full Name</Label>
-                    <Input id="cname" required placeholder="Your name" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="cemail">Email</Label>
-                    <Input
-                      id="cemail"
-                      type="email"
-                      required
-                      placeholder="you@company.com"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="cphone">Phone</Label>
-                    <Input id="cphone" placeholder="+92 3xx xxxxxxx" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="ctopic">Subject</Label>
-                    <Select id="ctopic" defaultValue="quote">
-                      <option value="quote">Request a Quote</option>
-                      <option value="service">Service Request</option>
-                      <option value="support">Support</option>
-                      <option value="other">Other</option>
-                    </Select>
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="cmsg">Message</Label>
-                    <Textarea
-                      id="cmsg"
-                      required
-                      placeholder="How can we help?"
-                    />
-                  </div>
-                  <Button type="submit" className="h-11 w-full">
-                    Send Message
-                  </Button>
-                </form>
-              )}
-            </CardContent>
-          </Card>
+          <div className="overflow-hidden rounded-lg border border-white/10 bg-[#07130f] shadow-2xl shadow-black/25">
+            <iframe
+              title="BSS location"
+              src={SITE.mapsEmbed}
+              className="h-[360px] w-full lg:h-full"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
         </div>
       </section>
     </>

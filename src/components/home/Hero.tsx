@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, PhoneCall, ShieldCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/buttonVariants";
 
 const stats = [
   { value: "500+", label: "Installations" },

@@ -19,3 +19,17 @@ export const SITE = {
 
 export const WHATSAPP_DEFAULT_MESSAGE =
   "Hello BSS, I would like to request a quote for your fire safety / security solutions.";
+
+export function createWhatsAppLink(message: string) {
+  return `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(message)}`;
+}
+
+export function createServiceWhatsAppMessage(serviceName: string) {
+  return [
+    "Hello BSS, I would like to request a service.",
+    "",
+    `Service: ${serviceName}`,
+    "",
+    "Please share the availability, estimated cost, and next steps for a site visit.",
+  ].join("\n");
+}

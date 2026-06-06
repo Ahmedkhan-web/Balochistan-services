@@ -8,7 +8,8 @@ import {
   Trash2,
 } from "lucide-react";
 import { Seo } from "@/components/common/Seo";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/buttonVariants";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";

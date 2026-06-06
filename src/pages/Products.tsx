@@ -1,24 +1,19 @@
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Seo } from "@/components/common/Seo";
 import { Icon } from "@/components/common/Icon";
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/buttonVariants";
 import { PRODUCT_CATEGORIES, PRODUCTS } from "@/data/products";
 
 const categoryImages: Record<string, string> = {
-  "fire-extinguishers":
-    "https://images.pexels.com/photos/8978625/pexels-photo-8978625.jpeg?auto=compress&cs=tinysrgb&w=1400",
-  "cctv-cameras":
-    "https://images.pexels.com/photos/27765780/pexels-photo-27765780.jpeg?auto=compress&cs=tinysrgb&w=1400",
-  recorders:
-    "https://images.pexels.com/photos/30481728/pexels-photo-30481728.jpeg?auto=compress&cs=tinysrgb&w=1400",
-  "fire-alarm":
-    "https://images.pexels.com/photos/8978625/pexels-photo-8978625.jpeg?auto=compress&cs=tinysrgb&w=1400",
-  "access-control":
-    "https://images.pexels.com/photos/27765780/pexels-photo-27765780.jpeg?auto=compress&cs=tinysrgb&w=1400",
-  accessories:
-    "https://images.pexels.com/photos/30481728/pexels-photo-30481728.jpeg?auto=compress&cs=tinysrgb&w=1400",
+  "fire-extinguishers": "/assets/images/category-fire-extinguishers-new.jpg",
+  "cctv-cameras": "/assets/images/category-accessories-new.jpg",
+  recorders: "/assets/images/category-recorders-new.jpg",
+  "fire-alarm": "/assets/images/category-fire-alarm-new.jpg",
+  "access-control": "/assets/images/category-access-control-new.jpg",
+  accessories: "/assets/images/category-cctv-cameras-new.jpg",
 };
 
 const categoryDescriptions: Record<string, string> = {
@@ -37,6 +32,15 @@ const categoryDescriptions: Record<string, string> = {
 };
 
 export default function Products() {
+  const categoryCounts = useMemo(
+    () =>
+      PRODUCTS.reduce<Record<string, number>>((counts, product) => {
+        counts[product.category] = (counts[product.category] ?? 0) + 1;
+        return counts;
+      }, {}),
+    [],
+  );
+
   return (
     <>
       <Seo
@@ -66,7 +70,7 @@ export default function Products() {
         <div className="container">
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {PRODUCT_CATEGORIES.map((category, index) => {
-              const count = PRODUCTS.filter((product) => product.category === category.id).length;
+              const count = categoryCounts[category.id] ?? 0;
 
               return (
                 <Link
@@ -79,7 +83,9 @@ export default function Products() {
                       src={categoryImages[category.id]}
                       alt={category.name}
                       className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
-                      loading={index < 3 ? "eager" : "lazy"}
+                      loading={index === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                      sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#07130f] via-[#07130f]/28 to-transparent" />
                     <div className="absolute left-4 top-4 flex size-12 items-center justify-center rounded-lg bg-[#07130f]/80 text-[#8ed0af] shadow-lg backdrop-blur">
