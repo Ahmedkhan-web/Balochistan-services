@@ -5,6 +5,7 @@ import { ADMIN_ROLES } from "@/store/authStore";
 
 import Overview from "@/pages/Overview";
 import Products from "@/pages/Products";
+import ProductCategory from "@/pages/ProductCategory";
 import ProductDetail from "@/pages/ProductDetail";
 import Services from "@/pages/Services";
 import ServiceDetail from "@/pages/ServiceDetail";
@@ -45,6 +46,7 @@ export const router = createBrowserRouter([
       { path: "/", element: <Overview /> },
       { path: "/overview", element: <Overview /> },
       { path: "/products", element: <Products /> },
+      { path: "/products/category/:categoryId", element: <ProductCategory /> },
       { path: "/products/:slug", element: <ProductDetail /> },
       { path: "/services", element: <Services /> },
       { path: "/services/:slug", element: <ServiceDetail /> },

@@ -104,6 +104,15 @@
     }
   }
 
+  @keyframes marquee-left {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
   .text-balance {
     text-wrap: balance;
   }
@@ -117,5 +126,8 @@
   }
   .section-y {
     @apply py-12 md:py-20 lg:py-24;
+  }
+  .animate-marquee-left {
+    animation: marquee-left 28s linear infinite;
   }
 }

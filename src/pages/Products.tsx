@@ -1,138 +1,133 @@
-import { useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Seo } from "@/components/common/Seo";
-import { ProductCard } from "@/components/products/ProductCard";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/common/Icon";
 import { Badge } from "@/components/ui/badge";
-import { PRODUCTS, PRODUCT_CATEGORIES } from "@/data/products";
+import { buttonVariants } from "@/components/ui/button";
+import { PRODUCT_CATEGORIES, PRODUCTS } from "@/data/products";
 
-type SortKey = "featured" | "price-asc" | "price-desc" | "rating";
+const categoryImages: Record<string, string> = {
+  "fire-extinguishers":
+    "https://images.pexels.com/photos/8978625/pexels-photo-8978625.jpeg?auto=compress&cs=tinysrgb&w=1400",
+  "cctv-cameras":
+    "https://images.pexels.com/photos/27765780/pexels-photo-27765780.jpeg?auto=compress&cs=tinysrgb&w=1400",
+  recorders:
+    "https://images.pexels.com/photos/30481728/pexels-photo-30481728.jpeg?auto=compress&cs=tinysrgb&w=1400",
+  "fire-alarm":
+    "https://images.pexels.com/photos/8978625/pexels-photo-8978625.jpeg?auto=compress&cs=tinysrgb&w=1400",
+  "access-control":
+    "https://images.pexels.com/photos/27765780/pexels-photo-27765780.jpeg?auto=compress&cs=tinysrgb&w=1400",
+  accessories:
+    "https://images.pexels.com/photos/30481728/pexels-photo-30481728.jpeg?auto=compress&cs=tinysrgb&w=1400",
+};
+
+const categoryDescriptions: Record<string, string> = {
+  "fire-extinguishers":
+    "Certified CO2, DCP, foam and water extinguishers for offices, factories and public facilities.",
+  "cctv-cameras":
+    "Dome, bullet, PTZ and night-vision cameras for clear facility monitoring.",
+  recorders:
+    "DVR and NVR systems for reliable recording, storage and remote access.",
+  "fire-alarm":
+    "Panels, detectors, call points and emergency devices for early fire detection.",
+  "access-control":
+    "Biometric, RFID, lock and turnstile systems for controlled entry points.",
+  accessories:
+    "Support equipment for security, alarms, fire readiness and installation work.",
+};
 
 export default function Products() {
-  const [searchParams] = useSearchParams();
-  const [query, setQuery] = useState("");
-  const [category, setCategory] = useState(searchParams.get("category") ?? "all");
-  const [sort, setSort] = useState<SortKey>("featured");
-
-  const filtered = useMemo(() => {
-    let list = PRODUCTS.filter((p) => {
-      const matchesQuery =
-        !query ||
-        p.name.toLowerCase().includes(query.toLowerCase()) ||
-        p.subcategory?.toLowerCase().includes(query.toLowerCase());
-      const matchesCategory = category === "all" || p.category === category;
-      return matchesQuery && matchesCategory;
-    });
-
-    list = [...list].sort((a, b) => {
-      const ap = a.discount_price ?? a.price;
-      const bp = b.discount_price ?? b.price;
-      switch (sort) {
-        case "price-asc":
-          return ap - bp;
-        case "price-desc":
-          return bp - ap;
-        case "rating":
-          return b.rating - a.rating;
-        default:
-          return Number(b.featured ?? false) - Number(a.featured ?? false);
-      }
-    });
-    return list;
-  }, [query, category, sort]);
-
   return (
     <>
       <Seo
         title="Security Products"
         path="/products"
-        description="Shop fire extinguishers, CCTV cameras, DVR/NVR systems, fire alarms, access control and security accessories."
+        description="Browse BSS product categories for fire extinguishers, CCTV cameras, recorders, fire alarms, access control and security accessories."
       />
 
-      <section className="border-b bg-muted/40">
-        <div className="container py-9 text-center sm:py-12 md:text-left">
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
-            Security Products
-          </h1>
-          <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
-            Certified fire safety equipment, surveillance and access control
-            systems for every environment.
+      <section className="border-b border-white/10 bg-[#07130f] text-white">
+        <div className="container grid gap-7 py-10 sm:py-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+          <div>
+            <Badge className="bg-[#c91616] text-white hover:bg-[#c91616]">
+              Product Categories
+            </Badge>
+            <h1 className="mt-5 max-w-3xl text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl md:text-5xl">
+              Choose a category, then browse the exact product varieties.
+            </h1>
+          </div>
+          <p className="max-w-2xl text-sm leading-7 text-white/65 sm:text-base lg:ml-auto">
+            Products are organized by real facility needs, so customers can move
+            from category to matching equipment without fighting filters.
           </p>
         </div>
       </section>
 
-      <section className="section-y">
+      <section className="section-y bg-[#0f1b18] text-white">
         <div className="container">
-          <div className="mb-8 rounded-lg border bg-card p-4 shadow-sm sm:p-5">
-            <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder="Search products, cameras, alarms..."
-                  className="h-12 pl-9"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                />
-              </div>
-              <Select
-                className="h-12 w-full lg:w-52"
-                value={sort}
-                onChange={(e) => setSort(e.target.value as SortKey)}
-              >
-                <option value="featured">Sort: Featured</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
-                <option value="rating">Top Rated</option>
-              </Select>
-            </div>
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {PRODUCT_CATEGORIES.map((category, index) => {
+              const count = PRODUCTS.filter((product) => product.category === category.id).length;
 
-            <div className="mt-4">
-              <p className="mb-3 flex items-center gap-2 text-sm font-semibold">
-                <SlidersHorizontal className="size-4" /> Categories
-              </p>
-              <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
-                <Button
-                  className="w-full sm:w-auto"
-                  variant={category === "all" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setCategory("all")}
+              return (
+                <Link
+                  key={category.id}
+                  to={`/products/category/${category.id}`}
+                  className="group overflow-hidden rounded-lg border border-white/10 bg-[#10231d] shadow-2xl shadow-black/15 transition hover:-translate-y-1 hover:border-[#bde8c0]/40 hover:bg-[#142a23]"
                 >
-                  All Products
-                </Button>
-                {PRODUCT_CATEGORIES.map((c) => (
-                  <Button
-                    key={c.id}
-                    className="w-full sm:w-auto"
-                    variant={category === c.id ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => setCategory(c.id)}
-                  >
-                    {c.name}
-                  </Button>
-                ))}
-              </div>
-            </div>
+                  <div className="relative aspect-[16/10] overflow-hidden">
+                    <img
+                      src={categoryImages[category.id]}
+                      alt={category.name}
+                      className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
+                      loading={index < 3 ? "eager" : "lazy"}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#07130f] via-[#07130f]/28 to-transparent" />
+                    <div className="absolute left-4 top-4 flex size-12 items-center justify-center rounded-lg bg-[#07130f]/80 text-[#8ed0af] shadow-lg backdrop-blur">
+                      <Icon name={category.icon} className="size-6" />
+                    </div>
+                  </div>
+
+                  <div className="p-5 sm:p-6">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="text-xl font-bold">{category.name}</p>
+                        <p className="mt-2 text-sm leading-7 text-white/58">
+                          {categoryDescriptions[category.id]}
+                        </p>
+                      </div>
+                      <span className="shrink-0 rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-semibold text-[#bde8c0]">
+                        {count}
+                      </span>
+                    </div>
+
+                    <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-4">
+                      <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-white/45">
+                        <CheckCircle2 className="size-4 text-[#8ed0af]" />
+                        View varieties
+                      </span>
+                      <ArrowRight className="size-5 text-[#8ed0af] transition group-hover:translate-x-1" />
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
 
-          <div>
-            <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-              <Badge variant="secondary">{filtered.length} products</Badge>
+          <div className="mt-10 rounded-lg border border-white/10 bg-[#07130f] p-5 text-white sm:p-7 lg:flex lg:items-center lg:justify-between">
+            <div>
+              <p className="text-lg font-bold">Need help choosing the right product?</p>
+              <p className="mt-2 text-sm leading-7 text-white/60">
+                BSS can recommend category, size and installation plan after a site survey.
+              </p>
             </div>
-
-            {filtered.length === 0 ? (
-              <div className="rounded-xl border border-dashed py-20 text-center text-muted-foreground">
-                No products match your filters.
-              </div>
-            ) : (
-                <div className="grid gap-5 sm:grid-cols-2 lg:gap-6 xl:grid-cols-4">
-                  {filtered.map((p) => (
-                    <ProductCard key={p.id} product={p} />
-                  ))}
-                </div>
-            )}
+            <Link
+              to="/contact"
+              className={buttonVariants({
+                className: "mt-5 bg-[#c91616] text-white hover:bg-[#a90f0f] lg:mt-0",
+              })}
+            >
+              Request Guidance <ArrowRight className="size-4" />
+            </Link>
           </div>
         </div>
       </section>

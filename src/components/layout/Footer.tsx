@@ -1,93 +1,85 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Mail, MapPin, Phone, Send } from "lucide-react";
-import { toast } from "sonner";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Logo } from "@/components/common/Logo";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { SITE } from "@/lib/constants";
 
 export function Footer() {
   const { t } = useTranslation();
-  const [email, setEmail] = useState("");
 
   return (
-    <footer className="border-t bg-muted/40 pb-20 sm:pb-0">
-      <div className="container grid gap-9 py-10 sm:py-12 md:grid-cols-2 lg:grid-cols-4">
-        <div className="space-y-4">
+    <footer className="border-t border-white/10 bg-[#07130f] pb-20 text-white sm:pb-0">
+      <div className="container grid gap-8 py-10 sm:py-12 lg:grid-cols-[1.3fr_0.7fr_0.9fr] lg:gap-12">
+        <div>
           <Logo />
-          <p className="max-w-sm text-sm leading-6 text-muted-foreground">{SITE.description}</p>
-          <div className="space-y-2 text-sm">
-            <p className="flex items-start gap-2">
-              <MapPin className="mt-0.5 size-4 shrink-0 text-primary" /> {SITE.address}
-            </p>
-            <p className="flex items-start gap-2">
-              <Phone className="mt-0.5 size-4 shrink-0 text-primary" /> {SITE.phoneDisplay}
-            </p>
-            <p className="flex items-start gap-2 break-all">
-              <Mail className="mt-0.5 size-4 shrink-0 text-primary" /> {SITE.email}
-            </p>
-          </div>
-        </div>
-
-        <div>
-          <h4 className="mb-4 font-semibold">{t("footer.quickLinks")}</h4>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/products" className="hover:text-primary">Security Products</Link></li>
-            <li><Link to="/services" className="hover:text-primary">Security Services</Link></li>
-            <li><Link to="/overview" className="hover:text-primary">Overview</Link></li>
-            <li><Link to="/contact" className="hover:text-primary">Contact</Link></li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="mb-4 font-semibold">{t("footer.company")}</h4>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/overview" className="hover:text-primary">About BSS</Link></li>
-            <li><Link to="/signup" className="hover:text-primary">Create Account</Link></li>
-            <li><Link to="/dashboard" className="hover:text-primary">Customer Portal</Link></li>
-            <li><Link to="/contact" className="hover:text-primary">Get a Quote</Link></li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="mb-4 font-semibold">{t("footer.newsletter")}</h4>
-          <form
-            className="grid gap-2 sm:flex"
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (!email) return;
-              toast.success("Subscribed! Thank you for joining our newsletter.");
-              setEmail("");
-            }}
-          >
-            <Input
-              type="email"
-              required
-              placeholder="you@company.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Button type="submit" size="icon" className="w-full sm:w-10" aria-label="Subscribe">
-              <Send className="size-4" />
-            </Button>
-          </form>
-          <p className="mt-3 text-xs text-muted-foreground">
-            Fire safety tips, product updates and offers — no spam.
+          <p className="mt-4 max-w-md text-sm leading-7 text-white/60">
+            {SITE.description}
           </p>
+        </div>
+
+        <div>
+          <h4 className="mb-4 text-sm font-semibold uppercase tracking-[0.14em] text-white/50">
+            {t("footer.quickLinks")}
+          </h4>
+          <ul className="space-y-2 text-sm text-white/70">
+            <li>
+              <Link to="/overview" className="hover:text-[#bde8c0]">
+                Overview
+              </Link>
+            </li>
+            <li>
+              <Link to="/products" className="hover:text-[#bde8c0]">
+                Products
+              </Link>
+            </li>
+            <li>
+              <Link to="/services" className="hover:text-[#bde8c0]">
+                Services
+              </Link>
+            </li>
+            <li>
+              <Link to="/contact" className="hover:text-[#bde8c0]">
+                Contact
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="mb-4 text-sm font-semibold uppercase tracking-[0.14em] text-white/50">
+            Contact
+          </h4>
+          <div className="space-y-3 text-sm text-white/70">
+            <p className="flex items-start gap-3">
+              <MapPin className="mt-0.5 size-4 shrink-0 text-[#8ed0af]" />
+              {SITE.address}
+            </p>
+            <a
+              href={`tel:${SITE.phone.replace(/\D/g, "")}`}
+              className="flex items-start gap-3 hover:text-[#bde8c0]"
+            >
+              <Phone className="mt-0.5 size-4 shrink-0 text-[#8ed0af]" />
+              {SITE.phoneDisplay}
+            </a>
+            <a
+              href={`mailto:${SITE.email}`}
+              className="flex items-start gap-3 break-all hover:text-[#bde8c0]"
+            >
+              <Mail className="mt-0.5 size-4 shrink-0 text-[#8ed0af]" />
+              {SITE.email}
+            </a>
+          </div>
         </div>
       </div>
 
-      <div className="border-t">
-        <div className="container flex flex-col items-center justify-between gap-3 py-5 text-center text-sm text-muted-foreground md:flex-row md:text-left">
+      <div className="border-t border-white/10">
+        <div className="container flex flex-col items-center justify-between gap-3 py-5 text-center text-sm text-white/50 md:flex-row md:text-left">
           <p className="leading-6">
-            © {new Date().getFullYear()} {SITE.name}. {t("footer.rights")}
+            &copy; {new Date().getFullYear()} {SITE.name}. {t("footer.rights")}
           </p>
-          <div className="flex gap-4">
-            <Link to="/contact" className="hover:text-primary">Privacy</Link>
-            <Link to="/contact" className="hover:text-primary">Terms</Link>
-          </div>
+          <Link to="/contact" className="font-medium text-white/70 hover:text-[#bde8c0]">
+            Request a Quote
+          </Link>
         </div>
       </div>
     </footer>

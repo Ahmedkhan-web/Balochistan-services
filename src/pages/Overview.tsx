@@ -13,7 +13,6 @@ import {
 import { Seo } from "@/components/common/Seo";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { Icon } from "@/components/common/Icon";
-import { ServiceCard } from "@/components/services/ServiceCard";
 import { StarRating } from "@/components/common/StarRating";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,7 +22,6 @@ import { getFeaturedServices } from "@/data/services";
 import { PRODUCT_CATEGORIES, PRODUCTS } from "@/data/products";
 import type { Product } from "@/types";
 import {
-  CORE_VALUES,
   INDUSTRIES,
   PARTNERS,
   TESTIMONIALS,
@@ -37,6 +35,32 @@ const PAGE_HEADER =
 
 const HERO_IMAGE = "/assets/images/hero-overview.png";
 const FEATURE_FIRE_IMAGE = "/assets/images/feature-fire.jpg";
+const ONLINE_FIRE_INSPECTION_IMAGE =
+  "https://images.pexels.com/photos/8978625/pexels-photo-8978625.jpeg?auto=compress&cs=tinysrgb&w=1400";
+const ONLINE_CONTROL_ROOM_IMAGE =
+  "https://images.pexels.com/photos/30481728/pexels-photo-30481728.jpeg?auto=compress&cs=tinysrgb&w=1400";
+const ONLINE_SECTOR_SECURITY_IMAGE =
+  "https://images.pexels.com/photos/27765780/pexels-photo-27765780.jpeg?auto=compress&cs=tinysrgb&w=1400";
+const ONLINE_BLUEPRINT_MONITORING_IMAGE = ONLINE_CONTROL_ROOM_IMAGE;
+const ONLINE_BLUEPRINT_FIRE_IMAGE = ONLINE_FIRE_INSPECTION_IMAGE;
+
+const serviceStories = [
+  {
+    title: "Fire safety installation",
+    text: "Detection, alarms, extinguishers and site-ready emergency planning for commercial facilities.",
+    image: ONLINE_FIRE_INSPECTION_IMAGE,
+  },
+  {
+    title: "CCTV command coverage",
+    text: "Camera placement, recording, storage and monitoring layouts designed around real facility movement.",
+    image: ONLINE_CONTROL_ROOM_IMAGE,
+  },
+  {
+    title: "Access control and maintenance",
+    text: "Entry control, routine checks and preventive service plans that keep systems inspection-ready.",
+    image: ONLINE_SECTOR_SECURITY_IMAGE,
+  },
+] as const;
 
 const TEAM = [
   { name: "Operations Team", role: "Certified field engineers and technicians", icon: "workflow" },
@@ -137,7 +161,7 @@ export default function Overview() {
           </div>
         </div>
 
-        <div className="container flex min-h-[calc(100svh-6.5rem)] items-center py-10 sm:py-14 md:min-h-[calc(100vh-7rem)] md:py-20">
+        <div className="flex min-h-[calc(100svh-6.5rem)] w-full items-center px-4 py-10 sm:px-6 sm:py-14 md:min-h-[calc(100vh-7rem)] md:py-20 lg:px-14 2xl:px-16">
           <div className="mx-auto max-w-3xl text-center md:mx-0 md:text-left">
             <Badge className="border border-white/15 bg-white/10 text-white shadow-sm backdrop-blur hover:bg-white/10">
               Enterprise Fire Safety and Security
@@ -145,7 +169,7 @@ export default function Overview() {
             <h1 className="mt-5 max-w-4xl text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl md:mt-6 md:text-6xl lg:text-7xl">
               Balochistan Standard Services
             </h1>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-white/80 sm:text-base md:mt-6 md:text-lg md:leading-8">
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/80 sm:text-base md:mx-0 md:mt-6 md:text-lg md:leading-8">
               {PAGE_HEADER}
             </p>
             <div className="mt-7 grid gap-3 min-[420px]:flex min-[420px]:flex-wrap min-[420px]:justify-center md:mt-9 md:justify-start">
@@ -165,7 +189,7 @@ export default function Overview() {
                   size: "lg",
                   variant: "outline",
                   className:
-                    "w-full border-white/30 bg-white/10 text-white backdrop-blur hover:bg-white hover:text-[#10231d] min-[420px]:w-auto",
+                    "w-full border-white/30 bg-white/10 text-white backdrop-blur hover:border-[#bde8c0]/60 hover:bg-[#1f3b31] hover:text-white min-[420px]:w-auto",
                 })}
               >
                 <PhoneCall className="size-4" /> Get a Quote
@@ -259,7 +283,7 @@ export default function Overview() {
             {PRODUCT_CATEGORIES.map((category) => (
               <Link
                 key={category.id}
-                to={`/products?category=${category.id}`}
+                to={`/products/category/${category.id}`}
                 className="group rounded-lg border border-white/10 bg-[#162721] p-4 text-center transition hover:-translate-y-1 hover:border-[#bde8c0]/40 hover:bg-[#1d3029] sm:text-left"
               >
                 <Icon name={category.icon} className="mx-auto size-6 text-[#8ed0af] sm:mx-0" />
@@ -364,134 +388,423 @@ export default function Overview() {
       </section>
 
       <section className="section-y border-t border-white/10 bg-[#07130f] text-white">
-        <div className="container grid items-start gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
-          <div>
-            <SectionHeading
-              align="left"
-              eyebrow="Why BSS"
-              title="Professional systems, installed and supported properly"
-              description="Company information, services, industries, projects and products stay together on this first overview page."
-              className="[&>p:last-child]:text-white/65"
-            />
-            <ul className="mt-5 space-y-3 sm:mt-6">
+        <div className="container">
+          <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-end lg:gap-12">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8ed0af]">
+                Why BSS
+              </p>
+              <h2 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+                Safety systems that look organized before the audit starts.
+              </h2>
+              <p className="mt-5 max-w-xl text-sm leading-7 text-white/65 sm:text-base">
+                BSS brings fire safety, CCTV, access control and maintenance into one
+                clean operating standard, so facility managers can move faster with
+                fewer surprises.
+              </p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-3">
               {[
-                "Compliance with SBP, EN54 and international safety standards",
-                "Certified engineers for design, installation and maintenance",
-                "Genuine OEM equipment from authorized global partners",
-                "24/7 monitoring and rapid emergency response",
-                "Detailed documentation and compliance certification",
+                { value: "500+", label: "Sites supported" },
+                { value: "15+", label: "Years experience" },
+                { value: "24/7", label: "Urgent response" },
               ].map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <Check className="mt-0.5 size-5 shrink-0 text-[#8ed0af]" />
-                  <span className="text-sm leading-6 text-white/75">{item}</span>
-                </li>
+                <div key={item.label} className="rounded-lg border border-white/10 bg-white/[0.06] p-5">
+                  <p className="text-3xl font-extrabold text-[#bde8c0]">{item.value}</p>
+                  <p className="mt-2 text-xs font-semibold uppercase tracking-[0.14em] text-white/50">
+                    {item.label}
+                  </p>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {WHY_CHOOSE_US.map((item) => (
-              <Card key={item.title} className="border-white/10 bg-[#10231d] text-white shadow-xl shadow-black/20">
-                <CardContent className="flex gap-3 p-5 sm:gap-4">
-                  <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-[#1f3b31] text-[#8ed0af]">
-                    <Icon name={item.icon} className="size-5" />
+
+          <div className="mt-10 grid gap-5 lg:grid-cols-[1.18fr_0.82fr] lg:gap-6">
+            <div className="overflow-hidden rounded-lg border border-white/10 bg-[#10231d] shadow-2xl shadow-black/30 sm:relative sm:min-h-[420px]">
+              <div className="relative min-h-[240px] sm:absolute sm:inset-0 sm:min-h-0">
+                <img
+                  src={ONLINE_FIRE_INSPECTION_IMAGE}
+                  alt="Fire safety inspection near a fire hose cabinet"
+                  className="absolute inset-0 h-full w-full object-cover"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#10231d]/25 to-transparent sm:bg-gradient-to-r sm:from-[#07130f]/92 sm:via-[#07130f]/42 sm:to-transparent" />
+              </div>
+              <div className="p-5 sm:absolute sm:inset-x-0 sm:bottom-0 sm:p-8">
+                <Badge className="bg-[#c91616] text-white hover:bg-[#c91616]">
+                  Inspection Ready
+                </Badge>
+                <h3 className="mt-5 max-w-lg text-2xl font-bold leading-tight sm:text-3xl">
+                  Fire equipment, records and response plans kept in one professional rhythm.
+                </h3>
+                <div className="mt-6 grid max-w-2xl gap-3 sm:grid-cols-3">
+                  {["Site survey", "Certified supply", "Maintenance logs"].map((item) => (
+                    <div key={item} className="rounded-lg border border-white/10 bg-black/25 p-3 backdrop-blur">
+                      <Check className="size-4 text-[#8ed0af]" />
+                      <p className="mt-2 text-sm font-semibold">{item}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-5">
+              <div className="overflow-hidden rounded-lg border border-white/10 bg-[#10231d] shadow-xl shadow-black/20 sm:relative sm:min-h-[230px]">
+                <div className="relative min-h-[190px] sm:absolute sm:inset-0 sm:min-h-0">
+                  <img
+                    src={ONLINE_CONTROL_ROOM_IMAGE}
+                    alt="Security control room monitoring screens"
+                    className="absolute inset-0 h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#10231d]/20 to-transparent sm:from-[#07130f] sm:via-[#07130f]/45" />
+                </div>
+                <div className="p-5 sm:absolute sm:bottom-0 sm:left-0 sm:right-0">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#8ed0af]">
+                    Monitoring
+                  </p>
+                  <p className="mt-2 text-xl font-bold">CCTV and access control designed for real oversight.</p>
+                </div>
+              </div>
+
+              <div className="grid gap-3">
+                {WHY_CHOOSE_US.slice(0, 4).map((item) => (
+                  <div
+                    key={item.title}
+                    className="flex items-start gap-4 rounded-lg border border-white/10 bg-[#10231d] p-4 transition hover:border-[#bde8c0]/35 hover:bg-[#142a23]"
+                  >
+                    <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-[#1f3b31] text-[#8ed0af]">
+                      <Icon name={item.icon} className="size-5" />
+                    </div>
+                    <div>
+                      <p className="font-semibold">{item.title}</p>
+                      <p className="mt-1 text-sm leading-6 text-white/58">{item.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-white/10 bg-[#0f1b18] py-12 text-white md:py-20">
+        <div className="container">
+          <div className="grid gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-start lg:gap-12">
+            <div className="lg:sticky lg:top-24">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8ed0af]">
+                Capabilities
+              </p>
+              <h2 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
+                One clean system for products, service and response.
+              </h2>
+              <p className="mt-4 text-sm leading-7 text-white/65 sm:text-base">
+                Users should quickly understand what BSS can handle. This section keeps
+                services scannable, visual and action-focused.
+              </p>
+              <Link
+                to="/services"
+                className={buttonVariants({
+                  className: "mt-6 bg-[#c91616] text-white hover:bg-[#a90f0f]",
+                })}
+              >
+                Explore Services <ArrowRight className="size-4" />
+              </Link>
+            </div>
+
+            <div className="grid gap-5 md:grid-cols-2">
+              {services.slice(0, 4).map((service, index) => (
+                <Link
+                  key={service.id}
+                  to={`/services/${service.slug}`}
+                  className="group rounded-lg border border-white/10 bg-[#10231d] p-5 shadow-xl shadow-black/15 transition hover:-translate-y-1 hover:border-[#bde8c0]/35 hover:bg-[#142a23] sm:p-6"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex size-12 items-center justify-center rounded-lg bg-[#1f3b31] text-[#8ed0af] transition group-hover:bg-[#c91616] group-hover:text-white">
+                      <Icon name={service.icon} className="size-6" />
+                    </div>
+                    <span className="text-xs font-semibold text-white/35">0{index + 1}</span>
+                  </div>
+                  <h3 className="mt-5 text-lg font-bold">{service.name}</h3>
+                  <p className="mt-2 text-sm leading-7 text-white/58">
+                    {service.short_description}
+                  </p>
+                  <div className="mt-5 flex items-center gap-2 text-sm font-semibold text-[#bde8c0]">
+                    View service <ArrowRight className="size-4 transition group-hover:translate-x-1" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-10 grid gap-4 rounded-lg border border-white/10 bg-[#07130f] p-4 sm:grid-cols-3 sm:p-5 lg:mt-14">
+            {serviceStories.map((story) => (
+              <div key={story.title} className="flex gap-4 rounded-lg p-2">
+                <div className="h-16 w-20 shrink-0 overflow-hidden rounded-md bg-white/10">
+                  <img
+                    src={story.image}
+                    alt={story.title}
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold">{story.title}</p>
+                  <p className="mt-1 line-clamp-2 text-xs leading-5 text-white/55">{story.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-white/10 bg-[#07130f] py-12 text-white md:py-20">
+        <div className="container">
+          <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-12">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8ed0af]">
+                Operating Standard
+              </p>
+              <h2 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
+                A premium process the client can trust before work begins.
+              </h2>
+            </div>
+            <p className="text-sm leading-7 text-white/65 sm:text-base">
+              Every project moves through a simple professional rhythm: inspect the
+              facility, design the right coverage, install cleanly, document the work
+              and support it after handover.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-4 lg:grid-cols-5">
+            {[
+              { title: "Survey", icon: "search-check", text: "Site walk-through, risks and coverage gaps." },
+              { title: "Design", icon: "workflow", text: "System layout, products and scope clarity." },
+              { title: "Install", icon: "wrench", text: "Clean installation by trained technicians." },
+              { title: "Document", icon: "file-text", text: "Reports, tags and compliance records." },
+              { title: "Support", icon: "headset", text: "Maintenance, emergency help and AMC." },
+            ].map((step, index) => (
+              <div key={step.title} className="relative rounded-lg border border-white/10 bg-[#10231d] p-5">
+                <span className="text-xs font-bold text-white/30">0{index + 1}</span>
+                <div className="mt-5 flex size-12 items-center justify-center rounded-lg bg-[#1f3b31] text-[#8ed0af]">
+                  <Icon name={step.icon} className="size-6" />
+                </div>
+                <h3 className="mt-5 font-bold">{step.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-white/56">{step.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-white/10 bg-[#0f1b18] py-12 text-white md:py-20">
+        <div className="container">
+          <div className="mb-8 grid gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8ed0af]">
+                Sectors
+              </p>
+              <h2 className="mt-4 max-w-2xl text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
+                Protection plans shaped around the facility type.
+              </h2>
+            </div>
+            <p className="max-w-2xl text-sm leading-7 text-white/65 sm:text-base lg:ml-auto">
+              Banks, hospitals, schools and industrial sites do not need the same
+              layout. This section helps visitors see BSS thinking in practical
+              environments, not generic packages.
+            </p>
+          </div>
+
+          <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr] lg:gap-6">
+            <div className="overflow-hidden rounded-lg border border-white/10 bg-[#10231d] shadow-2xl shadow-black/25 sm:relative sm:min-h-[430px]">
+              <div className="relative min-h-[240px] sm:absolute sm:inset-0 sm:min-h-0">
+                <img
+                  src={ONLINE_SECTOR_SECURITY_IMAGE}
+                  alt="Surveillance cameras monitoring an industrial facility"
+                  className="absolute inset-0 h-full w-full object-cover"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#10231d]/25 to-transparent sm:from-[#07130f] sm:via-[#07130f]/45" />
+              </div>
+              <div className="p-5 sm:absolute sm:inset-x-0 sm:bottom-0 sm:p-7">
+                <Badge className="bg-[#c91616] text-white hover:bg-[#c91616]">
+                  Sector Coverage
+                </Badge>
+                <h3 className="mt-4 max-w-lg text-2xl font-bold leading-tight sm:text-3xl">
+                  CCTV, fire safety and access control planned around real movement.
+                </h3>
+                <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                  {[
+                    { value: "9", label: "Facility types" },
+                    { value: "3", label: "Core systems" },
+                    { value: "1", label: "Support team" },
+                  ].map((item) => (
+                    <div key={item.label} className="rounded-lg border border-white/10 bg-black/25 p-3 backdrop-blur">
+                      <p className="text-2xl font-extrabold text-[#bde8c0]">{item.value}</p>
+                      <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-white/50">
+                        {item.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              {INDUSTRIES.map((industry) => (
+                <div
+                  key={industry.id}
+                  className="group relative overflow-hidden rounded-lg border border-white/10 bg-[#10231d] p-4 transition hover:-translate-y-1 hover:border-[#bde8c0]/35 hover:bg-[#142a23]"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-[#1f3b31] text-[#8ed0af] transition group-hover:bg-[#c91616] group-hover:text-white">
+                      <Icon name={industry.icon} className="size-5" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold">{industry.name}</p>
+                      <p className="mt-1 text-sm leading-6 text-white/55">
+                        {industry.description}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
+                    <span className="text-xs font-semibold uppercase tracking-wide text-white/35">
+                      Coverage
+                    </span>
+                    <p className="mt-1 text-sm leading-6 text-white/55">
+                      Fire / CCTV / Access
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-white/10 bg-[#07130f] py-12 text-white md:py-20">
+        <div className="container">
+          <div className="mb-8 grid gap-5 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8ed0af]">
+                Facility Protection Blueprint
+              </p>
+              <h2 className="mt-4 max-w-2xl text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
+                A practical safety map from first risk to daily monitoring.
+              </h2>
+            </div>
+            <p className="max-w-2xl text-sm leading-7 text-white/65 sm:text-base lg:ml-auto">
+              Every facility needs prevention, visibility, controlled access and
+              response planning working together. This section shows that complete
+              safety logic clearly.
+            </p>
+          </div>
+
+          <div className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+            <div className="overflow-hidden rounded-lg border border-white/10 bg-[#10231d] shadow-2xl shadow-black/30 sm:relative sm:min-h-[460px]">
+              <div className="relative min-h-[260px] sm:absolute sm:inset-0 sm:min-h-0">
+                <img
+                  src={ONLINE_BLUEPRINT_MONITORING_IMAGE}
+                  alt="Security control room monitoring live surveillance feeds"
+                  className="absolute inset-0 h-full w-full object-cover"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#10231d]/20 to-transparent sm:from-[#07130f] sm:via-[#07130f]/50" />
+              </div>
+              <div className="p-5 sm:absolute sm:inset-x-0 sm:bottom-0 sm:p-8">
+                <Badge className="bg-[#c91616] text-white hover:bg-[#c91616]">
+                  Control Layer
+                </Badge>
+                <h3 className="mt-5 max-w-xl text-2xl font-bold leading-tight sm:text-3xl">
+                  Central monitoring, camera coverage and incident visibility in one view.
+                </h3>
+                <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                  {["Live surveillance", "Access events", "Emergency alerts"].map((item) => (
+                    <div key={item} className="rounded-lg border border-white/10 bg-black/25 p-3 text-sm font-semibold text-white/75 backdrop-blur">
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-5">
+              <div className="overflow-hidden rounded-lg border border-white/10 bg-[#10231d] shadow-xl shadow-black/20 sm:relative sm:min-h-[250px]">
+                <div className="relative min-h-[190px] sm:absolute sm:inset-0 sm:min-h-0">
+                  <img
+                    src={ONLINE_BLUEPRINT_FIRE_IMAGE}
+                    alt="Fire safety inspection near a fire hose cabinet"
+                    className="absolute inset-0 h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#10231d]/20 to-transparent sm:from-[#07130f] sm:via-[#07130f]/42" />
+                </div>
+                <div className="p-5 sm:absolute sm:bottom-0 sm:left-0 sm:right-0">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#8ed0af]">
+                    Fire Readiness
+                  </p>
+                  <p className="mt-2 max-w-md text-xl font-bold">
+                    Inspection-ready fire equipment, signage and service records.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid gap-3">
+                {[
+                  { title: "Prevent", icon: "shield-check", text: "Reduce fire and security risk before incidents happen." },
+                  { title: "Detect", icon: "cctv", text: "Use cameras, alarms and detectors to capture early signals." },
+                  { title: "Control", icon: "fingerprint", text: "Secure entries, sensitive rooms and staff movement." },
+                  { title: "Respond", icon: "headset", text: "Keep maintenance and emergency response close to the facility." },
+                ].map((item) => (
+                  <div
+                    key={item.title}
+                    className="flex items-start gap-4 rounded-lg border border-white/10 bg-[#10231d] p-4 transition hover:border-[#bde8c0]/35 hover:bg-[#142a23]"
+                  >
+                    <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-[#1f3b31] text-[#8ed0af]">
+                      <Icon name={item.icon} className="size-5" />
+                    </div>
+                    <div>
+                      <p className="font-semibold">{item.title}</p>
+                      <p className="mt-1 text-sm leading-6 text-white/58">{item.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-white/10 bg-[#0f1b18] py-12 text-white md:py-20">
+        <div className="container grid gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-start lg:gap-12">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8ed0af]">
+              Trust
+            </p>
+            <h2 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
+              People, partners and clients in one reliable network.
+            </h2>
+            <div className="mt-7 grid gap-3">
+              {TEAM.map((member) => (
+                <div key={member.name} className="flex items-center gap-4 rounded-lg border border-white/10 bg-[#10231d] p-4">
+                  <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-[#c91616] text-white">
+                    <Icon name={member.icon} className="size-5" />
                   </div>
                   <div>
-                    <p className="font-semibold">{item.title}</p>
-                    <p className="mt-1 text-sm text-white/60">{item.description}</p>
+                    <p className="font-semibold">{member.name}</p>
+                    <p className="text-sm text-white/58">{member.role}</p>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
 
-      <section className="section-y border-t border-white/10 bg-[#0f1b18] text-white [&_.text-foreground]:text-white [&_.text-muted-foreground]:text-white/60 [&_.group]:border-white/10 [&_.group]:bg-[#10231d] [&_.group]:text-white">
-        <div className="container">
-          <SectionHeading
-            eyebrow="Services"
-            title="Installation, maintenance and emergency support"
-            description="From survey and supply to installation, training and annual maintenance."
-            className="[&>p:last-child]:text-white/65"
-          />
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-            {services.map((service) => (
-              <ServiceCard key={service.id} service={service} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="section-y border-t border-white/10 bg-[#07130f] text-white">
-        <div className="container">
-          <SectionHeading eyebrow="What drives us" title="Core Values" />
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
-            {CORE_VALUES.map((value) => (
-              <Card key={value.title} className="border-white/10 bg-[#10231d] text-center text-white shadow-xl shadow-black/20">
-                <CardContent className="flex flex-col items-center gap-3 p-5 sm:p-6">
-                  <div className="flex size-12 items-center justify-center rounded-full bg-[#1f3b31] text-[#8ed0af]">
-                    <Icon name={value.icon} className="size-6" />
-                  </div>
-                  <p className="font-semibold">{value.title}</p>
-                  <p className="text-sm text-white/60">{value.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="section-y border-t border-white/10 bg-[#0f1b18] text-white">
-        <div className="container">
-          <SectionHeading
-            eyebrow="Sectors"
-            title="Industries We Serve"
-            description="Fire safety, surveillance and access control for facilities where reliability, records and response time matter."
-            className="[&>p:last-child]:text-white/65"
-          />
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {INDUSTRIES.map((industry) => (
-              <Card key={industry.id} className="border-white/10 bg-[#10231d] text-white">
-                <CardContent className="flex items-center gap-3 p-4">
-                  <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-[#c91616] text-white">
-                    <Icon name={industry.icon} className="size-5" />
-                  </div>
-                  <span className="text-sm font-semibold">{industry.name}</span>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="section-y border-t border-white/10 bg-[#07130f] text-white">
-        <div className="container">
-          <SectionHeading eyebrow="Our people" title="Team Information" />
-          <div className="grid gap-5 md:grid-cols-3 lg:gap-6">
-            {TEAM.map((member) => (
-              <Card key={member.name} className="border-white/10 bg-[#10231d] text-center text-white shadow-xl shadow-black/20">
-                <CardContent className="flex flex-col items-center gap-3 p-6 sm:p-8">
-                  <div className="flex size-14 items-center justify-center rounded-full bg-[#c91616] text-white sm:size-16">
-                    <Icon name={member.icon} className="size-7 sm:size-8" />
-                  </div>
-                  <p className="text-lg font-semibold">{member.name}</p>
-                  <p className="text-sm text-white/60">{member.role}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="section-y border-t border-white/10 bg-[#0f1b18] text-white">
-        <div className="container">
-          <SectionHeading eyebrow="Testimonials" title="Trusted by regional teams" />
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+          <div className="grid gap-5 md:grid-cols-2">
             {TESTIMONIALS.map((testimonial) => (
               <Card key={testimonial.id} className="h-full border-white/10 bg-[#10231d] text-white shadow-xl shadow-black/20">
                 <CardContent className="flex h-full flex-col gap-4 p-5 sm:p-6">
                   <StarRating value={testimonial.rating} />
-                  <p className="flex-1 text-sm text-white/60">
+                  <p className="flex-1 text-sm leading-7 text-white/62">
                     "{testimonial.quote}"
                   </p>
                   <div>
@@ -507,41 +820,83 @@ export default function Overview() {
         </div>
       </section>
 
-      <section className="border-y border-white/10 bg-[#07130f] py-12 text-white">
+      <section className="overflow-hidden border-y border-white/10 bg-[#07130f] py-12 text-white">
         <div className="container">
-          <p className="mb-8 text-center text-sm font-semibold uppercase tracking-[0.18em] text-white/50">
-            Authorized technology partners
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-7 gap-y-4 sm:gap-x-12 sm:gap-y-6">
-            {PARTNERS.map((partner) => (
-              <span key={partner.id} className="text-base font-bold text-white/55 sm:text-xl">
-                {partner.logo}
-              </span>
+          <div className="mb-7 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8ed0af]">
+                Authorized technology partners
+              </p>
+              <h2 className="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">
+                Trusted brands behind reliable systems.
+              </h2>
+            </div>
+            <p className="max-w-md text-sm leading-7 text-white/55">
+              Equipment selection stays aligned with proven fire safety, CCTV and access control ecosystems.
+            </p>
+          </div>
+        </div>
+
+        <div className="relative">
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-[#07130f] to-transparent sm:w-32" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-[#07130f] to-transparent sm:w-32" />
+          <div className="flex w-max animate-marquee-left gap-4 px-4 [animation-play-state:running] hover:[animation-play-state:paused]">
+            {[...PARTNERS, ...PARTNERS, ...PARTNERS].map((partner, index) => (
+              <div
+                key={`${partner.id}-${index}`}
+                className="flex h-24 min-w-[190px] items-center justify-center rounded-lg border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-6 text-center shadow-xl shadow-black/10 backdrop-blur transition hover:border-[#bde8c0]/40 hover:bg-[#10231d] sm:min-w-[220px]"
+              >
+                <div>
+                  <p className="text-lg font-extrabold tracking-wide text-white/78 sm:text-xl">
+                    {partner.logo}
+                  </p>
+                  <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#8ed0af]/70">
+                    Authorized Partner
+                  </p>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="section-y border-t border-white/10 bg-[#0f1b18]">
+      <section className="border-t border-white/10 bg-[#0f1b18] py-12 md:py-20">
         <div className="container">
-          <div className="flex flex-col items-stretch justify-between gap-5 rounded-lg border border-white/10 bg-[#07130f] p-5 text-white shadow-2xl shadow-black/20 sm:p-8 md:flex-row md:items-center md:p-10">
-            <div>
-              <h2 className="text-xl font-bold sm:text-2xl md:text-3xl">
-                Need urgent fire safety or security help?
-              </h2>
-              <p className="mt-2 text-sm leading-7 text-white/65 sm:text-base">
-                Our emergency response team is available 24/7 across Balochistan.
-              </p>
+          <div className="overflow-hidden rounded-lg border border-white/10 bg-[linear-gradient(135deg,#10231d_0%,#07130f_55%,#142a23_100%)] p-5 text-white shadow-2xl shadow-black/25 sm:p-8 md:p-10">
+            <div className="flex flex-col items-stretch justify-between gap-6 md:flex-row md:items-center">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8ed0af]">
+                  Ready for the next site?
+                </p>
+                <h2 className="mt-3 text-2xl font-extrabold leading-tight sm:text-3xl md:text-4xl">
+                  Request a professional safety and security assessment.
+                </h2>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-white/65 sm:text-base">
+                  Tell BSS what you need: fire safety, CCTV, access control, maintenance or a full facility plan.
+                </p>
+              </div>
+              <div className="grid gap-3 sm:flex md:shrink-0">
+                <a
+                  href={`tel:${SITE.phone.replace(/\D/g, "")}`}
+                  className={buttonVariants({
+                    size: "lg",
+                    className: "bg-[#c91616] text-white hover:bg-[#a90f0f]",
+                  })}
+                >
+                  <PhoneCall className="size-5" /> {SITE.phoneDisplay}
+                </a>
+                <Link
+                  to="/contact"
+                  className={buttonVariants({
+                    size: "lg",
+                  variant: "outline",
+                    className: "border-white/25 bg-white/[0.06] text-white hover:border-[#bde8c0]/60 hover:bg-[#1f3b31] hover:text-white",
+                  })}
+                >
+                  Get a Quote
+                </Link>
+              </div>
             </div>
-            <a
-              href={`tel:${SITE.phone.replace(/\D/g, "")}`}
-              className={buttonVariants({
-                size: "lg",
-                className: "w-full bg-[#c91616] text-white hover:bg-[#a90f0f] md:w-auto",
-              })}
-            >
-              <PhoneCall className="size-5" /> {SITE.phoneDisplay}
-            </a>
           </div>
         </div>
       </section>
