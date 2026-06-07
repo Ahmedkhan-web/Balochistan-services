@@ -88,6 +88,9 @@ export default function Cart() {
                             src={product.images[0]}
                             alt={product.name}
                             className="aspect-square w-full rounded-xl bg-muted object-cover"
+                            loading="lazy"
+                            decoding="async"
+                            sizes="(min-width: 768px) 140px, 100vw"
                           />
                         ) : (
                           <ImagePlaceholder

@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { ArrowRight, PhoneCall, ShieldCheck } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { buttonVariants } from "@/components/ui/buttonVariants";
 
 const stats = [
@@ -12,40 +10,35 @@ const stats = [
 ];
 
 export function Hero() {
-  const { t } = useTranslation();
   return (
     <section className="hero-gradient relative overflow-hidden">
       <div className="container grid items-center gap-10 py-20 md:py-28 lg:grid-cols-2">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        <div>
           <span className="inline-flex items-center gap-2 rounded-full border bg-background/60 px-3 py-1 text-xs font-medium text-primary">
             <ShieldCheck className="size-4" /> Enterprise Fire Safety &
             Security
           </span>
           <h1 className="mt-5 text-4xl font-extrabold leading-tight tracking-tight text-balance md:text-6xl">
-            {t("hero.headline")}
+            Fire safety and security systems for serious facilities.
           </h1>
           <p className="mt-5 max-w-xl text-lg text-muted-foreground">
-            {t("hero.subheadline")}
+            BSS supplies, installs and maintains fire protection, CCTV, access control and monitoring systems for commercial and public-sector sites.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link to="/products" className={buttonVariants({ size: "lg" })}>
-              {t("hero.shop")} <ArrowRight className="size-4" />
+              Shop Products <ArrowRight className="size-4" />
             </Link>
             <Link
               to="/services"
               className={buttonVariants({ size: "lg", variant: "outline" })}
             >
-              {t("hero.request")}
+              Request Service
             </Link>
             <Link
               to="/contact"
               className={buttonVariants({ size: "lg", variant: "secondary" })}
             >
-              <PhoneCall className="size-4" /> {t("hero.quote")}
+              <PhoneCall className="size-4" /> Get a Quote
             </Link>
           </div>
 
@@ -57,14 +50,9 @@ export function Hero() {
               </div>
             ))}
           </dl>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="relative hidden lg:block"
-        >
+        <div className="relative hidden lg:block">
           <div className="relative aspect-square rounded-3xl bg-gradient-to-br from-brand-600 to-brand-900 p-1 shadow-2xl">
             <div className="flex h-full flex-col items-center justify-center gap-6 rounded-[22px] bg-brand-950/30 text-white">
               <ShieldCheck className="size-28 opacity-90" />
@@ -80,7 +68,7 @@ export function Hero() {
             <p className="text-sm font-semibold">Emergency Response</p>
             <p className="text-xs text-muted-foreground">Average 15 min</p>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

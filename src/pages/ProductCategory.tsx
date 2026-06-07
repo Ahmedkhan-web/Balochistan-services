@@ -87,6 +87,7 @@ export default function ProductCategory() {
           src={categoryImages[category.id]}
           alt={category.name}
           className="absolute inset-0 -z-20 h-full w-full object-cover"
+          fetchPriority="high"
           decoding="async"
           sizes="100vw"
         />

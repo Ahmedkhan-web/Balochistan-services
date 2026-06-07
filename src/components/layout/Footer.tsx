@@ -1,12 +1,9 @@
 import { Link } from "react-router-dom";
 import { Mail, MapPin, Phone } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { Logo } from "@/components/common/Logo";
 import { SITE } from "@/lib/constants";
 
 export function Footer() {
-  const { t } = useTranslation();
-
   return (
     <footer className="border-t border-white/10 bg-[#07130f] pb-20 text-white sm:pb-0">
       <div className="container grid gap-8 py-10 sm:py-12 lg:grid-cols-[1.3fr_0.7fr_0.9fr] lg:gap-12">
@@ -19,7 +16,7 @@ export function Footer() {
 
         <div>
           <h4 className="mb-4 text-sm font-semibold uppercase tracking-[0.14em] text-white/50">
-            {t("footer.quickLinks")}
+            Quick Links
           </h4>
           <ul className="space-y-2 text-sm text-white/70">
             <li>
@@ -75,7 +72,7 @@ export function Footer() {
       <div className="border-t border-white/10">
         <div className="container flex flex-col items-center justify-between gap-3 py-5 text-center text-sm text-white/50 md:flex-row md:text-left">
           <p className="leading-6">
-            &copy; {new Date().getFullYear()} {SITE.name}. {t("footer.rights")}
+            &copy; {new Date().getFullYear()} {SITE.name}. All rights reserved.
           </p>
           <Link to="/contact" className="font-medium text-white/70 hover:text-[#bde8c0]">
             Request a Quote

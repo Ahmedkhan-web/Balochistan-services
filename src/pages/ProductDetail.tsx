@@ -68,6 +68,9 @@ export default function ProductDetail() {
                 src={product.images[0]}
                 alt={product.name}
                 className="aspect-square w-full rounded-lg bg-muted object-cover sm:rounded-xl lg:rounded-2xl"
+                fetchPriority="high"
+                decoding="async"
+                sizes="(min-width: 1024px) 50vw, 100vw"
               />
             ) : (
               <ImagePlaceholder
@@ -84,6 +87,8 @@ export default function ProductDetail() {
                     src={product.images[0]}
                     alt={`${product.name} view ${i + 1}`}
                     className="aspect-square rounded-lg bg-muted object-cover opacity-80"
+                    loading="lazy"
+                    decoding="async"
                   />
                 ) : (
                   <ImagePlaceholder

@@ -3,8 +3,8 @@ import { createBrowserRouter } from "react-router-dom";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
 import { ADMIN_ROLES } from "@/store/authStore";
+import Overview from "@/pages/Overview";
 
-const Overview = lazy(() => import("@/pages/Overview"));
 const Products = lazy(() => import("@/pages/Products"));
 const ProductCategory = lazy(() => import("@/pages/ProductCategory"));
 const ProductDetail = lazy(() => import("@/pages/ProductDetail"));

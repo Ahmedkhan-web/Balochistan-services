@@ -22,7 +22,7 @@ your credentials.
 | Routing      | React Router (data router)                                        |
 | Data/State   | TanStack React Query, Zustand                                     |
 | Backend      | Supabase (PostgreSQL, Auth, RLS, Edge Functions, Realtime)        |
-| i18n         | i18next + react-i18next (English, Urdu; RTL-ready for Arabic)     |
+| Language     | English-only content and interface                                |
 | Deployment   | Vercel / Cloudflare Pages + Supabase                              |
 
 ---
@@ -80,7 +80,6 @@ src/
 ├── data/              # Seed content (products, services, dashboard mocks)
 ├── store/             # Zustand stores (auth, cart, ui)
 ├── lib/               # supabase client, query client, utils, constants
-├── i18n/              # i18next config + locales (en, ur)
 ├── types/             # Domain types + Supabase Database types
 └── router.tsx         # Route definitions
 
@@ -128,7 +127,7 @@ staff/admin elevation via `is_staff()` / `is_admin()` helpers).
   wishlist, notifications, support tickets, profile.
 - **Admin console**: revenue analytics, product/order/service management,
   users & staff, reviews moderation, CMS & website settings, audit logs.
-- **Extras**: dark/light mode, English/Urdu (RTL) i18n, newsletter, emergency
+- **Extras**: dark/light mode, newsletter, emergency
   call & WhatsApp floating actions, SEO (meta/OG/Twitter, sitemap, robots,
   JSON-LD LocalBusiness).
 

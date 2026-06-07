@@ -1,35 +1,68 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { RouterProvider } from "react-router-dom";
-import { QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
-import { Toaster } from "sonner";
 import { SiteLoader } from "@/components/common/SiteLoader";
-import { useInitialSiteLoader } from "@/components/common/useInitialSiteLoader";
 import { router } from "@/router";
-import { queryClient } from "@/lib/queryClient";
 import { useUIStore } from "@/store/uiStore";
 import { useAuthStore } from "@/store/authStore";
-import "@/i18n";
+
+const Toaster = lazy(() =>
+  import("sonner").then((module) => ({ default: module.Toaster })),
+);
 
 export default function App() {
   const applyTheme = useUIStore((s) => s.applyTheme);
   const initialize = useAuthStore((s) => s.initialize);
-  const isSiteLoading = useInitialSiteLoader();
+  const [showToaster, setShowToaster] = useState(false);
+  const [isCriticalLoading, setIsCriticalLoading] = useState(true);
 
   useEffect(() => {
     applyTheme();
     void initialize();
   }, [applyTheme, initialize]);
 
+  useEffect(() => {
+    const show = () => setShowToaster(true);
+    const timeoutId = globalThis.setTimeout(show, 8000);
+
+    window.addEventListener("pointerdown", show, { once: true, passive: true });
+    window.addEventListener("keydown", show, { once: true });
+
+    return () => {
+      globalThis.clearTimeout(timeoutId);
+      window.removeEventListener("pointerdown", show);
+      window.removeEventListener("keydown", show);
+    };
+  }, []);
+
+  useEffect(() => {
+    const markReady = () => setIsCriticalLoading(false);
+    const safetyTimeoutId = globalThis.setTimeout(markReady, 5000);
+    const readinessWindow = window as Window & { __bssCriticalReady?: boolean };
+
+    if (readinessWindow.__bssCriticalReady) {
+      markReady();
+    }
+
+    window.addEventListener("bss:critical-ready", markReady, { once: true });
+
+    return () => {
+      globalThis.clearTimeout(safetyTimeoutId);
+      window.removeEventListener("bss:critical-ready", markReady);
+    };
+  }, []);
+
   return (
     <HelmetProvider>
-      <QueryClientProvider client={queryClient}>
-        <div aria-hidden={isSiteLoading}>
-          <RouterProvider router={router} />
-        </div>
-        <SiteLoader visible={isSiteLoading} />
-        <Toaster position="top-right" richColors closeButton />
-      </QueryClientProvider>
+      <div aria-hidden={isCriticalLoading}>
+        <RouterProvider router={router} />
+      </div>
+      <SiteLoader visible={isCriticalLoading} />
+      {showToaster && (
+        <Suspense fallback={null}>
+          <Toaster position="top-right" richColors closeButton />
+        </Suspense>
+      )}
     </HelmetProvider>
   );
 }

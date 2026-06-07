@@ -14,7 +14,7 @@ local seed data so the entire UI (including dashboards) is browsable.
 │     │                                                     │
 │     ├── Zustand stores  (auth, cart, ui)                  │
 │     ├── React Query     (server cache)                    │
-│     └── i18next         (en / ur, RTL-ready)              │
+│     └── English-only UI/content                           │
 │                  │                                        │
 │                  ▼                                        │
 │        lib/supabase.ts  ──(if configured)──► Supabase     │

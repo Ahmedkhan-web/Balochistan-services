@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Profile, UserRole } from "@/types";
-import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { getSupabaseClient, isSupabaseConfigured } from "@/lib/supabase";
 
 interface AuthState {
   profile: Profile | null;
@@ -53,7 +53,12 @@ export const useAuthStore = create<AuthState>()(
       setProfile: (profile) => set({ profile }),
 
       initialize: async () => {
-        if (!isSupabaseConfigured || !supabase) {
+        if (!isSupabaseConfigured) {
+          set({ initialized: true });
+          return;
+        }
+        const supabase = await getSupabaseClient();
+        if (!supabase) {
           set({ initialized: true });
           return;
         }
@@ -72,7 +77,8 @@ export const useAuthStore = create<AuthState>()(
       signIn: async (email, password) => {
         set({ loading: true });
         try {
-          if (!isSupabaseConfigured || !supabase) {
+          const supabase = await getSupabaseClient();
+          if (!supabase) {
             // Demo mode: admin@ -> admin dashboard, anything else -> customer
             set({
               profile: email.startsWith("admin") ? DEMO_ADMIN : DEMO_PROFILE,
@@ -98,7 +104,8 @@ export const useAuthStore = create<AuthState>()(
       signUp: async (email, password, fullName, phone) => {
         set({ loading: true });
         try {
-          if (!isSupabaseConfigured || !supabase) {
+          const supabase = await getSupabaseClient();
+          if (!supabase) {
             set({
               profile: { ...DEMO_PROFILE, full_name: fullName, email },
             });
@@ -125,14 +132,16 @@ export const useAuthStore = create<AuthState>()(
       },
 
       signOut: async () => {
-        if (isSupabaseConfigured && supabase) {
+        const supabase = await getSupabaseClient();
+        if (supabase) {
           await supabase.auth.signOut();
         }
         set({ profile: null });
       },
 
       resetPassword: async (email) => {
-        if (isSupabaseConfigured && supabase) {
+        const supabase = await getSupabaseClient();
+        if (supabase) {
           await supabase.auth.resetPasswordForEmail(email, {
             redirectTo: `${window.location.origin}/reset-password`,
           });

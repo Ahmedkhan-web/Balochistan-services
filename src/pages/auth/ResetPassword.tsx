@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Seo } from "@/components/common/Seo";
-import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { getSupabaseClient } from "@/lib/supabase";
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
@@ -27,7 +27,8 @@ export default function ResetPassword() {
             toast.error("Passwords do not match");
             return;
           }
-          if (isSupabaseConfigured && supabase) {
+          const supabase = await getSupabaseClient();
+          if (supabase) {
             const { error } = await supabase.auth.updateUser({ password });
             if (error) {
               toast.error(error.message);

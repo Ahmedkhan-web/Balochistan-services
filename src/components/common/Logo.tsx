@@ -20,6 +20,9 @@ export function Logo({
           src={LOGO_SRC}
           alt={`${SITE.name} logo`}
           className="h-full w-full object-contain"
+          width={44}
+          height={44}
+          decoding="async"
         />
       </span>
       {showText && (

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Menu, ShoppingCart, User, X } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { Logo } from "@/components/common/Logo";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,14 +9,13 @@ import { useAuthStore, ADMIN_ROLES } from "@/store/authStore";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { to: "/", key: "overview" },
-  { to: "/products", key: "products" },
-  { to: "/services", key: "services" },
-  { to: "/contact", key: "contact" },
+  { to: "/", label: "Overview" },
+  { to: "/products", label: "Products" },
+  { to: "/services", label: "Services" },
+  { to: "/contact", label: "Contact" },
 ];
 
 export function Navbar() {
-  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const count = useCartStore((s) => s.count());
   const { profile, signOut, hasRole } = useAuthStore();
@@ -45,7 +43,7 @@ export function Navbar() {
                 )
               }
             >
-              {t(`nav.${item.key}`)}
+              {item.label}
             </NavLink>
           ))}
         </nav>
@@ -69,7 +67,7 @@ export function Navbar() {
                 size="sm"
                 onClick={() => navigate(dashboardPath)}
               >
-                <User className="size-4" /> {t("nav.dashboard")}
+                <User className="size-4" /> Dashboard
               </Button>
               <Button
                 variant="ghost"
@@ -79,16 +77,16 @@ export function Navbar() {
                   navigate("/");
                 }}
               >
-                {t("nav.logout")}
+                Logout
               </Button>
             </div>
           ) : (
             <div className="hidden items-center gap-2 sm:flex">
               <Button variant="ghost" size="sm" onClick={() => navigate("/signin")}>
-                {t("nav.signin")}
+                Sign In
               </Button>
               <Button size="sm" onClick={() => navigate("/signup")}>
-                {t("nav.signup")}
+                Sign Up
               </Button>
             </div>
           )}
@@ -123,7 +121,7 @@ export function Navbar() {
                   )
                 }
               >
-                {t(`nav.${item.key}`)}
+                {item.label}
               </NavLink>
             ))}
             <div className="mt-2 grid gap-2 border-t pt-3 sm:flex">
@@ -137,7 +135,7 @@ export function Navbar() {
                       navigate(dashboardPath);
                     }}
                   >
-                    {t("nav.dashboard")}
+                    Dashboard
                   </Button>
                   <Button
                     className="flex-1"
@@ -148,7 +146,7 @@ export function Navbar() {
                       navigate("/");
                     }}
                   >
-                    {t("nav.logout")}
+                    Logout
                   </Button>
                 </>
               ) : (
@@ -161,7 +159,7 @@ export function Navbar() {
                       navigate("/signin");
                     }}
                   >
-                    {t("nav.signin")}
+                    Sign In
                   </Button>
                   <Button
                     className="flex-1"
@@ -170,7 +168,7 @@ export function Navbar() {
                       navigate("/signup");
                     }}
                   >
-                    {t("nav.signup")}
+                    Sign Up
                   </Button>
                 </>
               )}

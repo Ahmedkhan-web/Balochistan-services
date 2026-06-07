@@ -86,9 +86,6 @@
   svg {
     max-width: 100%;
   }
-  [dir="rtl"] {
-    font-family: "Noto Nastaliq Urdu", "Inter", sans-serif;
-  }
 }
 
 @layer utilities {
@@ -129,5 +126,21 @@
   }
   .animate-marquee-left {
     animation: marquee-left 28s linear infinite;
+  }
+
+  @media (max-width: 640px), (prefers-reduced-motion: reduce) {
+    .animate-marquee-left {
+      animation: none;
+      flex-wrap: wrap;
+      width: auto;
+      justify-content: center;
+    }
+  }
+
+  @supports (content-visibility: auto) {
+    main > section:nth-of-type(n + 3) {
+      content-visibility: auto;
+      contain-intrinsic-size: auto 900px;
+    }
   }
 }

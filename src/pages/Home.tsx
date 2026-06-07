@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, PhoneCall } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { Hero } from "@/components/home/Hero";
 import { Seo } from "@/components/common/Seo";
 import { SectionHeading } from "@/components/common/SectionHeading";
@@ -22,7 +21,6 @@ import {
 import { SITE } from "@/lib/constants";
 
 export default function Home() {
-  const { t } = useTranslation();
   const products = getFeaturedProducts(8);
   const services = getFeaturedServices(6);
 
@@ -50,9 +48,9 @@ export default function Home() {
       <section className="section-y">
         <div className="container grid items-center gap-12 lg:grid-cols-2">
           <div>
-            <SectionHeading
+              <SectionHeading
               align="left"
-              eyebrow={t("sections.intro")}
+              eyebrow="Introduction"
               title="Your trusted partner in safety & security"
               description="Balochistan Standard Services (BSS) is a leading provider of fire safety and security solutions. We design, supply, install and maintain enterprise-grade systems that protect lives and assets across the region."
               className="mb-6"
@@ -94,14 +92,14 @@ export default function Home() {
             <SectionHeading
               align="left"
               eyebrow="Shop"
-              title={t("sections.featuredProducts")}
+              title="Featured Products"
               className="mb-8"
             />
             <Link
               to="/products"
               className="mb-8 hidden items-center gap-1 text-sm font-semibold text-primary sm:flex"
             >
-              {t("common.viewAll")} <ArrowRight className="size-4" />
+              View All <ArrowRight className="size-4" />
             </Link>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -117,7 +115,7 @@ export default function Home() {
         <div className="container">
           <SectionHeading
             eyebrow="Services"
-            title={t("sections.featuredServices")}
+            title="Featured Services"
             description="From installation to maintenance, we deliver complete security and fire-safety services."
           />
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -131,7 +129,7 @@ export default function Home() {
       {/* Why Choose Us */}
       <section className="section-y bg-muted/40">
         <div className="container">
-          <SectionHeading eyebrow="Why BSS" title={t("sections.whyChooseUs")} />
+          <SectionHeading eyebrow="Why BSS" title="Why Choose Us" />
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {WHY_CHOOSE_US.map((item) => (
               <Card key={item.title}>
@@ -157,7 +155,7 @@ export default function Home() {
         <div className="container">
           <SectionHeading
             eyebrow="Sectors"
-            title={t("sections.industries")}
+            title="Industries We Serve"
             description="Tailored security and fire-safety solutions for every sector."
           />
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-3">
@@ -181,7 +179,7 @@ export default function Home() {
       {/* Latest Projects */}
       <section className="section-y bg-muted/40">
         <div className="container">
-          <SectionHeading eyebrow="Portfolio" title={t("sections.projects")} />
+          <SectionHeading eyebrow="Portfolio" title="Latest Projects" />
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {PROJECTS.map((p) => (
               <Card key={p.id} className="overflow-hidden">
@@ -208,7 +206,7 @@ export default function Home() {
         <div className="container">
           <SectionHeading
             eyebrow="Testimonials"
-            title={t("sections.testimonials")}
+            title="Client Testimonials"
           />
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {TESTIMONIALS.map((tm) => (
@@ -235,7 +233,7 @@ export default function Home() {
       <section className="border-y bg-muted/40 py-12">
         <div className="container">
           <p className="mb-8 text-center text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            {t("sections.partners")}
+            Trusted Technology Partners
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
             {PARTNERS.map((p) => (
