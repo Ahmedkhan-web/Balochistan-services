@@ -12,19 +12,13 @@ import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/buttonVariants";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
 import { PRODUCT_CATEGORIES } from "@/data/products";
 import { useCartStore } from "@/store/cartStore";
-import { cn, formatCurrency } from "@/lib/utils";
-
-const TAX_RATE = 0.17;
+import { cn } from "@/lib/utils";
 
 export default function Cart() {
-  const { items, updateQuantity, removeItem, subtotal } = useCartStore();
-  const sub = subtotal();
-  const tax = Math.round(sub * TAX_RATE);
-  const total = sub + tax;
+  const { items, updateQuantity, removeItem } = useCartStore();
   const uniqueItems = items.length;
   const totalUnits = items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -43,7 +37,7 @@ export default function Cart() {
                 Your Cart
               </h1>
               <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
-                Review product details, quantities and totals before checkout.
+                Review product details and quantities before placing an order.
                 Each product can be added once and kept up to 10 units.
               </p>
             </div>
@@ -118,19 +112,6 @@ export default function Cart() {
                               </Link>
                               <p className="mt-1 text-sm text-muted-foreground">
                                 {product.subcategory}
-                              </p>
-                            </div>
-                            <div className="w-full text-left sm:w-auto sm:text-right">
-                              <p className="text-lg font-bold text-primary">
-                                {formatCurrency(
-                                  (product.discount_price ?? product.price) *
-                                    quantity,
-                                )}
-                              </p>
-                              <p className="text-xs text-muted-foreground">
-                                {formatCurrency(
-                                  product.discount_price ?? product.price,
-                                )} each
                               </p>
                             </div>
                           </div>
@@ -215,7 +196,7 @@ export default function Cart() {
                     <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                       Order Summary
                     </p>
-                    <h2 className="mt-1 text-2xl font-bold">Ready to checkout</h2>
+                    <h2 className="mt-1 text-2xl font-bold">Ready to order</h2>
                   </div>
 
                   <div className="space-y-3 rounded-2xl bg-muted/40 p-4">
@@ -227,19 +208,9 @@ export default function Cart() {
                       <span className="text-muted-foreground">Total units</span>
                       <span>{totalUnits}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Subtotal</span>
-                      <span>{formatCurrency(sub)}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Tax (17% GST)</span>
-                      <span>{formatCurrency(tax)}</span>
-                    </div>
-                    <Separator />
-                    <div className="flex justify-between text-lg font-semibold">
-                      <span>Total</span>
-                      <span className="text-primary">{formatCurrency(total)}</span>
-                    </div>
+                    <p className="rounded-xl border border-dashed bg-background/70 p-3 text-sm text-muted-foreground">
+                      The BSS team will review your request and contact you for confirmation.
+                    </p>
                   </div>
 
                   <div className="rounded-2xl border border-dashed p-4">
@@ -247,16 +218,16 @@ export default function Cart() {
                       <ShieldCheck className="mt-0.5 size-5 shrink-0 text-primary" />
                       <p className="text-sm text-muted-foreground">
                         Each product is kept as a single cart line and can be
-                        adjusted up to 10 units before checkout.
+                        adjusted up to 10 units before placing an order.
                       </p>
                     </div>
                   </div>
 
                   <Link
-                    to="/checkout"
+                    to="/order"
                     className={buttonVariants({ className: "w-full" })}
                   >
-                    Proceed to Checkout
+                    Order
                   </Link>
                 </CardContent>
               </Card>

@@ -11,32 +11,33 @@ import { Input } from "@/components/ui/input";
 import { getFeaturedServices } from "@/data/services";
 import { PRODUCT_CATEGORIES, PRODUCTS } from "@/data/products";
 import type { Product } from "@/types";
-import { INDUSTRIES, PARTNERS, TESTIMONIALS, WHY_CHOOSE_US } from "@/data/content";
+import { INDUSTRIES, TESTIMONIALS, WHY_CHOOSE_US } from "@/data/content";
 import { SITE } from "@/lib/constants";
-import { formatCurrency } from "@/lib/utils";
 
-const FEATURE_FIRE_IMAGE = "/assets/images/feature-fire.jpg";
-const ONLINE_FIRE_INSPECTION_IMAGE = "/assets/images/section-fire-installation.jpg";
-const ONLINE_CONTROL_ROOM_IMAGE = "/assets/images/section-cctv-control-room.jpg";
-const ONLINE_SECTOR_SECURITY_IMAGE = "/assets/images/section-warehouse-security.jpg";
-const ONLINE_BLUEPRINT_MONITORING_IMAGE = ONLINE_CONTROL_ROOM_IMAGE;
-const ONLINE_BLUEPRINT_FIRE_IMAGE = ONLINE_FIRE_INSPECTION_IMAGE;
+const categoryImages: Record<string, string> = {
+  "fire-extinguishers": "/assets/images/category-fire-extinguishers-new.jpg",
+  "cctv-cameras": "/assets/images/category-accessories-new.jpg",
+  recorders: "/assets/images/category-recorders-new.jpg",
+  "fire-alarm": "/assets/images/category-fire-alarm-new.jpg",
+  "access-control": "/assets/images/category-access-control-new.jpg",
+  accessories: "/assets/images/category-cctv-cameras-new.jpg",
+};
 
 const serviceStories = [
   {
     title: "Fire safety installation",
     text: "Detection, alarms, extinguishers and site-ready emergency planning for commercial facilities.",
-    image: ONLINE_FIRE_INSPECTION_IMAGE,
+    image: categoryImages["fire-alarm"],
   },
   {
     title: "CCTV command coverage",
     text: "Camera placement, recording, storage and monitoring layouts designed around real facility movement.",
-    image: ONLINE_CONTROL_ROOM_IMAGE,
+    image: categoryImages["cctv-cameras"],
   },
   {
     title: "Access control and maintenance",
     text: "Entry control, routine checks and preventive service plans that keep systems inspection-ready.",
-    image: ONLINE_SECTOR_SECURITY_IMAGE,
+    image: categoryImages["access-control"],
   },
 ] as const;
 
@@ -197,7 +198,7 @@ export default function OverviewDeferred() {
             <div className="grid lg:grid-cols-[0.95fr_1.05fr]">
               <div className="relative min-h-[220px] overflow-hidden sm:min-h-[280px] lg:min-h-[320px]">
                 <img
-                  src={FEATURE_FIRE_IMAGE}
+                  src={categoryImages["fire-extinguishers"]}
                   alt="Fire extinguishers prepared for facility safety compliance"
                   className="absolute inset-0 h-full w-full object-cover"
                   loading="lazy"
@@ -275,7 +276,7 @@ export default function OverviewDeferred() {
             <div className="overflow-hidden rounded-lg border border-white/10 bg-[#10231d] shadow-2xl shadow-black/30 sm:relative sm:min-h-[420px]">
               <div className="relative min-h-[240px] sm:absolute sm:inset-0 sm:min-h-0">
                 <img
-                  src={ONLINE_FIRE_INSPECTION_IMAGE}
+                  src={categoryImages["fire-alarm"]}
                   alt="Fire safety inspection near a fire hose cabinet"
                   className="absolute inset-0 h-full w-full object-cover"
                   loading="lazy"
@@ -306,7 +307,7 @@ export default function OverviewDeferred() {
               <div className="overflow-hidden rounded-lg border border-white/10 bg-[#10231d] shadow-xl shadow-black/20 sm:relative sm:min-h-[230px]">
                 <div className="relative min-h-[190px] sm:absolute sm:inset-0 sm:min-h-0">
                   <img
-                    src={ONLINE_CONTROL_ROOM_IMAGE}
+                    src={categoryImages["cctv-cameras"]}
                     alt="Security control room monitoring screens"
                     className="absolute inset-0 h-full w-full object-cover"
                     loading="lazy"
@@ -477,7 +478,7 @@ export default function OverviewDeferred() {
             <div className="overflow-hidden rounded-lg border border-white/10 bg-[#10231d] shadow-2xl shadow-black/25 sm:relative sm:min-h-[430px]">
               <div className="relative min-h-[240px] sm:absolute sm:inset-0 sm:min-h-0">
                 <img
-                  src={ONLINE_SECTOR_SECURITY_IMAGE}
+                  src={categoryImages.accessories}
                   alt="Surveillance cameras monitoring an industrial facility"
                   className="absolute inset-0 h-full w-full object-cover"
                   loading="lazy"
@@ -564,7 +565,7 @@ export default function OverviewDeferred() {
             <div className="overflow-hidden rounded-lg border border-white/10 bg-[#10231d] shadow-2xl shadow-black/30 sm:relative sm:min-h-[460px]">
               <div className="relative min-h-[260px] sm:absolute sm:inset-0 sm:min-h-0">
                 <img
-                  src={ONLINE_BLUEPRINT_MONITORING_IMAGE}
+                  src={categoryImages.recorders}
                   alt="Security control room monitoring live surveillance feeds"
                   className="absolute inset-0 h-full w-full object-cover"
                   loading="lazy"
@@ -594,7 +595,7 @@ export default function OverviewDeferred() {
               <div className="overflow-hidden rounded-lg border border-white/10 bg-[#10231d] shadow-xl shadow-black/20 sm:relative sm:min-h-[250px]">
                 <div className="relative min-h-[190px] sm:absolute sm:inset-0 sm:min-h-0">
                   <img
-                    src={ONLINE_BLUEPRINT_FIRE_IMAGE}
+                    src={categoryImages["fire-extinguishers"]}
                     alt="Fire safety inspection near a fire hose cabinet"
                     className="absolute inset-0 h-full w-full object-cover"
                     loading="lazy"
@@ -684,46 +685,6 @@ export default function OverviewDeferred() {
         </div>
       </section>
 
-      <section className="overflow-hidden border-y border-white/10 bg-[#07130f] py-12 text-white">
-        <div className="container">
-          <div className="mb-7 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8ed0af]">
-                Authorized technology partners
-              </p>
-              <h2 className="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">
-                Trusted brands behind reliable systems.
-              </h2>
-            </div>
-            <p className="max-w-md text-sm leading-7 text-white/55">
-              Equipment selection stays aligned with proven fire safety, CCTV and access control ecosystems.
-            </p>
-          </div>
-        </div>
-
-        <div className="relative">
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-[#07130f] to-transparent sm:w-32" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-[#07130f] to-transparent sm:w-32" />
-          <div className="flex w-max animate-marquee-left gap-4 px-4 [animation-play-state:running] hover:[animation-play-state:paused]">
-            {[...PARTNERS, ...PARTNERS, ...PARTNERS].map((partner, index) => (
-              <div
-                key={`${partner.id}-${index}`}
-                className="flex h-24 min-w-[190px] items-center justify-center rounded-lg border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-6 text-center shadow-xl shadow-black/10 backdrop-blur transition hover:border-[#bde8c0]/40 hover:bg-[#10231d] sm:min-w-[220px]"
-              >
-                <div>
-                  <p className="text-lg font-extrabold tracking-wide text-white/78 sm:text-xl">
-                    {partner.logo}
-                  </p>
-                  <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#8ed0af]/70">
-                    Authorized Partner
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className="border-t border-white/10 bg-[#0f1b18] py-12 md:py-20">
         <div className="container">
           <div className="overflow-hidden rounded-lg border border-white/10 bg-[linear-gradient(135deg,#10231d_0%,#07130f_55%,#142a23_100%)] p-5 text-white shadow-2xl shadow-black/25 sm:p-8 md:p-10">
@@ -747,7 +708,7 @@ export default function OverviewDeferred() {
                     className: "bg-[#c91616] text-white hover:bg-[#a90f0f]",
                   })}
                 >
-                  <PhoneCall className="size-5" /> {SITE.phoneDisplay}
+                  <PhoneCall className="size-5" /> {SITE.phone}
                 </a>
                 <Link
                   to="/contact"
@@ -768,7 +729,6 @@ export default function OverviewDeferred() {
 }
 function OverviewProductCard({ product }: { product: Product }) {
   const category = PRODUCT_CATEGORIES.find((item) => item.id === product.category);
-  const price = product.discount_price ?? product.price;
 
   return (
     <Card className="group relative isolate overflow-hidden rounded-lg border-white/10 bg-[linear-gradient(180deg,#183027,#0b1713)] text-white shadow-[0_14px_34px_rgba(0,0,0,0.24)] transition-[border-color,box-shadow] duration-300 ease-out hover:border-[#bde8c0]/45 hover:shadow-[0_18px_44px_rgba(0,0,0,0.34)]">
@@ -789,11 +749,6 @@ function OverviewProductCard({ product }: { product: Product }) {
           <div className="absolute left-3 top-3 rounded-full bg-[#07130f]/85 px-3 py-1 text-xs font-semibold text-[#bde8c0] shadow-sm backdrop-blur">
             {category?.name}
           </div>
-          {product.discount_price && (
-            <div className="absolute right-3 top-3 rounded-full bg-[#c91616] px-3 py-1 text-xs font-bold text-white shadow-sm">
-              Offer
-            </div>
-          )}
         </div>
       </Link>
       <CardContent className="relative flex min-h-[180px] flex-col border-t border-white/10 bg-[linear-gradient(180deg,#183027,#0b1713)] p-4 sm:min-h-[185px]">
@@ -818,14 +773,9 @@ function OverviewProductCard({ product }: { product: Product }) {
         <div className="mt-auto pt-4">
           <div className="mb-3 grid gap-2 border-t border-white/10 pt-3 min-[380px]:flex min-[380px]:items-end min-[380px]:justify-between min-[380px]:gap-3">
             <div>
-              <p className="text-xs uppercase tracking-wide text-white/45">Starting at</p>
-              <p className="mt-1 text-lg font-extrabold text-white sm:text-xl">{formatCurrency(price)}</p>
+              <p className="text-xs uppercase tracking-wide text-white/45">Availability</p>
+              <p className="mt-1 text-sm font-bold text-white sm:text-base">Quote on request</p>
             </div>
-            {product.discount_price && (
-              <p className="text-xs text-white/45 line-through">
-                {formatCurrency(product.price)}
-              </p>
-            )}
           </div>
           <Link
             to={`/products/category/${product.category}`}

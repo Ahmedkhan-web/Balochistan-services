@@ -4,15 +4,16 @@ import { PublicLayout } from "@/components/layout/PublicLayout";
 import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
 import { ADMIN_ROLES } from "@/store/authStore";
 import Overview from "@/pages/Overview";
+import Products from "@/pages/Products";
+import ProductCategory from "@/pages/ProductCategory";
+import ProductDetail from "@/pages/ProductDetail";
+import InstallationRequest from "@/pages/InstallationRequest";
+import Services from "@/pages/Services";
+import ServiceDetail from "@/pages/ServiceDetail";
+import Contact from "@/pages/Contact";
+import Cart from "@/pages/Cart";
+import Order from "@/pages/Order";
 
-const Products = lazy(() => import("@/pages/Products"));
-const ProductCategory = lazy(() => import("@/pages/ProductCategory"));
-const ProductDetail = lazy(() => import("@/pages/ProductDetail"));
-const Services = lazy(() => import("@/pages/Services"));
-const ServiceDetail = lazy(() => import("@/pages/ServiceDetail"));
-const Contact = lazy(() => import("@/pages/Contact"));
-const Cart = lazy(() => import("@/pages/Cart"));
-const Checkout = lazy(() => import("@/pages/Checkout"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 const SignIn = lazy(() => import("@/pages/auth/SignIn"));
@@ -56,12 +57,14 @@ export const router = createBrowserRouter([
       { path: "/overview", element: page(Overview) },
       { path: "/products", element: page(Products) },
       { path: "/products/category/:categoryId", element: page(ProductCategory) },
+      { path: "/products/:slug/installation", element: page(InstallationRequest) },
       { path: "/products/:slug", element: page(ProductDetail) },
       { path: "/services", element: page(Services) },
       { path: "/services/:slug", element: page(ServiceDetail) },
       { path: "/contact", element: page(Contact) },
       { path: "/cart", element: page(Cart) },
-      { path: "/checkout", element: page(Checkout) },
+      { path: "/order", element: page(Order) },
+      { path: "/checkout", element: page(Order) },
     ],
   },
 

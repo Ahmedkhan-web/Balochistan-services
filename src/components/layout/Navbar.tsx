@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils";
 
 const NAV = [
   { to: "/", label: "Overview" },
-  { to: "/products", label: "Products" },
-  { to: "/services", label: "Services" },
+  { to: "/products", label: "Security Products" },
+  { to: "/services", label: "Security Services" },
   { to: "/contact", label: "Contact" },
 ];
 
@@ -28,7 +28,7 @@ export function Navbar() {
       <div className="container relative flex min-h-16 items-center justify-between gap-2 py-2 md:min-h-[4.5rem] md:gap-3 md:py-0">
         <Logo className="flex-1 xl:flex-none" />
 
-        <nav className="absolute left-[52%] hidden -translate-x-1/2 items-center gap-1 xl:flex">
+        <nav className="absolute left-[50%] hidden -translate-x-1/2 items-center gap-1 xl:flex">
           {NAV.map((item) => (
             <NavLink
               key={item.to}
@@ -36,7 +36,7 @@ export function Navbar() {
               end={item.to === "/"}
               className={({ isActive }) =>
                 cn(
-                  "rounded-full px-4 py-2 text-sm font-medium transition-colors hover:bg-[#c91616]/15 hover:text-[#ff6b5f]",
+                  "rounded-full px-3.5 py-2 text-sm font-medium transition-colors hover:bg-[#c91616]/15 hover:text-[#ff6b5f] 2xl:px-4",
                   isActive
                     ? "bg-[#c91616] text-white shadow-sm"
                     : "text-foreground/70",

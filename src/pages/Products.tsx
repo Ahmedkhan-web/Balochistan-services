@@ -82,7 +82,7 @@ export default function Products() {
                     <img
                       src={categoryImages[category.id]}
                       alt={category.name}
-                      className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
+                      className="absolute inset-0 h-full w-full object-cover"
                       loading={index === 0 ? "eager" : "lazy"}
                       decoding="async"
                       sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"

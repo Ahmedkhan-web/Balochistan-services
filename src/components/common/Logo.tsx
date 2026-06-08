@@ -27,10 +27,10 @@ export function Logo({
       </span>
       {showText && (
         <span className="flex min-w-0 flex-col leading-tight">
-          <span className="text-[12px] font-extrabold tracking-tight sm:text-base lg:text-lg">
+          <span className="text-sm font-extrabold tracking-tight sm:text-lg lg:text-xl">
             {SITE.name}
           </span>
-          <span className="mt-0.5 text-[7px] font-semibold uppercase tracking-[0.08em] text-muted-foreground sm:mt-1 sm:text-[10px] sm:tracking-[0.18em]">
+          <span className="mt-0.5 text-[8px] font-semibold uppercase tracking-[0.08em] text-muted-foreground sm:mt-1 sm:text-[11px] sm:tracking-[0.16em]">
             Fire Safety and Security
           </span>
         </span>

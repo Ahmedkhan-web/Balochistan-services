@@ -28,19 +28,7 @@ export const useCartStore = create<CartState>()(
             (i) => i.product.id === product.id,
           );
           if (existing) {
-            return {
-              items: state.items.map((i) =>
-                i.product.id === product.id
-                  ? {
-                      ...i,
-                      quantity: Math.min(
-                        MAX_QUANTITY_PER_ITEM,
-                        i.quantity + quantity,
-                      ),
-                    }
-                  : i,
-              ),
-            };
+            return state;
           }
           return {
             items: [
@@ -81,7 +69,7 @@ export const useCartStore = create<CartState>()(
         }),
       isWishlisted: (productId) =>
         get().wishlist.some((p) => p.id === productId),
-      count: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
+      count: () => get().items.length,
       subtotal: () =>
         get().items.reduce(
           (sum, i) =>

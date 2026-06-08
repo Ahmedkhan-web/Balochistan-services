@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Heart, ShoppingCart } from "lucide-react";
+import { ArrowRight, Check, Heart, Info, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 import type { Product } from "@/types";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,23 +11,22 @@ import { Icon } from "@/components/common/Icon";
 import { PRODUCT_CATEGORIES } from "@/data/products";
 import { useCartStore } from "@/store/cartStore";
 import { buttonVariants } from "@/components/ui/buttonVariants";
-import { cn, discountPercent, formatCurrency } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 export function ProductCard({ product }: { product: Product }) {
   const { addItem, toggleWishlist, isWishlisted, items } = useCartStore();
   const wished = isWishlisted(product.id);
   const cartItem = items.find((item) => item.product.id === product.id);
   const category = PRODUCT_CATEGORIES.find((c) => c.id === product.category);
-  const discount = discountPercent(product.price, product.discount_price);
 
   return (
-    <Card className="group flex h-full flex-col overflow-hidden transition-shadow hover:shadow-lg">
-      <Link to={`/products/${product.slug}`} className="relative block">
+    <Card className="group flex h-full flex-col overflow-hidden border-border/80 shadow-sm transition-[border-color,box-shadow,transform] duration-300 ease-out hover:-translate-y-1 hover:border-[#c91616]/30 hover:shadow-[0_18px_42px_rgba(15,23,42,0.16)] focus-within:border-[#c91616]/40">
+      <Link to={`/products/${product.slug}`} className="relative block overflow-hidden">
         {product.images[0] ? (
           <img
             src={product.images[0]}
             alt={product.name}
-            className="aspect-[4/3] w-full bg-muted object-cover transition duration-300 group-hover:scale-105"
+            className="aspect-[4/3] w-full bg-muted object-cover"
             loading="lazy"
             decoding="async"
             sizes="(min-width: 1280px) 25vw, (min-width: 640px) 50vw, 100vw"
@@ -39,11 +38,7 @@ export function ProductCard({ product }: { product: Product }) {
             className="aspect-[4/3] w-full"
           />
         )}
-        {discount > 0 && (
-          <Badge className="absolute left-3 top-3" variant="destructive">
-            -{discount}%
-          </Badge>
-        )}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         <button
           type="button"
           onClick={(e) => {
@@ -62,7 +57,7 @@ export function ProductCard({ product }: { product: Product }) {
           />
         </button>
       </Link>
-      <CardContent className="flex flex-1 flex-col gap-2.5 p-4 sm:p-5">
+      <CardContent className="flex flex-1 flex-col gap-3 p-4 sm:p-5">
         <div className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
           <Icon name={category?.icon ?? "shield"} className="size-3.5 shrink-0" />
           <span className="min-w-0 truncate">{category?.name}</span>
@@ -76,47 +71,65 @@ export function ProductCard({ product }: { product: Product }) {
         <StarRating value={product.rating} count={product.reviews_count} />
         <div className="mt-auto flex min-w-0 items-end justify-between gap-2 pt-2">
           <div className="min-w-0 flex-1">
-            {product.discount_price ? (
-              <div className="flex flex-col">
-                <span className="text-lg font-bold text-primary">
-                  {formatCurrency(product.discount_price)}
-                </span>
-                <span className="text-xs text-muted-foreground line-through">
-                  {formatCurrency(product.price)}
-                </span>
-              </div>
-            ) : (
-              <span className="text-lg font-bold text-primary">
-                {formatCurrency(product.price)}
-              </span>
-            )}
+            <span className="text-sm font-semibold text-primary">
+              Quote on request
+            </span>
           </div>
           <Badge className="shrink-0" variant={product.stock > 0 ? "success" : "destructive"}>
             {product.stock > 0 ? "In Stock" : "Out of Stock"}
           </Badge>
         </div>
-        {cartItem ? (
+
+        {cartItem && (
+          <p className="text-xs font-medium text-muted-foreground">
+            In cart: Qty {cartItem.quantity}/10
+          </p>
+        )}
+
+        <div className="mt-2 rounded-lg border bg-muted/30 p-2">
+          <div className="grid grid-cols-2 gap-2">
+            <Link
+              to={`/products/${product.slug}`}
+              className={buttonVariants({
+                variant: "outline",
+                size: "sm",
+                className: "h-10 bg-background px-2 text-xs",
+              })}
+            >
+              <Info className="size-3.5" /> Detail
+            </Link>
+            <Button
+              className="h-10 px-2 text-xs"
+              size="sm"
+              variant="secondary"
+              disabled={product.stock === 0 || Boolean(cartItem)}
+              onClick={() => {
+                addItem(product, 1);
+                toast.success(`${product.name} added to cart`);
+              }}
+            >
+              {cartItem ? (
+                <>
+                  <Check className="size-3.5" /> Added
+                </>
+              ) : (
+                <>
+                  <ShoppingCart className="size-3.5" /> Add Cart
+                </>
+              )}
+            </Button>
+          </div>
           <Link
-            to="/cart"
+            to={`/order?product=${product.slug}`}
+            state={{ returnTo: `/products/category/${product.category}` }}
             className={buttonVariants({
-              variant: "outline",
-              className: "mt-2 h-11 w-full",
+              className:
+                "mt-2 h-11 w-full bg-[#c91616] text-white shadow-sm transition-transform hover:bg-[#a90f0f] group-hover:translate-y-[-1px]",
             })}
           >
-            In Cart · Qty {cartItem.quantity}/10
+            Order Now <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
-        ) : (
-          <Button
-            className="mt-2 h-11 w-full"
-            disabled={product.stock === 0}
-            onClick={() => {
-              addItem(product, 1);
-              toast.success(`${product.name} added to cart`);
-            }}
-          >
-            <ShoppingCart className="size-4" /> Add to Cart
-          </Button>
-        )}
+        </div>
       </CardContent>
     </Card>
   );

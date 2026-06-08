@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Search } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useLocation, useParams } from "react-router-dom";
+import { ArrowLeft, ArrowRight, Search, X } from "lucide-react";
 import { Seo } from "@/components/common/Seo";
 import { Icon } from "@/components/common/Icon";
 import { ProductCard } from "@/components/products/ProductCard";
@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/buttonVariants";
 import { PRODUCT_CATEGORIES, PRODUCTS } from "@/data/products";
 
-type SortKey = "featured" | "price-asc" | "price-desc" | "rating";
+type SortKey = "featured" | "rating";
 
 const categoryImages: Record<string, string> = {
   "fire-extinguishers": "/assets/images/category-fire-extinguishers-new.jpg",
@@ -23,9 +23,16 @@ const categoryImages: Record<string, string> = {
 
 export default function ProductCategory() {
   const { categoryId } = useParams();
+  const location = useLocation();
+  const orderMessage = (location.state as { orderMessage?: string } | null)?.orderMessage;
+  const [showOrderMessage, setShowOrderMessage] = useState(Boolean(orderMessage));
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("featured");
   const category = PRODUCT_CATEGORIES.find((item) => item.id === categoryId);
+
+  useEffect(() => {
+    setShowOrderMessage(Boolean(orderMessage));
+  }, [orderMessage]);
 
   const products = useMemo(() => {
     let list = PRODUCTS.filter((product) => product.category === categoryId);
@@ -40,14 +47,7 @@ export default function ProductCategory() {
     }
 
     return [...list].sort((a, b) => {
-      const ap = a.discount_price ?? a.price;
-      const bp = b.discount_price ?? b.price;
-
       switch (sort) {
-        case "price-asc":
-          return ap - bp;
-        case "price-desc":
-          return bp - ap;
         case "rating":
           return b.rating - a.rating;
         default:
@@ -118,6 +118,20 @@ export default function ProductCategory() {
 
       <section className="section-y bg-[#0f1b18] text-white">
         <div className="container">
+          {orderMessage && showOrderMessage && (
+            <div className="mb-6 flex items-start justify-between gap-4 rounded-lg border border-[#8ed0af]/30 bg-[#10231d] p-4 text-[#d9ffe2] shadow-2xl shadow-black/20">
+              <p className="text-sm font-semibold leading-6">{orderMessage}</p>
+              <button
+                type="button"
+                className="rounded-md p-1 text-white/70 transition hover:bg-white/10 hover:text-white"
+                aria-label="Close order message"
+                onClick={() => setShowOrderMessage(false)}
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+          )}
+
           <div className="mb-8 rounded-lg border border-white/10 bg-[#07130f] p-4 shadow-2xl shadow-black/20 sm:p-5">
             <div className="grid gap-4 lg:grid-cols-[1fr_auto_auto] lg:items-center">
               <div className="relative">
@@ -135,8 +149,6 @@ export default function ProductCategory() {
                 onChange={(event) => setSort(event.target.value as SortKey)}
               >
                 <option value="featured">Sort: Featured</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
                 <option value="rating">Top Rated</option>
               </Select>
               <Badge className="h-12 justify-center rounded-md bg-white/[0.06] px-4 text-white hover:bg-white/[0.06]">

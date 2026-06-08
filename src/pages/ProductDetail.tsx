@@ -13,11 +13,11 @@ import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
 import { ProductCard } from "@/components/products/ProductCard";
 import { getProductBySlug, PRODUCTS, PRODUCT_CATEGORIES } from "@/data/products";
 import { useCartStore } from "@/store/cartStore";
-import { cn, discountPercent, formatCurrency } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 const SAMPLE_REVIEWS = [
   { author: "Verified Buyer", rating: 5, comment: "Excellent quality and fast delivery. Installation support was great." },
-  { author: "Procurement Officer", rating: 4, comment: "Met our compliance requirements. Good value for the price." },
+  { author: "Procurement Officer", rating: 4, comment: "Met our compliance requirements. Good value for the facility." },
 ];
 
 export default function ProductDetail() {
@@ -38,7 +38,6 @@ export default function ProductDetail() {
   }
 
   const category = PRODUCT_CATEGORIES.find((c) => c.id === product.category);
-  const discount = discountPercent(product.price, product.discount_price);
   const related = PRODUCTS.filter(
     (p) => p.category === product.category && p.id !== product.id,
   ).slice(0, 4);
@@ -115,18 +114,13 @@ export default function ProductDetail() {
               <StarRating value={product.rating} count={product.reviews_count} />
             </div>
 
-            <div className="mt-5 flex flex-wrap items-end justify-center gap-3 lg:justify-start">
-              <span className="text-2xl font-bold text-primary sm:text-3xl">
-                {formatCurrency(product.discount_price ?? product.price)}
-              </span>
-              {product.discount_price && (
-                <>
-                  <span className="text-lg text-muted-foreground line-through">
-                    {formatCurrency(product.price)}
-                  </span>
-                  <Badge variant="destructive">-{discount}%</Badge>
-                </>
-              )}
+            <div className="mt-5 flex flex-wrap justify-center gap-3 lg:justify-start">
+              <Badge variant="outline" className="px-3 py-1.5 text-sm">
+                Quote on request
+              </Badge>
+              <Badge variant="outline" className="px-3 py-1.5 text-sm">
+                Installation support available
+              </Badge>
             </div>
 
             <p className="mt-5 text-sm leading-7 text-muted-foreground sm:text-base">{product.description}</p>
@@ -189,14 +183,14 @@ export default function ProductDetail() {
 
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <Link
-                to="/checkout"
+                to={`/order?product=${product.slug}`}
+                state={{ returnTo: `/products/category/${product.category}` }}
                 className="inline-flex h-11 items-center justify-center rounded-md bg-secondary px-4 text-sm font-semibold text-secondary-foreground hover:bg-secondary/80"
-                onClick={() => addItem(product, qty)}
               >
-                Buy Now
+                Order
               </Link>
               <Link
-                to="/contact"
+                to={`/products/${product.slug}/installation`}
                 className="inline-flex h-11 items-center justify-center gap-2 rounded-md border px-4 text-sm font-semibold hover:bg-accent"
               >
                 <Wrench className="size-4" /> Request Installation
