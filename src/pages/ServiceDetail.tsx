@@ -4,7 +4,10 @@ import { Seo } from "@/components/common/Seo";
 import { Card, CardContent } from "@/components/ui/card";
 import { Icon } from "@/components/common/Icon";
 import { getServiceBySlug, SERVICES } from "@/data/services";
-import { createServiceWhatsAppMessage, createWhatsAppLink } from "@/lib/constants";
+import {
+  createServiceWhatsAppMessage,
+  createWhatsAppLink,
+} from "@/lib/constants";
 import { formatCurrency } from "@/lib/utils";
 
 export default function ServiceDetail() {
@@ -80,20 +83,6 @@ export default function ServiceDetail() {
                 </li>
               ))}
             </ul>
-
-            <h2 className="mt-10 text-xl font-semibold">Other Services</h2>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {others.map((s) => (
-                <Link
-                  key={s.id}
-                  to={`/services/${s.slug}`}
-                  className="flex items-center gap-3 rounded-lg border p-4 hover:border-primary"
-                >
-                  <Icon name={s.icon} className="size-5 shrink-0 text-primary" />
-                  <span className="text-sm font-medium">{s.name}</span>
-                </Link>
-              ))}
-            </div>
           </div>
 
           {/* Service action */}
@@ -124,6 +113,25 @@ export default function ServiceDetail() {
               </Link>
             </CardContent>
           </Card>
+
+          <div className="lg:col-start-1 lg:row-start-2">
+            <h2 className="text-xl font-semibold">Other Services</h2>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {others.map((s) => (
+                <Link
+                  key={s.id}
+                  to={`/services/${s.slug}`}
+                  className="flex items-center gap-3 rounded-lg border p-4 hover:border-primary"
+                >
+                  <Icon
+                    name={s.icon}
+                    className="size-5 shrink-0 text-primary"
+                  />
+                  <span className="text-sm font-medium">{s.name}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
     </>

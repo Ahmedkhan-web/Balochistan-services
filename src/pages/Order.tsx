@@ -1,8 +1,14 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
 import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
+import {
+  ArrowRight,
   CheckCircle2,
-  Clock3,
+  LogIn,
   Minus,
   PackageCheck,
   Plus,
@@ -20,53 +26,124 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/buttonVariants";
 import { PRODUCT_CATEGORIES, getProductBySlug } from "@/data/products";
 import { useCartStore } from "@/store/cartStore";
+import { useAuthStore } from "@/store/authStore";
 import type { CartItem } from "@/types";
 
 const MAX_QUANTITY = 10;
+const MAX_ITEM_NOTE_LENGTH = 240;
+
+function readQuantityParam(value: string | null) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) {
+    return 1;
+  }
+
+  return Math.min(MAX_QUANTITY, Math.max(1, Math.trunc(parsed)));
+}
+
+function getDirectNoteKey(productSlug: string | null) {
+  return productSlug ? `bss-order-note:${productSlug}` : null;
+}
 
 export default function Order() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
   const productSlug = searchParams.get("product");
+  const quantityParam = searchParams.get("qty");
   const singleProduct = productSlug ? getProductBySlug(productSlug) : undefined;
   const { items, clear } = useCartStore();
+  const { profile, initialized } = useAuthStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
-  const [directQuantity, setDirectQuantity] = useState(1);
+  const [directNote, setDirectNote] = useState(() => {
+    const key = getDirectNoteKey(productSlug);
+    return key ? (window.sessionStorage.getItem(key) ?? "") : "";
+  });
+  const [directQuantity, setDirectQuantity] = useState(() =>
+    readQuantityParam(quantityParam),
+  );
   const updateQuantity = useCartStore((state) => state.updateQuantity);
+  const updateItemNote = useCartStore((state) => state.updateItemNote);
 
   const orderItems = useMemo<CartItem[]>(
     () =>
       singleProduct
-        ? [{ product: singleProduct, quantity: directQuantity }]
+        ? [
+            {
+              product: singleProduct,
+              quantity: directQuantity,
+              note: directNote.trim() ? directNote : undefined,
+            },
+          ]
         : items,
-    [directQuantity, items, singleProduct],
+    [directNote, directQuantity, items, singleProduct],
   );
 
   const displayItems = orderItems;
 
   useEffect(() => {
-    setDirectQuantity(1);
+    setDirectQuantity(readQuantityParam(quantityParam));
+    const key = getDirectNoteKey(productSlug);
+    setDirectNote(key ? (window.sessionStorage.getItem(key) ?? "") : "");
     setOrderPlaced(false);
-  }, [productSlug]);
+  }, [productSlug, quantityParam]);
 
   function handleQuantityChange(productId: string, nextQuantity: number) {
     const quantity = Math.min(MAX_QUANTITY, Math.max(1, nextQuantity));
 
     if (singleProduct?.id === productId) {
       setDirectQuantity(quantity);
+      const params = new URLSearchParams(searchParams);
+      params.set("qty", String(quantity));
+      navigate(`${location.pathname}?${params.toString()}`, { replace: true });
       return;
     }
 
     updateQuantity(productId, quantity);
   }
 
+  function handleItemNoteChange(productId: string, note: string) {
+    const limitedNote = note.slice(0, MAX_ITEM_NOTE_LENGTH);
+
+    if (singleProduct?.id === productId) {
+      setDirectNote(limitedNote);
+      const key = getDirectNoteKey(productSlug);
+
+      if (key) {
+        if (limitedNote.trim()) {
+          window.sessionStorage.setItem(key, limitedNote);
+        } else {
+          window.sessionStorage.removeItem(key);
+        }
+      }
+
+      return;
+    }
+
+    updateItemNote(productId, limitedNote);
+  }
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (!profile) {
+      navigate("/signin", {
+        state: { from: `${location.pathname}${location.search}` },
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     setOrderPlaced(true);
 
     if (!singleProduct) {
       clear();
+    } else {
+      const key = getDirectNoteKey(productSlug);
+      if (key) {
+        window.sessionStorage.removeItem(key);
+      }
     }
 
     setIsSubmitting(false);
@@ -90,7 +167,8 @@ export default function Order() {
               <div>
                 <h1 className="text-2xl font-bold">No products selected</h1>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  Add a product to your cart or order directly from a product category.
+                  Add a product to your cart or order directly from a product
+                  category.
                 </p>
               </div>
               <Link to="/products" className={buttonVariants()}>
@@ -120,8 +198,8 @@ export default function Order() {
             {orderPlaced ? "Order Received" : "Place Your Order"}
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
-            Orders are available for Pakistan / Balochistan only and are confirmed
-            with cash on delivery.
+            Orders are available for Pakistan / Balochistan only and are
+            confirmed with cash on delivery.
           </p>
         </div>
       </section>
@@ -129,230 +207,281 @@ export default function Order() {
       <section className="section-y">
         <div className="container">
           {orderPlaced ? (
-            <div className="mx-auto max-w-3xl overflow-hidden rounded-lg border border-emerald-700/30 bg-white shadow-[0_18px_44px_rgba(15,23,42,0.12)]">
-              <div className="border-l-4 border-emerald-700 bg-[#e6f7ed] p-5 sm:p-6">
-                <div className="flex items-start gap-4">
-                  <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-emerald-700 text-white shadow-lg shadow-emerald-900/15">
+            <div className="mx-auto max-w-xl overflow-hidden rounded-lg border bg-card shadow-[0_18px_44px_rgba(15,23,42,0.12)]">
+              <div className="bg-[#07130f] p-5 text-white sm:p-6">
+                <div className="flex items-center gap-4">
+                  <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-[#c91616]">
                     <CheckCircle2 className="size-6" />
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Badge className="bg-emerald-800 text-white hover:bg-emerald-800">
-                        Request submitted
-                      </Badge>
-                      <span className="text-xs font-bold uppercase tracking-wide text-emerald-950">
-                        BSS order notification
-                      </span>
-                    </div>
-                    <h2 className="mt-3 text-2xl font-extrabold tracking-tight text-[#062f1f] sm:text-3xl">
-                      Order request received
+                  <div>
+                    <Badge className="bg-white/10 text-white hover:bg-white/10">
+                      Submitted
+                    </Badge>
+                    <h2 className="mt-3 text-2xl font-bold tracking-tight">
+                      Order request sent
                     </h2>
-                    <p className="mt-2 text-sm font-bold leading-6 text-[#0b3b28] sm:text-base">
-                      Your request has been placed successfully. Expected delivery:
-                      within 24 hours after confirmation.
+                    <p className="mt-1 text-sm text-white/70">
+                      BSS will confirm by phone before delivery.
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="grid gap-4 p-5 sm:p-6">
-                <div className="grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-slate-950">
-                    <CheckCircle2 className="size-5 text-emerald-700" />
-                    <p className="mt-3 text-sm font-bold">Order saved</p>
-                    <p className="mt-1 text-xs leading-5 text-slate-700">
-                      Your product request is now recorded.
-                    </p>
-                  </div>
-                  <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-slate-950">
-                    <Clock3 className="size-5 text-emerald-700" />
-                    <p className="mt-3 text-sm font-bold">Quick follow-up</p>
-                    <p className="mt-1 text-xs leading-5 text-slate-700">
-                      BSS will contact you for confirmation.
-                    </p>
-                  </div>
-                  <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-slate-950">
-                    <PackageCheck className="size-5 text-emerald-700" />
-                    <p className="mt-3 text-sm font-bold">24-hour delivery</p>
-                    <p className="mt-1 text-xs leading-5 text-slate-700">
-                      Delivery is arranged after confirmation.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-4">
-                  <p className="text-sm font-medium leading-6 text-slate-800">
-                    Please keep your phone available. Our team may call to verify
-                    product quantity, delivery area and cash-on-delivery details.
-                  </p>
-                </div>
-
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <Link to="/products" className={buttonVariants({ variant: "outline" })}>
-                    Browse Products
-                  </Link>
-                  <Link to="/contact" className={buttonVariants()}>
-                    Contact BSS
-                  </Link>
-                </div>
+              <div className="grid gap-3 p-5 sm:grid-cols-2 sm:p-6">
+                <Link
+                  to="/products"
+                  className={buttonVariants({ variant: "outline" })}
+                >
+                  Browse Products
+                </Link>
+                <Link to="/contact" className={buttonVariants()}>
+                  Contact BSS
+                </Link>
               </div>
             </div>
           ) : (
             <div className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-8">
-          <Card className="h-fit overflow-hidden lg:sticky lg:top-24">
-            <CardContent className="p-5 sm:p-6">
-              <div className="flex items-center gap-3">
-                <PackageCheck className="size-5 text-primary" />
-                <h2 className="text-xl font-bold">Order Items</h2>
-              </div>
+              <Card className="h-fit overflow-hidden lg:sticky lg:top-24">
+                <CardContent className="p-5 sm:p-6">
+                  <div className="flex items-center gap-3">
+                    <PackageCheck className="size-5 text-primary" />
+                    <h2 className="text-xl font-bold">Order Items</h2>
+                  </div>
 
-              <div className="mt-5 space-y-4">
-                {displayItems.map(({ product, quantity }) => {
-                  const category = PRODUCT_CATEGORIES.find(
-                    (item) => item.id === product.category,
-                  );
+                  <div className="mt-5 space-y-4">
+                    {displayItems.map(({ product, quantity, note }) => {
+                      const category = PRODUCT_CATEGORIES.find(
+                        (item) => item.id === product.category,
+                      );
 
-                  return (
-                    <div
-                      key={product.id}
-                      className="grid gap-4 rounded-lg border p-3 sm:grid-cols-[88px_minmax(0,1fr)]"
-                    >
-                      {product.images[0] ? (
-                        <img
-                          src={product.images[0]}
-                          alt={product.name}
-                          className="aspect-square w-full rounded-md bg-muted object-cover sm:w-[88px]"
-                          loading="lazy"
-                          decoding="async"
-                          sizes="88px"
-                        />
-                      ) : (
-                        <ImagePlaceholder
-                          icon={category?.icon ?? "shield"}
-                          label={product.subcategory}
-                          className="aspect-square w-full rounded-md sm:w-[88px]"
-                        />
-                      )}
-                      <div className="min-w-0">
-                        <div className="flex flex-wrap gap-2">
-                          <Badge variant="secondary">{category?.name}</Badge>
-                        </div>
-                        <div className="mt-3 flex items-start gap-3">
-                          <QuantityControl
-                            quantity={quantity}
-                            disabled={orderPlaced}
-                            onDecrease={() =>
-                              handleQuantityChange(product.id, quantity - 1)
-                            }
-                            onIncrease={() =>
-                              handleQuantityChange(product.id, quantity + 1)
-                            }
-                          />
+                      return (
+                        <div
+                          key={product.id}
+                          className="grid grid-cols-[76px_minmax(0,1fr)] gap-3 rounded-lg border bg-background p-3 shadow-sm sm:grid-cols-[88px_minmax(0,1fr)] sm:gap-4"
+                        >
+                          {product.images[0] ? (
+                            <img
+                              src={product.images[0]}
+                              alt={product.name}
+                              className="size-[76px] rounded-md bg-muted object-cover sm:size-[88px]"
+                              loading="lazy"
+                              decoding="async"
+                              sizes="88px"
+                            />
+                          ) : (
+                            <ImagePlaceholder
+                              icon={category?.icon ?? "shield"}
+                              label={product.subcategory}
+                              className="size-[76px] rounded-md sm:size-[88px]"
+                            />
+                          )}
                           <div className="min-w-0">
-                            <Link
-                              to={`/products/${product.slug}`}
-                              className="block font-semibold leading-snug hover:text-primary"
-                            >
-                              {product.name}
-                            </Link>
-                            <p className="mt-1 text-sm text-muted-foreground">
-                              {product.subcategory}
-                            </p>
+                            <div className="flex min-w-0 flex-wrap items-center gap-2">
+                              <Badge variant="secondary">
+                                {category?.name}
+                              </Badge>
+                              <span className="rounded-full border px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
+                                Qty {quantity}
+                              </span>
+                            </div>
+                            <div className="mt-2 min-w-0">
+                              <Link
+                                to={`/products/${product.slug}`}
+                                className="line-clamp-2 text-sm font-semibold leading-snug hover:text-primary sm:text-base"
+                              >
+                                {product.name}
+                              </Link>
+                              <p className="mt-1 truncate text-xs text-muted-foreground sm:text-sm">
+                                {product.subcategory}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="col-span-full grid gap-3 rounded-lg bg-muted/30 p-3 min-[420px]:grid-cols-[auto_minmax(0,1fr)] min-[420px]:items-start">
+                            <QuantityControl
+                              quantity={quantity}
+                              disabled={orderPlaced}
+                              onDecrease={() =>
+                                handleQuantityChange(product.id, quantity - 1)
+                              }
+                              onIncrease={() =>
+                                handleQuantityChange(product.id, quantity + 1)
+                              }
+                            />
+                            <label className="grid gap-2 text-sm font-medium">
+                              Product note
+                              <Textarea
+                                value={note ?? ""}
+                                maxLength={MAX_ITEM_NOTE_LENGTH}
+                                placeholder="Optional: size, location, brand preference..."
+                                className="min-h-20 resize-none bg-background"
+                                onChange={(event) =>
+                                  handleItemNoteChange(
+                                    product.id,
+                                    event.target.value,
+                                  )
+                                }
+                              />
+                            </label>
                           </div>
                         </div>
-                      </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="mt-5 space-y-3 rounded-lg bg-muted/40 p-4 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">
+                        Unique products
+                      </span>
+                      <span>{displayItems.length}</span>
                     </div>
-                  );
-                })}
-              </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Total units</span>
+                      <span>
+                        {displayItems.reduce(
+                          (sum, item) => sum + item.quantity,
+                          0,
+                        )}
+                      </span>
+                    </div>
+                    <p className="rounded-md border border-dashed bg-background/70 p-3 text-muted-foreground">
+                      The BSS team will review your request and contact you for
+                      confirmation.
+                    </p>
+                  </div>
 
-              <div className="mt-5 space-y-3 rounded-lg bg-muted/40 p-4 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Unique products</span>
-                  <span>{displayItems.length}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Total units</span>
-                  <span>{displayItems.reduce((sum, item) => sum + item.quantity, 0)}</span>
-                </div>
-                <p className="rounded-md border border-dashed bg-background/70 p-3 text-muted-foreground">
-                  The BSS team will review your request and contact you for confirmation.
-                </p>
-              </div>
+                  <div className="mt-5 flex items-start gap-3 rounded-lg border border-dashed p-4">
+                    <ShieldCheck className="mt-0.5 size-5 shrink-0 text-primary" />
+                    <p className="text-sm leading-6 text-muted-foreground">
+                      Payment method is Cash on Delivery. No online payment is
+                      required.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
 
-              <div className="mt-5 flex items-start gap-3 rounded-lg border border-dashed p-4">
-                <ShieldCheck className="mt-0.5 size-5 shrink-0 text-primary" />
-                <p className="text-sm leading-6 text-muted-foreground">
-                  Payment method is Cash on Delivery. No online payment is required.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+              <Card>
+                <CardContent className="p-5 sm:p-6">
+                  {!initialized ? (
+                    <div className="flex min-h-64 items-center justify-center text-sm text-muted-foreground">
+                      Checking account...
+                    </div>
+                  ) : !profile ? (
+                    <div className="rounded-lg border border-dashed bg-muted/30 p-5 text-center sm:p-8">
+                      <div className="mx-auto flex size-12 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                        <LogIn className="size-5" />
+                      </div>
+                      <h2 className="mt-4 text-xl font-bold">
+                        Sign in to place order
+                      </h2>
+                      <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
+                        Your selected products and quantities will stay saved.
+                      </p>
+                      <Link
+                        to="/signin"
+                        state={{
+                          from: `${location.pathname}${location.search}`,
+                        }}
+                        className={buttonVariants({ className: "mt-5" })}
+                      >
+                        Sign In <ArrowRight className="size-4" />
+                      </Link>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex items-center gap-3">
+                        <CheckCircle2 className="size-5 text-primary" />
+                        <h2 className="text-xl font-bold">
+                          Delivery Information
+                        </h2>
+                      </div>
 
-          <Card>
-            <CardContent className="p-5 sm:p-6">
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className="size-5 text-primary" />
-                <h2 className="text-xl font-bold">Delivery Information</h2>
-              </div>
+                      <form className="mt-5 grid gap-4" onSubmit={handleSubmit}>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          <label className="grid gap-2 text-sm font-medium">
+                            Full name
+                            <Input name="name" autoComplete="name" required />
+                          </label>
+                          <label className="grid gap-2 text-sm font-medium">
+                            Email
+                            <Input
+                              name="email"
+                              type="email"
+                              autoComplete="email"
+                              required
+                            />
+                          </label>
+                        </div>
 
-              <form className="mt-5 grid gap-4" onSubmit={handleSubmit}>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <label className="grid gap-2 text-sm font-medium">
-                    Full name
-                    <Input name="name" autoComplete="name" required />
-                  </label>
-                  <label className="grid gap-2 text-sm font-medium">
-                    Email
-                    <Input name="email" type="email" autoComplete="email" required />
-                  </label>
-                </div>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          <label className="grid gap-2 text-sm font-medium">
+                            Phone number
+                            <Input
+                              name="phone"
+                              type="tel"
+                              autoComplete="tel"
+                              required
+                            />
+                          </label>
+                          <label className="grid gap-2 text-sm font-medium">
+                            Region
+                            <Select
+                              name="region"
+                              required
+                              defaultValue="Pakistan / Balochistan"
+                            >
+                              <option value="Pakistan / Balochistan">
+                                Pakistan / Balochistan
+                              </option>
+                            </Select>
+                          </label>
+                        </div>
 
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <label className="grid gap-2 text-sm font-medium">
-                    Phone number
-                    <Input name="phone" type="tel" autoComplete="tel" required />
-                  </label>
-                  <label className="grid gap-2 text-sm font-medium">
-                    Region
-                    <Select name="region" required defaultValue="Pakistan / Balochistan">
-                      <option value="Pakistan / Balochistan">Pakistan / Balochistan</option>
-                    </Select>
-                  </label>
-                </div>
+                        <label className="grid gap-2 text-sm font-medium">
+                          City
+                          <Input
+                            name="city"
+                            autoComplete="address-level2"
+                            required
+                          />
+                        </label>
 
-                <label className="grid gap-2 text-sm font-medium">
-                  City
-                  <Input name="city" autoComplete="address-level2" required />
-                </label>
+                        <label className="grid gap-2 text-sm font-medium">
+                          Complete address
+                          <Textarea
+                            name="address"
+                            autoComplete="street-address"
+                            required
+                          />
+                        </label>
 
-                <label className="grid gap-2 text-sm font-medium">
-                  Complete address
-                  <Textarea name="address" autoComplete="street-address" required />
-                </label>
+                        <label className="grid gap-2 text-sm font-medium">
+                          Notes
+                          <Textarea
+                            name="notes"
+                            placeholder="Optional delivery instructions"
+                          />
+                        </label>
 
-                <label className="grid gap-2 text-sm font-medium">
-                  Notes
-                  <Textarea
-                    name="notes"
-                    placeholder="Optional delivery instructions"
-                  />
-                </label>
+                        <div className="rounded-lg border bg-muted/30 p-4">
+                          <p className="text-sm font-semibold">
+                            Payment method
+                          </p>
+                          <p className="mt-1 text-sm text-muted-foreground">
+                            Cash on Delivery only
+                          </p>
+                        </div>
 
-                <div className="rounded-lg border bg-muted/30 p-4">
-                  <p className="text-sm font-semibold">Payment method</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Cash on Delivery only
-                  </p>
-                </div>
-
-                <Button className="h-12 w-full" disabled={isSubmitting}>
-                  {isSubmitting ? "Placing Order..." : "Place Order"}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-          </div>
+                        <Button className="h-12 w-full" disabled={isSubmitting}>
+                          {isSubmitting ? "Placing Order..." : "Place Order"}
+                        </Button>
+                      </form>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           )}
         </div>
       </section>

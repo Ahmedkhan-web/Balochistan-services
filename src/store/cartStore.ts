@@ -1,15 +1,17 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { Product } from "@/types";
+import type { CartItem, Product } from "@/types";
 
 const MAX_QUANTITY_PER_ITEM = 10;
+const MAX_ITEM_NOTE_LENGTH = 240;
 
 interface CartState {
-  items: { product: Product; quantity: number }[];
+  items: CartItem[];
   wishlist: Product[];
   addItem: (product: Product, quantity?: number) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
+  updateItemNote: (productId: string, note: string) => void;
   clear: () => void;
   toggleWishlist: (product: Product) => void;
   isWishlisted: (productId: string) => boolean;
@@ -24,9 +26,7 @@ export const useCartStore = create<CartState>()(
       wishlist: [],
       addItem: (product, quantity = 1) =>
         set((state) => {
-          const existing = state.items.find(
-            (i) => i.product.id === product.id,
-          );
+          const existing = state.items.find((i) => i.product.id === product.id);
           if (existing) {
             return state;
           }
@@ -56,6 +56,19 @@ export const useCartStore = create<CartState>()(
                 : i,
             )
             .filter((i) => i.quantity > 0),
+        })),
+      updateItemNote: (productId, note) =>
+        set((state) => ({
+          items: state.items.map((i) =>
+            i.product.id === productId
+              ? {
+                  ...i,
+                  note: note.trim()
+                    ? note.slice(0, MAX_ITEM_NOTE_LENGTH)
+                    : undefined,
+                }
+              : i,
+          ),
         })),
       clear: () => set({ items: [] }),
       toggleWishlist: (product) =>

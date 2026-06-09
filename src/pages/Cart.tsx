@@ -12,13 +12,14 @@ import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/buttonVariants";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import { ImagePlaceholder } from "@/components/common/ImagePlaceholder";
 import { PRODUCT_CATEGORIES } from "@/data/products";
 import { useCartStore } from "@/store/cartStore";
 import { cn } from "@/lib/utils";
 
 export default function Cart() {
-  const { items, updateQuantity, removeItem } = useCartStore();
+  const { items, updateItemNote, updateQuantity, removeItem } = useCartStore();
   const uniqueItems = items.length;
   const totalUnits = items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -68,11 +69,14 @@ export default function Cart() {
           ) : (
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-8">
               <div className="space-y-4">
-                {items.map(({ product, quantity }) => {
+                {items.map(({ product, quantity, note }) => {
                   const category = PRODUCT_CATEGORIES.find(
                     (c) => c.id === product.category,
                   );
-                  const specs = Object.entries(product.specifications).slice(0, 3);
+                  const specs = Object.entries(product.specifications).slice(
+                    0,
+                    3,
+                  );
 
                   return (
                     <Card key={product.id} className="overflow-hidden">
@@ -98,11 +102,23 @@ export default function Cart() {
                           <div className="flex flex-wrap items-start justify-between gap-3">
                             <div className="min-w-0">
                               <div className="flex flex-wrap gap-2">
-                                <Badge variant="secondary">{category?.name}</Badge>
-                                <Badge variant={product.stock > 0 ? "success" : "destructive"}>
-                                  {product.stock > 0 ? "In Stock" : "Out of Stock"}
+                                <Badge variant="secondary">
+                                  {category?.name}
                                 </Badge>
-                                <Badge variant="outline">Qty {quantity}/10</Badge>
+                                <Badge
+                                  variant={
+                                    product.stock > 0
+                                      ? "success"
+                                      : "destructive"
+                                  }
+                                >
+                                  {product.stock > 0
+                                    ? "In Stock"
+                                    : "Out of Stock"}
+                                </Badge>
+                                <Badge variant="outline">
+                                  Qty {quantity}/10
+                                </Badge>
                               </div>
                               <Link
                                 to={`/products/${product.slug}`}
@@ -116,6 +132,19 @@ export default function Cart() {
                             </div>
                           </div>
 
+                          <label className="grid gap-2 text-sm font-medium">
+                            Product note
+                            <Textarea
+                              value={note ?? ""}
+                              maxLength={240}
+                              placeholder="Optional: size, location, brand preference, installation detail..."
+                              className="min-h-20 resize-none"
+                              onChange={(event) =>
+                                updateItemNote(product.id, event.target.value)
+                              }
+                            />
+                          </label>
+
                           <div className="grid gap-2 min-[420px]:grid-cols-3">
                             {specs.map(([label, value]) => (
                               <div
@@ -125,7 +154,9 @@ export default function Cart() {
                                 <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                                   {label}
                                 </p>
-                                <p className="mt-1 text-sm font-medium">{value}</p>
+                                <p className="mt-1 text-sm font-medium">
+                                  {value}
+                                </p>
                               </div>
                             ))}
                           </div>
@@ -165,8 +196,8 @@ export default function Cart() {
                                 className={cn(
                                   buttonVariants({
                                     variant: "outline",
-                                  size: "sm",
-                                  className: "w-full min-[420px]:w-auto",
+                                    size: "sm",
+                                    className: "w-full min-[420px]:w-auto",
                                   }),
                                   "gap-2",
                                 )}
@@ -201,7 +232,9 @@ export default function Cart() {
 
                   <div className="space-y-3 rounded-2xl bg-muted/40 p-4">
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Unique products</span>
+                      <span className="text-muted-foreground">
+                        Unique products
+                      </span>
                       <span>{uniqueItems}</span>
                     </div>
                     <div className="flex justify-between text-sm">
@@ -209,7 +242,8 @@ export default function Cart() {
                       <span>{totalUnits}</span>
                     </div>
                     <p className="rounded-xl border border-dashed bg-background/70 p-3 text-sm text-muted-foreground">
-                      The BSS team will review your request and contact you for confirmation.
+                      The BSS team will review your request and contact you for
+                      confirmation.
                     </p>
                   </div>
 
@@ -242,7 +276,9 @@ export default function Cart() {
 function Stat({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="rounded-lg border bg-card px-3 py-3 sm:px-4">
-      <p className="text-[10px] uppercase tracking-wide text-muted-foreground sm:text-xs">{label}</p>
+      <p className="text-[10px] uppercase tracking-wide text-muted-foreground sm:text-xs">
+        {label}
+      </p>
       <p className="mt-1 text-xl font-bold sm:text-2xl">{value}</p>
     </div>
   );

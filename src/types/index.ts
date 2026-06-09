@@ -124,6 +124,7 @@ export interface Project {
 export interface CartItem {
   product: Product;
   quantity: number;
+  note?: string;
 }
 
 export interface Order {
