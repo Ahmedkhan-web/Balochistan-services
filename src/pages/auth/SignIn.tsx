@@ -1,17 +1,23 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { Apple, Mail } from "lucide-react";
 import { AuthShell } from "@/components/layout/AuthShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Seo } from "@/components/common/Seo";
-import { useAuthStore, ADMIN_ROLES } from "@/store/authStore";
+import { GoogleMark } from "@/components/common/GoogleMark";
+import {
+  NotRegisteredError,
+  useAuthStore,
+  ADMIN_ROLES,
+} from "@/store/authStore";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { signIn, loading } = useAuthStore();
+  const { signIn, signInWithProvider, loading } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -27,7 +33,30 @@ export default function SignIn() {
         navigate("/admin");
       else navigate("/dashboard");
     } catch (err) {
+      if (err instanceof NotRegisteredError) {
+        navigate("/signup", {
+          state: {
+            email,
+            message: "Not registered. Please sign up first.",
+          },
+        });
+        return;
+      }
       toast.error(err instanceof Error ? err.message : "Sign in failed");
+    }
+  };
+
+  const handleProvider = async (provider: "google" | "apple") => {
+    try {
+      await signInWithProvider(provider, "signin");
+    } catch (err) {
+      if (err instanceof NotRegisteredError) {
+        navigate("/signup", {
+          state: { message: "Not registered. Please sign up first." },
+        });
+        return;
+      }
+      toast.error(err instanceof Error ? err.message : "Social sign in failed");
     }
   };
 
@@ -46,6 +75,31 @@ export default function SignIn() {
     >
       <Seo title="Sign In" />
       <form className="space-y-4" onSubmit={handleSubmit}>
+        <div className="grid gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full justify-center"
+            onClick={() => handleProvider("google")}
+          >
+            <GoogleMark className="size-4" /> Continue with Google
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full justify-center"
+            onClick={() => handleProvider("apple")}
+          >
+            <Apple className="size-4" /> Continue with Apple
+          </Button>
+        </div>
+
+        <div className="flex items-center gap-3 text-xs uppercase tracking-wide text-muted-foreground">
+          <span className="h-px flex-1 bg-border" />
+          Email
+          <span className="h-px flex-1 bg-border" />
+        </div>
+
         <div className="space-y-1.5">
           <Label htmlFor="email">Email</Label>
           <Input
@@ -77,6 +131,7 @@ export default function SignIn() {
           />
         </div>
         <Button type="submit" className="w-full" disabled={loading}>
+          <Mail className="size-4" />
           {loading ? "Signing in..." : "Sign In"}
         </Button>
       </form>

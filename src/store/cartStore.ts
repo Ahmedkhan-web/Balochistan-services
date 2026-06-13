@@ -90,6 +90,18 @@ export const useCartStore = create<CartState>()(
           0,
         ),
     }),
-    { name: "bss-cart" },
+    {
+      name: "bss-cart",
+      partialize: (state) => ({ wishlist: state.wishlist }),
+      merge: (persistedState, currentState) => {
+        const persisted = persistedState as Partial<CartState> | undefined;
+
+        return {
+          ...currentState,
+          wishlist: Array.isArray(persisted?.wishlist) ? persisted.wishlist : [],
+          items: [],
+        };
+      },
+    },
   ),
 );

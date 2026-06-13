@@ -3,6 +3,21 @@ import { persist } from "zustand/middleware";
 import type { Profile, UserRole } from "@/types";
 import { getSupabaseClient, isSupabaseConfigured } from "@/lib/supabase";
 
+export type OAuthProvider = "google" | "apple";
+
+export interface OnboardingDetails {
+  fullName: string;
+  phone?: string;
+  city?: string;
+  country?: string;
+  company?: string;
+  facilityType?: string;
+}
+
+interface SignUpResult {
+  requiresEmailConfirmation: boolean;
+}
+
 interface AuthState {
   profile: Profile | null;
   loading: boolean;
@@ -11,14 +26,64 @@ interface AuthState {
   signUp: (
     email: string,
     password: string,
-    fullName: string,
-    phone?: string,
+    details?: Partial<OnboardingDetails>,
+  ) => Promise<SignUpResult>;
+  completeOnboarding: (details: OnboardingDetails) => Promise<void>;
+  signInWithProvider: (
+    provider: OAuthProvider,
+    mode: "signin" | "signup",
   ) => Promise<void>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   setProfile: (profile: Profile | null) => void;
   initialize: () => Promise<void>;
   hasRole: (...roles: UserRole[]) => boolean;
+}
+
+export class NotRegisteredError extends Error {
+  constructor() {
+    super("Not registered. Please sign up first.");
+    this.name = "NotRegisteredError";
+  }
+}
+
+const DEMO_USERS_KEY = "bss-demo-users";
+
+function demoUsers(): Record<string, Profile> {
+  try {
+    return JSON.parse(localStorage.getItem(DEMO_USERS_KEY) ?? "{}") as Record<
+      string,
+      Profile
+    >;
+  } catch {
+    return {};
+  }
+}
+
+function saveDemoUser(profile: Profile) {
+  localStorage.setItem(
+    DEMO_USERS_KEY,
+    JSON.stringify({ ...demoUsers(), [profile.email.toLowerCase()]: profile }),
+  );
+}
+
+function profileFromDetails(
+  email: string,
+  details: Partial<OnboardingDetails>,
+): Profile {
+  return {
+    id: `demo-${email.toLowerCase()}`,
+    full_name: details.fullName?.trim() || email.split("@")[0],
+    email,
+    phone: details.phone?.trim() || null,
+    city: details.city?.trim() || null,
+    country: details.country?.trim() || null,
+    company: details.company?.trim() || null,
+    facility_type: details.facilityType?.trim() || null,
+    role: email.startsWith("admin") ? "super_admin" : "customer",
+    avatar_url: null,
+    created_at: new Date().toISOString(),
+  };
 }
 
 /**
@@ -30,6 +95,10 @@ const DEMO_PROFILE: Profile = {
   full_name: "Demo Customer",
   email: "demo@bss.com.pk",
   phone: "+92 300 0000000",
+  city: "Quetta",
+  country: "Pakistan",
+  company: null,
+  facility_type: null,
   role: "customer",
   avatar_url: null,
   created_at: new Date().toISOString(),
@@ -79,17 +148,29 @@ export const useAuthStore = create<AuthState>()(
         try {
           const supabase = await getSupabaseClient();
           if (!supabase) {
-            // Demo mode: admin@ -> admin dashboard, anything else -> customer
-            set({
-              profile: email.startsWith("admin") ? DEMO_ADMIN : DEMO_PROFILE,
-            });
+            const normalizedEmail = email.trim().toLowerCase();
+            const users = demoUsers();
+            const profile = normalizedEmail.startsWith("admin")
+              ? DEMO_ADMIN
+              : users[normalizedEmail];
+
+            if (!profile) {
+              throw new NotRegisteredError();
+            }
+
+            set({ profile });
             return;
           }
           const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password,
           });
-          if (error) throw error;
+          if (error) {
+            if (error.message.toLowerCase().includes("invalid login")) {
+              throw new NotRegisteredError();
+            }
+            throw error;
+          }
           const { data: profile } = await supabase
             .from("profiles")
             .select("*")
@@ -101,34 +182,140 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      signUp: async (email, password, fullName, phone) => {
+      signUp: async (email, password, details = {}) => {
         set({ loading: true });
         try {
           const supabase = await getSupabaseClient();
           if (!supabase) {
-            set({
-              profile: { ...DEMO_PROFILE, full_name: fullName, email },
-            });
-            return;
+            const profile = profileFromDetails(email.trim().toLowerCase(), details);
+            saveDemoUser(profile);
+            set({ profile });
+            return { requiresEmailConfirmation: false };
           }
           const { data, error } = await supabase.auth.signUp({
             email,
             password,
-            options: { data: { full_name: fullName, phone } },
+            options: {
+              data: {
+                full_name: details.fullName,
+                phone: details.phone,
+                city: details.city,
+                country: details.country,
+                company: details.company,
+                facility_type: details.facilityType,
+              },
+            },
           });
           if (error) throw error;
-          if (data.user) {
-            await supabase.from("profiles").insert({
-              id: data.user.id,
-              full_name: fullName,
-              email,
-              phone: phone ?? null,
-              role: "customer",
-            });
+          if (data.user && data.session) {
+            const profile = profileFromDetails(email, details);
+            const { data: savedProfile } = await supabase
+              .from("profiles")
+              .upsert({
+                id: data.user.id,
+                full_name: profile.full_name,
+                email,
+                phone: profile.phone,
+                city: profile.city,
+                country: profile.country,
+                company: profile.company,
+                facility_type: profile.facility_type,
+                role: "customer",
+              })
+              .select("*")
+              .single();
+            if (savedProfile) set({ profile: savedProfile as Profile });
           }
+
+          return { requiresEmailConfirmation: !data.session };
         } finally {
           set({ loading: false });
         }
+      },
+
+      completeOnboarding: async (details) => {
+        set({ loading: true });
+        try {
+          const currentProfile = get().profile;
+          const supabase = await getSupabaseClient();
+
+          if (!currentProfile && supabase) {
+            const { data } = await supabase.auth.getUser();
+            if (!data.user) throw new Error("Please sign in again to finish setup.");
+
+            const { data: profile } = await supabase
+              .from("profiles")
+              .upsert({
+                id: data.user.id,
+                full_name: details.fullName,
+                email: data.user.email ?? "",
+                phone: details.phone ?? null,
+                city: details.city ?? null,
+                country: details.country ?? null,
+                company: details.company ?? null,
+                facility_type: details.facilityType ?? null,
+                role: "customer",
+              })
+              .select("*")
+              .single();
+            if (profile) set({ profile: profile as Profile });
+            return;
+          }
+
+          if (!currentProfile) throw new Error("Create your account first.");
+
+          const nextProfile: Profile = {
+            ...currentProfile,
+            full_name: details.fullName,
+            phone: details.phone || null,
+            city: details.city || null,
+            country: details.country || null,
+            company: details.company || null,
+            facility_type: details.facilityType || null,
+          };
+
+          if (!supabase) {
+            saveDemoUser(nextProfile);
+            set({ profile: nextProfile });
+            return;
+          }
+
+          const { data, error } = await supabase
+            .from("profiles")
+            .update({
+              full_name: nextProfile.full_name,
+              phone: nextProfile.phone,
+              city: nextProfile.city,
+              country: nextProfile.country,
+              company: nextProfile.company,
+              facility_type: nextProfile.facility_type,
+            })
+            .eq("id", nextProfile.id)
+            .select("*")
+            .single();
+          if (error) throw error;
+          if (data) set({ profile: data as Profile });
+        } finally {
+          set({ loading: false });
+        }
+      },
+
+      signInWithProvider: async (provider, mode) => {
+        const supabase = await getSupabaseClient();
+        if (!supabase) {
+          throw mode === "signin"
+            ? new NotRegisteredError()
+            : new Error("Social sign up needs Supabase OAuth configuration.");
+        }
+
+        const redirectPath = mode === "signup" ? "/signup?step=profile" : "/dashboard";
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider,
+          options: {
+            redirectTo: `${window.location.origin}${redirectPath}`,
+          },
+        });
+        if (error) throw error;
       },
 
       signOut: async () => {

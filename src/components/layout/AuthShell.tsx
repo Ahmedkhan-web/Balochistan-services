@@ -16,7 +16,6 @@ export function AuthShell({
 }) {
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
-      {/* Brand panel */}
       <div className="relative hidden flex-col justify-between bg-gradient-to-br from-brand-700 to-brand-950 p-12 text-white lg:flex">
         <Logo to="/" className="[&_span]:text-white [&_span]:opacity-100" />
         <div>
@@ -30,24 +29,25 @@ export function AuthShell({
           </p>
         </div>
         <p className="text-sm text-white/60">
-          © {new Date().getFullYear()} Balochistan Standard Services
+          Copyright {new Date().getFullYear()} Balochistan Standard Services
         </p>
       </div>
 
-      {/* Form panel */}
       <div className="flex flex-col items-center justify-center px-4 py-8 sm:p-12">
         <div className="w-full max-w-md">
           <div className="mb-7 lg:hidden">
             <Logo to="/" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{title}</h1>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            {title}
+          </h1>
           <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
 
           {!isSupabaseConfigured && (
             <div className="mt-4 rounded-lg border border-dashed bg-muted/50 p-3 text-xs text-muted-foreground">
-              Demo mode (no Supabase configured). Use any credentials — sign in
-              with an email starting with <code>admin</code> to access the admin
-              dashboard.
+              Demo mode (no Supabase configured). Create an account first, then
+              sign in with that email. Emails starting with <code>admin</code>{" "}
+              open the admin dashboard.
             </div>
           )}
 
@@ -61,7 +61,7 @@ export function AuthShell({
 
           <p className="mt-8 text-center text-xs text-muted-foreground">
             <Link to="/" className="hover:text-primary">
-              ← Back to website
+              Back to website
             </Link>
           </p>
         </div>

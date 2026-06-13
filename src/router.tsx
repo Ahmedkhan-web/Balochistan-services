@@ -1,5 +1,5 @@
 import { lazy, Suspense, type ComponentType } from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
 import { ADMIN_ROLES } from "@/store/authStore";
@@ -25,7 +25,6 @@ const CustomerDashboard = lazy(() => import("@/pages/dashboard/CustomerDashboard
 const CustomerOverview = lazy(() => import("@/pages/dashboard/CustomerOverview"));
 const Orders = lazy(() => import("@/pages/dashboard/Orders"));
 const ServiceRequests = lazy(() => import("@/pages/dashboard/ServiceRequests"));
-const Invoices = lazy(() => import("@/pages/dashboard/Invoices"));
 const Wishlist = lazy(() => import("@/pages/dashboard/Wishlist"));
 const Notifications = lazy(() => import("@/pages/dashboard/Notifications"));
 const Tickets = lazy(() => import("@/pages/dashboard/Tickets"));
@@ -84,7 +83,7 @@ export const router = createBrowserRouter([
       { index: true, element: page(CustomerOverview) },
       { path: "orders", element: page(Orders) },
       { path: "requests", element: page(ServiceRequests) },
-      { path: "invoices", element: page(Invoices) },
+      { path: "invoices", element: <Navigate to="/dashboard" replace /> },
       { path: "wishlist", element: page(Wishlist) },
       { path: "notifications", element: page(Notifications) },
       { path: "tickets", element: page(Tickets) },

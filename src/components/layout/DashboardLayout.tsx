@@ -37,7 +37,7 @@ export function DashboardLayout({
         )}
       >
         <div className="flex h-16 items-center justify-between border-b px-4">
-          <Logo />
+          <Logo compact />
           <Button
             variant="ghost"
             size="icon"
