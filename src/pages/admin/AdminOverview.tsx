@@ -1,230 +1,145 @@
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { AlertCircle, ArrowRight, PackageCheck, Users } from "lucide-react";
+import {
+  ArrowRight,
+} from "lucide-react";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { StatCard } from "@/components/dashboard/StatCard";
-import { StatusBadge } from "@/components/dashboard/StatusBadge";
-import { RevenueChart } from "@/components/dashboard/RevenueChart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/buttonVariants";
-import {
-  ADMIN_USERS,
-  MOCK_ORDERS,
-  MOCK_SERVICE_REQUESTS,
-  REVENUE_BY_MONTH,
-} from "@/data/dashboard";
-import { PRODUCTS } from "@/data/products";
-import { formatCurrency, formatDate } from "@/lib/utils";
-
-const activeOrderStatuses = ["pending", "confirmed", "processing", "shipped"];
+import { adminPath } from "@/lib/adminRoute";
+import { requireSupabase } from "@/lib/supabase";
+import { formatDate } from "@/lib/utils";
+import type { Profile } from "@/types";
 
 export default function AdminOverview() {
-  const totalRevenue = REVENUE_BY_MONTH.reduce(
-    (sum, item) => sum + item.revenue,
-    0,
+  const [users, setUsers] = useState<Profile[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadUsers() {
+      try {
+        const supabase = await requireSupabase();
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(6);
+
+        if (error) throw error;
+        if (active) setUsers((data ?? []) as Profile[]);
+      } catch {
+        if (active) setUsers([]);
+      } finally {
+        if (active) setLoadingUsers(false);
+      }
+    }
+
+    void loadUsers();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const customers = useMemo(
+    () => users.filter((user) => user.role === "customer"),
+    [users],
   );
-  const receivedOrders = MOCK_ORDERS.length;
-  const processingOrders = MOCK_ORDERS.filter((order) =>
-    activeOrderStatuses.includes(order.status),
-  );
-  const customers = ADMIN_USERS.filter((user) => user.role === "customer");
-  const openServices = MOCK_SERVICE_REQUESTS.filter(
-    (request) => request.status !== "completed",
+  const admins = useMemo(
+    () => users.filter((user) => user.role === "admin"),
+    [users],
   );
 
   return (
     <div>
       <PageHeader
-        title="Admin Control Center"
-        description="Manage received orders, customers, services, stock and business activity from one modern overview."
+        title="Admin Dashboard"
+        description="A light control view for registered users, catalog readiness and WhatsApp request handling."
         action={
           <Link
-            to="/admin/orders"
+            to={adminPath("users")}
             className={buttonVariants({
               className: "bg-[#c91616] text-white hover:bg-[#a90f0f]",
             })}
           >
-            Review Orders <ArrowRight className="size-4" />
+            View Users <ArrowRight className="size-4" />
           </Link>
         }
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          label="Revenue"
-          value={formatCurrency(totalRevenue)}
-          icon="scale"
-          trend="+12.5% vs last period"
-        />
-        <StatCard
-          label="Received Orders"
-          value={String(receivedOrders)}
-          icon="package-check"
-          trend={`${processingOrders.length} active`}
-        />
-        <StatCard
-          label="Users & Customers"
-          value={String(ADMIN_USERS.length)}
+          label="Recent Users"
+          value={loadingUsers ? "..." : String(users.length)}
           icon="users"
-          trend={`${customers.length} customers`}
+          trend={`${customers.length} customer accounts`}
         />
         <StatCard
-          label="Products Listed"
-          value={String(PRODUCTS.length)}
-          icon="shield"
+          label="Admin Accounts"
+          value={String(admins.length)}
+          icon="shield-check"
+          trend="SQL controlled access"
         />
       </div>
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-        <Card className="border-slate-200 shadow-sm">
-          <CardHeader className="flex-row items-center justify-between">
-            <div>
-              <CardTitle>Revenue Trend</CardTitle>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Last six months of sales activity.
-              </p>
+      <div className="mt-6">
+        <Card className="overflow-hidden border-white/10 bg-[#10231d] text-white shadow-xl shadow-black/15">
+          <CardHeader className="border-b border-white/10 bg-[#07130f]">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <CardTitle>New Registered Users</CardTitle>
+                <p className="mt-1 text-sm text-white/60">
+                  Latest customer and admin profiles from Supabase.
+                </p>
+              </div>
+              <Badge className="bg-white/[0.08] text-[#bde8c0] hover:bg-white/[0.08]">
+                Live
+              </Badge>
             </div>
-            <Badge variant="secondary">Live mock data</Badge>
           </CardHeader>
-          <CardContent>
-            <RevenueChart />
-          </CardContent>
-        </Card>
-
-        <Card className="overflow-hidden border-slate-200 shadow-sm">
-          <CardHeader className="border-b bg-[#07130f] text-white">
-            <CardTitle>Processing Queue</CardTitle>
-            <p className="mt-1 text-sm text-white/60">
-              Orders that still need admin attention.
-            </p>
-          </CardHeader>
-          <CardContent className="grid gap-3 p-4">
-            {processingOrders.map((order) => (
-              <div
-                key={order.id}
-                className="rounded-lg border bg-background p-4"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="font-semibold">{order.reference}</p>
-                  <StatusBadge status={order.status} />
-                </div>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {formatDate(order.created_at)} - {formatCurrency(order.total)}
-                </p>
-                <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
-                  <PackageCheck className="size-4 text-primary" />
-                  {order.items.length} product line(s)
-                </div>
+          <CardContent className="grid gap-3 p-4 sm:p-5">
+            {loadingUsers ? (
+              <div className="rounded-lg border border-white/10 bg-[#07130f] p-4 text-sm text-white/60">
+                Loading users...
               </div>
-            ))}
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="mt-6 grid gap-6 xl:grid-cols-3">
-        <Card className="border-slate-200 shadow-sm xl:col-span-2">
-          <CardHeader className="flex-row items-center justify-between">
-            <CardTitle>Recent Received Orders</CardTitle>
-            <Link
-              to="/admin/orders"
-              className="text-sm font-semibold text-primary"
-            >
-              Manage all
-            </Link>
-          </CardHeader>
-          <CardContent className="grid gap-3">
-            {MOCK_ORDERS.slice(0, 4).map((order) => (
-              <div
-                key={order.id}
-                className="grid gap-3 rounded-lg border p-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-center"
-              >
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <p className="font-semibold">{order.reference}</p>
-                    <StatusBadge status={order.payment_status} />
-                    <StatusBadge status={order.status} />
+            ) : users.length > 0 ? (
+              users.map((user) => (
+                <div
+                  key={user.id}
+                  className="grid gap-3 rounded-lg border border-white/10 bg-[#07130f] p-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-center"
+                >
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="truncate font-semibold">{user.full_name}</p>
+                      <Badge
+                        variant={user.role === "admin" ? "default" : "secondary"}
+                        className="capitalize"
+                      >
+                        {user.role}
+                      </Badge>
+                    </div>
+                    <p className="mt-1 truncate text-sm text-white/58">
+                      {user.email}
+                    </p>
+                    <p className="mt-1 text-sm text-white/48">
+                      {[user.city, user.country].filter(Boolean).join(", ") ||
+                        "Location not provided"}
+                    </p>
                   </div>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {order.items
-                      .map((item) => item.name)
-                      .slice(0, 2)
-                      .join(", ")}
+                  <p className="text-sm font-medium text-[#bde8c0]">
+                    {formatDate(user.created_at)}
                   </p>
                 </div>
-                <p className="text-lg font-bold">
-                  {formatCurrency(order.total)}
-                </p>
+              ))
+            ) : (
+              <div className="rounded-lg border border-dashed border-white/15 bg-[#07130f] p-6 text-center text-sm text-white/58">
+                No profiles found yet.
               </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-200 shadow-sm">
-          <CardHeader>
-            <CardTitle>User Snapshot</CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-3">
-            {ADMIN_USERS.slice(0, 4).map((user) => (
-              <div
-                key={user.id}
-                className="flex items-start gap-3 rounded-lg border p-3"
-              >
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground">
-                  <Users className="size-5" />
-                </div>
-                <div className="min-w-0">
-                  <p className="truncate font-semibold">{user.name}</p>
-                  <p className="truncate text-sm text-muted-foreground">
-                    {user.company}
-                  </p>
-                  <Badge variant="secondary" className="mt-2 capitalize">
-                    {user.role.replace("_", " ")}
-                  </Badge>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <Card className="border-slate-200 shadow-sm">
-          <CardHeader>
-            <CardTitle>Service Workload</CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-3">
-            {openServices.map((request) => (
-              <div key={request.id} className="rounded-lg border p-4">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="font-semibold">{request.service_name}</p>
-                  <StatusBadge status={request.status} />
-                </div>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {request.reference} - {request.address}
-                </p>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-200 shadow-sm">
-          <CardHeader>
-            <CardTitle>Admin Priorities</CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-3">
-            {[
-              "Confirm COD orders before dispatch",
-              "Assign technicians to unscheduled service requests",
-              "Review inactive customer accounts",
-            ].map((item) => (
-              <div
-                key={item}
-                className="flex items-start gap-3 rounded-lg border bg-muted/30 p-4"
-              >
-                <AlertCircle className="mt-0.5 size-5 shrink-0 text-[#c91616]" />
-                <p className="text-sm font-medium leading-6">{item}</p>
-              </div>
-            ))}
+            )}
           </CardContent>
         </Card>
       </div>

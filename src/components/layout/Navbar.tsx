@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/store/cartStore";
 import { useAuthStore, ADMIN_ROLES } from "@/store/authStore";
+import { ADMIN_BASE_PATH } from "@/lib/adminRoute";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -21,7 +22,7 @@ export function Navbar() {
   const { profile, signOut, hasRole } = useAuthStore();
   const navigate = useNavigate();
 
-  const dashboardPath = hasRole(...ADMIN_ROLES) ? "/admin" : "/dashboard";
+  const dashboardPath = hasRole(...ADMIN_ROLES) ? ADMIN_BASE_PATH : "/dashboard";
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-black/85 backdrop-blur supports-[backdrop-filter]:bg-black/70">

@@ -252,7 +252,7 @@ export default function OverviewDeferred() {
               </h2>
               <p className="mt-5 max-w-xl text-sm leading-7 text-white/65 sm:text-base">
                 BSS brings fire safety, CCTV, access control and maintenance into one
-                clean operating standard, so facility managers can move faster with
+                clean operating standard, so facility teams can move faster with
                 fewer surprises.
               </p>
             </div>
@@ -618,7 +618,7 @@ export default function OverviewDeferred() {
                 {[
                   { title: "Prevent", icon: "shield-check", text: "Reduce fire and security risk before incidents happen." },
                   { title: "Detect", icon: "cctv", text: "Use cameras, alarms and detectors to capture early signals." },
-                  { title: "Control", icon: "fingerprint", text: "Secure entries, sensitive rooms and staff movement." },
+                  { title: "Control", icon: "fingerprint", text: "Secure entries, sensitive rooms and daily movement." },
                   { title: "Respond", icon: "headset", text: "Keep maintenance and emergency response close to the facility." },
                 ].map((item) => (
                   <div

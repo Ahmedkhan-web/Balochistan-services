@@ -5,9 +5,11 @@ import { useAuthStore } from "@/store/authStore";
 export function ProtectedRoute({
   children,
   roles,
+  signInPath = "/signin",
 }: {
   children: React.ReactNode;
   roles?: UserRole[];
+  signInPath?: string;
 }) {
   const { profile, initialized } = useAuthStore();
   const location = useLocation();
@@ -21,7 +23,7 @@ export function ProtectedRoute({
   }
 
   if (!profile) {
-    return <Navigate to="/signin" state={{ from: location.pathname }} replace />;
+    return <Navigate to={signInPath} state={{ from: location.pathname }} replace />;
   }
 
   if (roles && !roles.includes(profile.role)) {

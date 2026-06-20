@@ -4,10 +4,7 @@ import type { Database } from "@/types/database";
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-/**
- * Whether a real Supabase backend is configured. When false the app falls back
- * to local seed data so the UI is fully viewable without a backend.
- */
+/** Whether the required Supabase backend credentials are configured. */
 export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
 
 let supabaseClient: SupabaseClient<Database> | null | undefined;

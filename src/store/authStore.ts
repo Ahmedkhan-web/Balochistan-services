@@ -1,7 +1,11 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Profile, UserRole } from "@/types";
-import { getSupabaseClient, isSupabaseConfigured } from "@/lib/supabase";
+import {
+  getSupabaseClient,
+  isSupabaseConfigured,
+  requireSupabase,
+} from "@/lib/supabase";
 
 export type OAuthProvider = "google" | "apple";
 
@@ -47,71 +51,6 @@ export class NotRegisteredError extends Error {
   }
 }
 
-const DEMO_USERS_KEY = "bss-demo-users";
-
-function demoUsers(): Record<string, Profile> {
-  try {
-    return JSON.parse(localStorage.getItem(DEMO_USERS_KEY) ?? "{}") as Record<
-      string,
-      Profile
-    >;
-  } catch {
-    return {};
-  }
-}
-
-function saveDemoUser(profile: Profile) {
-  localStorage.setItem(
-    DEMO_USERS_KEY,
-    JSON.stringify({ ...demoUsers(), [profile.email.toLowerCase()]: profile }),
-  );
-}
-
-function profileFromDetails(
-  email: string,
-  details: Partial<OnboardingDetails>,
-): Profile {
-  return {
-    id: `demo-${email.toLowerCase()}`,
-    full_name: details.fullName?.trim() || email.split("@")[0],
-    email,
-    phone: details.phone?.trim() || null,
-    city: details.city?.trim() || null,
-    country: details.country?.trim() || null,
-    company: details.company?.trim() || null,
-    facility_type: details.facilityType?.trim() || null,
-    role: email.startsWith("admin") ? "super_admin" : "customer",
-    avatar_url: null,
-    created_at: new Date().toISOString(),
-  };
-}
-
-/**
- * Demo profile used when Supabase is not configured so the dashboards are
- * still browsable. Real auth is used the moment env vars are provided.
- */
-const DEMO_PROFILE: Profile = {
-  id: "demo-user",
-  full_name: "Demo Customer",
-  email: "demo@bss.com.pk",
-  phone: "+92 300 0000000",
-  city: "Quetta",
-  country: "Pakistan",
-  company: null,
-  facility_type: null,
-  role: "customer",
-  avatar_url: null,
-  created_at: new Date().toISOString(),
-};
-
-const DEMO_ADMIN: Profile = {
-  ...DEMO_PROFILE,
-  id: "demo-admin",
-  full_name: "Demo Admin",
-  email: "admin@bss.com.pk",
-  role: "super_admin",
-};
-
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
@@ -123,44 +62,39 @@ export const useAuthStore = create<AuthState>()(
 
       initialize: async () => {
         if (!isSupabaseConfigured) {
-          set({ initialized: true });
+          set({ profile: null, initialized: true });
           return;
         }
-        const supabase = await getSupabaseClient();
-        if (!supabase) {
+
+        try {
+          const supabase = await getSupabaseClient();
+          if (!supabase) {
+            set({ profile: null, initialized: true });
+            return;
+          }
+          const { data } = await supabase.auth.getSession();
+          if (data.session?.user) {
+            const profile = await loadOrCreateProfile(
+              supabase,
+              data.session.user.id,
+              data.session.user.email ?? "",
+              data.session.user.user_metadata?.full_name,
+            );
+            set({ profile });
+          } else {
+            set({ profile: null });
+          }
+        } catch {
+          set({ profile: null });
+        } finally {
           set({ initialized: true });
-          return;
         }
-        const { data } = await supabase.auth.getSession();
-        if (data.session?.user) {
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", data.session.user.id)
-            .single();
-          if (profile) set({ profile: profile as Profile });
-        }
-        set({ initialized: true });
       },
 
       signIn: async (email, password) => {
         set({ loading: true });
         try {
-          const supabase = await getSupabaseClient();
-          if (!supabase) {
-            const normalizedEmail = email.trim().toLowerCase();
-            const users = demoUsers();
-            const profile = normalizedEmail.startsWith("admin")
-              ? DEMO_ADMIN
-              : users[normalizedEmail];
-
-            if (!profile) {
-              throw new NotRegisteredError();
-            }
-
-            set({ profile });
-            return;
-          }
+          const supabase = await requireSupabase();
           const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password,
@@ -171,12 +105,13 @@ export const useAuthStore = create<AuthState>()(
             }
             throw error;
           }
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", data.user.id)
-            .single();
-          set({ profile: profile as Profile });
+          const profile = await loadOrCreateProfile(
+            supabase,
+            data.user.id,
+            data.user.email ?? email,
+            data.user.user_metadata?.full_name,
+          );
+          set({ profile });
         } finally {
           set({ loading: false });
         }
@@ -185,13 +120,7 @@ export const useAuthStore = create<AuthState>()(
       signUp: async (email, password, details = {}) => {
         set({ loading: true });
         try {
-          const supabase = await getSupabaseClient();
-          if (!supabase) {
-            const profile = profileFromDetails(email.trim().toLowerCase(), details);
-            saveDemoUser(profile);
-            set({ profile });
-            return { requiresEmailConfirmation: false };
-          }
+          const supabase = await requireSupabase();
           const { data, error } = await supabase.auth.signUp({
             email,
             password,
@@ -208,19 +137,17 @@ export const useAuthStore = create<AuthState>()(
           });
           if (error) throw error;
           if (data.user && data.session) {
-            const profile = profileFromDetails(email, details);
             const { data: savedProfile } = await supabase
               .from("profiles")
               .upsert({
                 id: data.user.id,
-                full_name: profile.full_name,
-                email,
-                phone: profile.phone,
-                city: profile.city,
-                country: profile.country,
-                company: profile.company,
-                facility_type: profile.facility_type,
-                role: "customer",
+                full_name: details.fullName?.trim() || email.split("@")[0],
+                email: email.trim().toLowerCase(),
+                phone: details.phone?.trim() || null,
+                city: details.city?.trim() || null,
+                country: details.country?.trim() || null,
+                company: details.company?.trim() || null,
+                facility_type: details.facilityType?.trim() || null,
               })
               .select("*")
               .single();
@@ -237,9 +164,9 @@ export const useAuthStore = create<AuthState>()(
         set({ loading: true });
         try {
           const currentProfile = get().profile;
-          const supabase = await getSupabaseClient();
+          const supabase = await requireSupabase();
 
-          if (!currentProfile && supabase) {
+          if (!currentProfile) {
             const { data } = await supabase.auth.getUser();
             if (!data.user) throw new Error("Please sign in again to finish setup.");
 
@@ -254,15 +181,12 @@ export const useAuthStore = create<AuthState>()(
                 country: details.country ?? null,
                 company: details.company ?? null,
                 facility_type: details.facilityType ?? null,
-                role: "customer",
               })
               .select("*")
               .single();
             if (profile) set({ profile: profile as Profile });
             return;
           }
-
-          if (!currentProfile) throw new Error("Create your account first.");
 
           const nextProfile: Profile = {
             ...currentProfile,
@@ -273,12 +197,6 @@ export const useAuthStore = create<AuthState>()(
             company: details.company || null,
             facility_type: details.facilityType || null,
           };
-
-          if (!supabase) {
-            saveDemoUser(nextProfile);
-            set({ profile: nextProfile });
-            return;
-          }
 
           const { data, error } = await supabase
             .from("profiles")
@@ -327,12 +245,10 @@ export const useAuthStore = create<AuthState>()(
       },
 
       resetPassword: async (email) => {
-        const supabase = await getSupabaseClient();
-        if (supabase) {
-          await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${window.location.origin}/reset-password`,
-          });
-        }
+        const supabase = await requireSupabase();
+        await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
       },
 
       hasRole: (...roles) => {
@@ -347,9 +263,43 @@ export const useAuthStore = create<AuthState>()(
   ),
 );
 
-export const ADMIN_ROLES: UserRole[] = [
-  "staff",
-  "manager",
-  "admin",
-  "super_admin",
-];
+export const ADMIN_ROLES: UserRole[] = ["admin"];
+
+async function loadOrCreateProfile(
+  supabase: Awaited<ReturnType<typeof requireSupabase>>,
+  userId: string,
+  email: string,
+  fullName?: unknown,
+) {
+  const { data: existingProfile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (existingProfile) {
+    return existingProfile as Profile;
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+  const fallbackName =
+    typeof fullName === "string" && fullName.trim()
+      ? fullName.trim()
+      : normalizedEmail.split("@")[0] || "BSS Customer";
+
+  const { data: createdProfile, error } = await supabase
+    .from("profiles")
+    .insert({
+      id: userId,
+      full_name: fallbackName,
+      email: normalizedEmail,
+    })
+    .select("*")
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return createdProfile as Profile;
+}

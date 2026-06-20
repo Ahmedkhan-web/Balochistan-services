@@ -2,69 +2,45 @@
 
 ## Overview
 
-BSS is a single-page React application backed by Supabase. It is designed to be
-**backend-optional**: when Supabase env vars are absent, stores fall back to
-local seed data so the entire UI (including dashboards) is browsable.
+BSS is a Vite React single-page application backed by Supabase for only the
+parts that need real users: authentication, profiles, and admin access.
+Products, services, page content, cart state, and WhatsApp request flows stay in
+the frontend so the public site remains fast.
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                      React SPA (Vite)                     │
-│                                                           │
-│  Pages ── Router ── Layouts ── Components (ui/common)      │
-│     │                                                     │
-│     ├── Zustand stores  (auth, cart, ui)                  │
-│     ├── React Query     (server cache)                    │
-│     └── English-only UI/content                           │
-│                  │                                        │
-│                  ▼                                        │
-│        lib/supabase.ts  ──(if configured)──► Supabase     │
-└─────────────────────────────────────────────────────────┘
-                                   │
-                                   ▼
-        Postgres · Auth · RLS · Storage · Edge Functions
+React SPA (Vite)
+  Pages -> Router -> Layouts -> Components
+    - Zustand stores: auth, cart, ui
+    - Static product/service/content data
+    - Supabase auth/profile data when configured
+    - WhatsApp request links for orders, services, and installations
+
+Supabase
+  Auth users -> public.profiles
+  RLS: customer owns own profile, admin can read users
 ```
 
-## Key decisions
+## Key Decisions
 
-- **Demo mode** (`isSupabaseConfigured`): `lib/supabase.ts` returns `null` when
-  env vars are missing. Stores branch on this to use `DEMO_*` data, so the app
-  never crashes without a backend and is fully demoable.
-- **Data router**: `react-router-dom`'s `createBrowserRouter` enables
-  `ScrollRestoration` and nested layout routes (`PublicLayout`,
-  `DashboardLayout`). Auth is enforced via the `ProtectedRoute` wrapper with an
-  optional `roles` allow-list.
-- **Auth & RBAC**: `authStore` manages the session/profile. Roles
-  (`customer · staff · manager · admin · super_admin`) gate the `/admin` area;
-  the same model is mirrored server-side by RLS helper functions
-  (`is_staff()`, `is_admin()`).
-- **State**: ephemeral UI/cart/theme state lives in Zustand (persisted to
-  `localStorage`); server data is fetched/cached through React Query when a
-  backend is connected.
-- **Styling**: Tailwind with CSS variables for theming (light/dark via a
-  `.dark` class) and a green brand palette. UI primitives follow the shadcn
-  pattern (CVA variants) but are vendored locally under `components/ui`.
-- **Type safety**: domain types in `types/index.ts`; Supabase row/insert/update
-  types in `types/database.ts` (regenerate with `supabase gen types`).
+- **No demo mode**: auth actions require real `VITE_SUPABASE_URL` and
+  `VITE_SUPABASE_ANON_KEY` values. The app no longer provides fake sign-in or
+  fake dashboard data.
+- **Two roles only**: `customer` and `admin`.
+- **Customer dashboard**: one lightweight dashboard page with real account
+  information and quick actions.
+- **Admin dashboard**: one overview plus registered-user details from
+  Supabase.
+- **Requests**: product orders, service requests, and installation requests
+  open prepared WhatsApp messages to the configured BSS number.
+- **Performance**: Supabase is dynamically imported, admin/dashboard routes are
+  lazy-loaded, and public catalog content stays static.
 
-## Data model
+## Supabase
 
-See `supabase/migrations/0001_init.sql` for the full schema. Highlights:
+Use `supabase/sql-editor.sql` as the single paste-ready setup file. It creates:
 
-- `profiles` extends `auth.users` (auto-created via the `on_auth_user_created`
-  trigger).
-- Catalog: `categories → products → product_images`, `reviews`.
-- Commerce: `orders → order_items`, `payments`, `invoices`.
-- Services: `services → service_requests` (with `assigned_to` staff ref).
-- Support/engagement: `tickets`, `notifications`.
-- CMS/ops: `blogs`, `testimonials`, `partners`, `settings`, `audit_logs`.
-
-RLS (`0002_rls.sql`) enforces owner-scoped access for customer data and
-staff/admin elevation for management, with public read on catalog/content.
-
-## Payments & integrations (extension points)
-
-Payment methods (`stripe · jazzcash · easypaisa · bank_transfer · cod`) are
-modeled in the schema and checkout UI. Server-side capture/verification belongs
-in Supabase **Edge Functions** using the secret keys listed in `.env.example`
-(never exposed to the client). WhatsApp, Google Maps and Analytics are wired via
-env-configurable values in `lib/constants.ts`.
+- `public.user_role` enum with `customer` and `admin`.
+- `public.profiles`.
+- Profile triggers for new auth users.
+- RLS policies for self profile access and admin user-list access.
+- A default admin auth user and profile.

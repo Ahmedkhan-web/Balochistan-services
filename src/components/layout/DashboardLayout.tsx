@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { LogOut, Menu, X } from "lucide-react";
 import { Logo } from "@/components/common/Logo";
-import { ThemeToggle } from "@/components/common/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/common/Icon";
 import { useAuthStore } from "@/store/authStore";
@@ -95,7 +94,6 @@ export function DashboardLayout({
             ← Back to site
           </Link>
           <div className="flex items-center gap-3">
-            <ThemeToggle />
             <div className="flex items-center gap-2">
               <div className="flex size-9 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
                 {initials(profile?.full_name ?? "BSS")}

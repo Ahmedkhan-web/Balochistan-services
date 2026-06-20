@@ -1,36 +1,4 @@
-export type UserRole =
-  | "customer"
-  | "staff"
-  | "manager"
-  | "admin"
-  | "super_admin";
-
-export type OrderStatus =
-  | "pending"
-  | "confirmed"
-  | "processing"
-  | "shipped"
-  | "delivered"
-  | "cancelled"
-  | "refunded";
-
-export type PaymentStatus = "unpaid" | "paid" | "refunded" | "failed";
-
-export type PaymentMethod =
-  | "stripe"
-  | "jazzcash"
-  | "easypaisa"
-  | "bank_transfer"
-  | "cod";
-
-export type ServiceRequestStatus =
-  | "requested"
-  | "scheduled"
-  | "in_progress"
-  | "completed"
-  | "cancelled";
-
-export type TicketStatus = "open" | "pending" | "resolved" | "closed";
+export type UserRole = "customer" | "admin";
 
 export interface Profile {
   id: string;
@@ -129,52 +97,4 @@ export interface CartItem {
   product: Product;
   quantity: number;
   note?: string;
-}
-
-export interface Order {
-  id: string;
-  reference: string;
-  status: OrderStatus;
-  payment_status: PaymentStatus;
-  payment_method: PaymentMethod;
-  total: number;
-  items: { name: string; quantity: number; price: number }[];
-  created_at: string;
-}
-
-export interface ServiceRequest {
-  id: string;
-  reference: string;
-  service_name: string;
-  status: ServiceRequestStatus;
-  scheduled_at?: string | null;
-  address: string;
-  notes?: string;
-  created_at: string;
-}
-
-export interface Invoice {
-  id: string;
-  number: string;
-  amount: number;
-  tax: number;
-  total: number;
-  status: PaymentStatus;
-  created_at: string;
-}
-
-export interface SupportTicket {
-  id: string;
-  subject: string;
-  status: TicketStatus;
-  priority: "low" | "medium" | "high";
-  created_at: string;
-}
-
-export interface NotificationItem {
-  id: string;
-  title: string;
-  message: string;
-  read: boolean;
-  created_at: string;
 }

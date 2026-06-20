@@ -1,13 +1,12 @@
 import { useMemo, useState } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
-import { Apple, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import { AuthShell } from "@/components/layout/AuthShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Seo } from "@/components/common/Seo";
-import { GoogleMark } from "@/components/common/GoogleMark";
 import { useAuthStore } from "@/store/authStore";
 
 type SignUpStep = "account" | "profile";
@@ -34,7 +33,7 @@ export default function SignUp() {
     company: "",
     facilityType: "",
   });
-  const { signUp, completeOnboarding, signInWithProvider, loading } = useAuthStore();
+  const { signUp, completeOnboarding, loading } = useAuthStore();
   const navigate = useNavigate();
 
   const handleCreateAccount = async (e: React.FormEvent) => {
@@ -65,17 +64,9 @@ export default function SignUp() {
         facilityType: profile.facilityType,
       });
       toast.success("Profile completed. Welcome to BSS.");
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Profile setup failed");
-    }
-  };
-
-  const handleProvider = async (provider: "google" | "apple") => {
-    try {
-      await signInWithProvider(provider, "signup");
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Social sign up failed");
     }
   };
 
@@ -106,31 +97,6 @@ export default function SignUp() {
 
       {step === "account" ? (
         <form className="space-y-4" onSubmit={handleCreateAccount}>
-          <div className="grid gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full justify-center"
-              onClick={() => handleProvider("google")}
-            >
-              <GoogleMark className="size-4" /> Continue with Google
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full justify-center"
-              onClick={() => handleProvider("apple")}
-            >
-              <Apple className="size-4" /> Continue with Apple
-            </Button>
-          </div>
-
-          <div className="flex items-center gap-3 text-xs uppercase tracking-wide text-muted-foreground">
-            <span className="h-px flex-1 bg-border" />
-            Email
-            <span className="h-px flex-1 bg-border" />
-          </div>
-
           <div className="space-y-1.5">
             <Label htmlFor="email">Email</Label>
             <Input

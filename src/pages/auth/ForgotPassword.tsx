@@ -39,9 +39,15 @@ export default function ForgotPassword() {
           className="space-y-4"
           onSubmit={async (e) => {
             e.preventDefault();
-            await resetPassword(email);
-            setSent(true);
-            toast.success("Reset link sent");
+            try {
+              await resetPassword(email);
+              setSent(true);
+              toast.success("Reset link sent");
+            } catch (err) {
+              toast.error(
+                err instanceof Error ? err.message : "Unable to send reset link",
+              );
+            }
           }}
         >
           <div className="space-y-1.5">

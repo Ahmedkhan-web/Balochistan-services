@@ -25,6 +25,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/buttonVariants";
 import { PRODUCT_CATEGORIES, getProductBySlug } from "@/data/products";
+import { createWhatsAppLink } from "@/lib/constants";
 import { useCartStore } from "@/store/cartStore";
 import { useAuthStore } from "@/store/authStore";
 import type { CartItem } from "@/types";
@@ -43,6 +44,10 @@ function readQuantityParam(value: string | null) {
 
 function getDirectNoteKey(productSlug: string | null) {
   return productSlug ? `bss-order-note:${productSlug}` : null;
+}
+
+function fieldValue(formData: FormData, key: string) {
+  return String(formData.get(key) ?? "").trim();
 }
 
 export default function Order() {
@@ -134,7 +139,42 @@ export default function Order() {
       return;
     }
 
+    const formData = new FormData(event.currentTarget);
+    const orderMessage = [
+      "Hello BSS, I want to place a product order.",
+      "",
+      "Customer Account:",
+      `Account name: ${profile.full_name}`,
+      `Account email: ${profile.email}`,
+      "",
+      "Delivery Details:",
+      `Name: ${fieldValue(formData, "name")}`,
+      `Email: ${fieldValue(formData, "email")}`,
+      `Phone: ${fieldValue(formData, "phone")}`,
+      `Region: ${fieldValue(formData, "region")}`,
+      `City: ${fieldValue(formData, "city")}`,
+      `Address: ${fieldValue(formData, "address")}`,
+      `Notes: ${fieldValue(formData, "notes") || "N/A"}`,
+      "",
+      "Order Items:",
+      ...displayItems.flatMap(({ product, quantity, note }, index) => [
+        `${index + 1}. ${product.name}`,
+        `   Category: ${
+          PRODUCT_CATEGORIES.find((item) => item.id === product.category)?.name ??
+          product.category
+        }`,
+        `   Subcategory: ${product.subcategory ?? "N/A"}`,
+        `   Quantity: ${quantity}`,
+        `   Product URL: ${window.location.origin}/products/${product.slug}`,
+        `   Product note: ${note?.trim() || "N/A"}`,
+      ]),
+      "",
+      "Payment: Cash on Delivery",
+      "Please confirm availability, delivery time, and final amount.",
+    ].join("\n");
+
     setIsSubmitting(true);
+    window.open(createWhatsAppLink(orderMessage), "_blank", "noopener,noreferrer");
     setOrderPlaced(true);
 
     if (!singleProduct) {
@@ -401,7 +441,12 @@ export default function Order() {
                         <div className="grid gap-4 sm:grid-cols-2">
                           <label className="grid gap-2 text-sm font-medium">
                             Full name
-                            <Input name="name" autoComplete="name" required />
+                            <Input
+                              name="name"
+                              autoComplete="name"
+                              defaultValue={profile.full_name}
+                              required
+                            />
                           </label>
                           <label className="grid gap-2 text-sm font-medium">
                             Email
@@ -409,6 +454,7 @@ export default function Order() {
                               name="email"
                               type="email"
                               autoComplete="email"
+                              defaultValue={profile.email}
                               required
                             />
                           </label>
@@ -421,6 +467,7 @@ export default function Order() {
                               name="phone"
                               type="tel"
                               autoComplete="tel"
+                              defaultValue={profile.phone ?? ""}
                               required
                             />
                           </label>
@@ -443,6 +490,7 @@ export default function Order() {
                           <Input
                             name="city"
                             autoComplete="address-level2"
+                            defaultValue={profile.city ?? ""}
                             required
                           />
                         </label>
@@ -474,7 +522,7 @@ export default function Order() {
                         </div>
 
                         <Button className="h-12 w-full" disabled={isSubmitting}>
-                          {isSubmitting ? "Placing Order..." : "Place Order"}
+                          {isSubmitting ? "Opening WhatsApp..." : "Place Order on WhatsApp"}
                         </Button>
                       </form>
                     </>

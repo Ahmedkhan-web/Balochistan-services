@@ -3,6 +3,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
 import { ADMIN_ROLES } from "@/store/authStore";
+import { ADMIN_BASE_PATH, ADMIN_SIGN_IN_PATH } from "@/lib/adminRoute";
 import Overview from "@/pages/Overview";
 import Products from "@/pages/Products";
 import ProductCategory from "@/pages/ProductCategory";
@@ -17,28 +18,17 @@ import Order from "@/pages/Order";
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 const SignIn = lazy(() => import("@/pages/auth/SignIn"));
+const AdminSignIn = lazy(() => import("@/pages/auth/AdminSignIn"));
 const SignUp = lazy(() => import("@/pages/auth/SignUp"));
 const ForgotPassword = lazy(() => import("@/pages/auth/ForgotPassword"));
 const ResetPassword = lazy(() => import("@/pages/auth/ResetPassword"));
 
 const CustomerDashboard = lazy(() => import("@/pages/dashboard/CustomerDashboard"));
 const CustomerOverview = lazy(() => import("@/pages/dashboard/CustomerOverview"));
-const Orders = lazy(() => import("@/pages/dashboard/Orders"));
-const ServiceRequests = lazy(() => import("@/pages/dashboard/ServiceRequests"));
-const Wishlist = lazy(() => import("@/pages/dashboard/Wishlist"));
-const Notifications = lazy(() => import("@/pages/dashboard/Notifications"));
-const Tickets = lazy(() => import("@/pages/dashboard/Tickets"));
-const Profile = lazy(() => import("@/pages/dashboard/Profile"));
 
 const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
 const AdminOverview = lazy(() => import("@/pages/admin/AdminOverview"));
-const ProductManagement = lazy(() => import("@/pages/admin/ProductManagement"));
-const OrderManagement = lazy(() => import("@/pages/admin/OrderManagement"));
-const ServiceManagement = lazy(() => import("@/pages/admin/ServiceManagement"));
 const UserManagement = lazy(() => import("@/pages/admin/UserManagement"));
-const ReviewManagement = lazy(() => import("@/pages/admin/ReviewManagement"));
-const ContentManagement = lazy(() => import("@/pages/admin/ContentManagement"));
-const AuditLogs = lazy(() => import("@/pages/admin/AuditLogs"));
 
 function page(Component: ComponentType) {
   return (
@@ -68,6 +58,7 @@ export const router = createBrowserRouter([
   },
 
   { path: "/signin", element: page(SignIn) },
+  { path: ADMIN_SIGN_IN_PATH, element: page(AdminSignIn) },
   { path: "/signup", element: page(SignUp) },
   { path: "/forgot-password", element: page(ForgotPassword) },
   { path: "/reset-password", element: page(ResetPassword) },
@@ -81,32 +72,20 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: page(CustomerOverview) },
-      { path: "orders", element: page(Orders) },
-      { path: "requests", element: page(ServiceRequests) },
-      { path: "invoices", element: <Navigate to="/dashboard" replace /> },
-      { path: "wishlist", element: page(Wishlist) },
-      { path: "notifications", element: page(Notifications) },
-      { path: "tickets", element: page(Tickets) },
-      { path: "profile", element: page(Profile) },
+      { path: "*", element: <Navigate to="/dashboard" replace /> },
     ],
   },
 
   {
-    path: "/admin",
+    path: ADMIN_BASE_PATH,
     element: (
-      <ProtectedRoute roles={[...ADMIN_ROLES]}>
+      <ProtectedRoute roles={[...ADMIN_ROLES]} signInPath={ADMIN_SIGN_IN_PATH}>
         {page(AdminDashboard)}
       </ProtectedRoute>
     ),
     children: [
       { index: true, element: page(AdminOverview) },
-      { path: "products", element: page(ProductManagement) },
-      { path: "orders", element: page(OrderManagement) },
-      { path: "services", element: page(ServiceManagement) },
       { path: "users", element: page(UserManagement) },
-      { path: "reviews", element: page(ReviewManagement) },
-      { path: "cms", element: page(ContentManagement) },
-      { path: "audit", element: page(AuditLogs) },
     ],
   },
 
